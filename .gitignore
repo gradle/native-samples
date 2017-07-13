@@ -1,0 +1,11 @@
+# Gradle Files
+/build
+.gradle
+
+# Swift Package Manager Files
+/.build
+/Packages
+/*.xcodeproj
+
+# Mac OS Junk
+.DS_Store
