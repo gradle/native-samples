@@ -42,3 +42,20 @@ build/tmp/compileSwift/output.txt
 build/tmp/linkMain
 build/tmp/linkMain/output.txt
 ```
+
+## Executable Multi-Project (executable)
+
+This project shows how a multi-project Swift Executable can be built including
+demonstrating how another module can be linked in.
+
+```
+> cd executable
+> ./gradlew assemble
+Parallel execution is an incubating feature.
+
+BUILD SUCCESSFUL in 1s
+5 actionable tasks: 5 executed
+> ./app/build/install/app/app
+Hello, World!
+12
+```

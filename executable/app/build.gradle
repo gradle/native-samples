@@ -1,0 +1,7 @@
+plugins {
+    id 'swift-executable'
+}
+
+dependencies {
+    implementation project(':greeter')
+}
