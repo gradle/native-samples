@@ -6,6 +6,10 @@ build
 .build
 Packages
 *.xcodeproj
+*.xcworkspace
+
+# AppCode Files
+.idea
 
 # Mac OS Junk
 .DS_Store
