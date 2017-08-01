@@ -1,0 +1,5 @@
+plugins {
+    id 'swift-library'
+}
+
+group = 'org.gradle.swift-samples'

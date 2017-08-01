@@ -1,0 +1,7 @@
+task assemble {
+    dependsOn gradle.includedBuild('app').task(':assemble')
+}
+
+task clean {
+    dependsOn gradle.includedBuilds*.task(':clean')
+}

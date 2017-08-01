@@ -74,3 +74,18 @@ BUILD SUCCESSFUL in 0s
 > ./app/build/install/app/app
 Hello, World!
 ```
+
+## Executable Composite Build with Transitive Dependencies (composite-build)
+
+This project just shows that Swift modules can be built with Gradle. The
+dependencies are added transitively from the dependencies between modules
+and the projects take part of a composite build. To run it:
+```
+> cd composite-build
+> ./gradlew assemble
+
+BUILD SUCCESSFUL in 0s
+
+> ./app/build/install/app/app
+Hello, World!
+```

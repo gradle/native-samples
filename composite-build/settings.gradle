@@ -1,0 +1,3 @@
+includeBuild 'app'
+includeBuild 'hello'
+includeBuild 'greeting'
