@@ -1,0 +1,7 @@
+plugins {
+    id 'swift-library'
+}
+
+dependencies {
+    api project(':greeting')
+}

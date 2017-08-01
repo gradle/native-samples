@@ -51,11 +51,26 @@ demonstrating how another module can be linked in.
 ```
 > cd executable
 > ./gradlew assemble
-Parallel execution is an incubating feature.
 
 BUILD SUCCESSFUL in 1s
 5 actionable tasks: 5 executed
 > ./app/build/install/app/app
 Hello, World!
 12
+```
+
+## Executable Multi-Project with Transitive Dependencies (transitive-dependencies)
+
+This project just shows that Swift modules can be built with Gradle. The
+dependencies are added transitively from the dependencies between modules.
+To run it:
+```
+> cd transitive-dependencies
+> ./gradlew assemble
+
+BUILD SUCCESSFUL in 0s
+7 actionable tasks: 7 executed
+
+> ./app/build/install/app/app
+Hello, World!
 ```
