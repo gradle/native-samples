@@ -1,25 +1,25 @@
 # Swift Sample Projects
 
 This repository holds several sample Gradle Projects which demonstrate how to
-use Gradle to build Swift modules and executables including dependencies on
+use Gradle to build Swift/C++ libraries and executables including dependencies on
 native libraries written in other native languages like C, C++, and Objective-C.
 
 Each sample project is listed below with a bit of information related to the
-features of Gradle that are demonstrated in that project.
+features of Gradle that are demonstrated in that project. Each samples are functionally
+the same for both Swift and C++ language.
 
-## Simple Module (simple-module)
+## Simple Library (simple-library)
 
 This project just shows that Swift modules can be built with Gradle. There
 are no dependencies, just the module itself. To run it:
 ```
 > cd simple-module
 > ./gradlew assemble
-Parallel execution is an incubating feature.
 
 BUILD SUCCESSFUL in 0s
 2 actionable tasks: 2 executed
 
-> find build
+> find build  # C++ project will differ a bit
 build
 build/lib
 build/lib/libhello.dylib
@@ -43,25 +43,24 @@ build/tmp/linkMain
 build/tmp/linkMain/output.txt
 ```
 
-## Executable Multi-Project (executable)
+## Executable (executable)
 
-This project shows how a multi-project Swift Executable can be built including
+This project shows how a Swift/C++ Executable can be built including
 demonstrating how another module can be linked in.
 
 ```
 > cd executable
 > ./gradlew assemble
 
-BUILD SUCCESSFUL in 1s
-5 actionable tasks: 5 executed
+BUILD SUCCESSFUL in 0s
+2 actionable tasks: 2 executed
 > ./app/build/install/app/app
 Hello, World!
-12
 ```
 
 ## Executable Multi-Project with Transitive Dependencies (transitive-dependencies)
 
-This project just shows that Swift modules can be built with Gradle. The
+This project just shows that Swift/C++ libraries can be built with Gradle. The
 dependencies are added transitively from the dependencies between modules.
 To run it:
 ```
@@ -77,7 +76,7 @@ Hello, World!
 
 ## Executable Composite Build with Transitive Dependencies (composite-build)
 
-This project just shows that Swift modules can be built with Gradle. The
+This project just shows that Swift/C++ libraries can be built with Gradle. The
 dependencies are added transitively from the dependencies between modules
 and the projects take part of a composite build. To run it:
 ```
@@ -87,5 +86,6 @@ and the projects take part of a composite build. To run it:
 BUILD SUCCESSFUL in 0s
 
 > ./app/build/install/app/app
+Hello, World!
 Hello, World!
 ```
