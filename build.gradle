@@ -1,0 +1,23 @@
+import groovy.io.FileType
+
+task test
+
+String taskName(File sampleDir) {
+    def languageName = sampleDir.parentFile.name
+    def sampleName = sampleDir.name
+
+    "test${sampleName.capitalize()}${languageName.capitalize()}"
+}
+
+Task createTestTask(TaskContainer tasks, File sampleDir) {
+    tasks.create(taskName(sampleDir), Exec) {
+        commandLine './gradlew', 'clean', 'assemble'
+        if (!sampleDir.name.contains('composite')) {
+            args 'cleanXcode', 'xcode'
+        }
+        workingDir sampleDir
+    }
+}
+
+file('swift').eachFile(FileType.DIRECTORIES) { test.dependsOn createTestTask(tasks, it) }
+file('cpp').eachFile(FileType.DIRECTORIES) { test.dependsOn createTestTask(tasks, it) }
