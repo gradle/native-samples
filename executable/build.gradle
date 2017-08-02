@@ -1,3 +1,4 @@
-allprojects {
-    apply plugin: "xcode"
+plugins {
+    id 'swift-executable'
+    id 'xcode'
 }
