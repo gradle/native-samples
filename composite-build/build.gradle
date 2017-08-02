@@ -1,7 +1,8 @@
-task assemble {
-    dependsOn gradle.includedBuild('app').task(':assemble')
+plugins {
+    id 'swift-executable'
 }
 
-task clean {
-    dependsOn gradle.includedBuilds*.task(':clean')
+dependencies {
+    implementation 'org.gradle.swift-samples:greeter:1.5'
+    implementation 'org.gradle.swift-samples:hello:1.2'
 }

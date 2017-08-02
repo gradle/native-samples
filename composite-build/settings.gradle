@@ -1,3 +1,2 @@
-includeBuild 'app'
-includeBuild 'hello'
-includeBuild 'greeting'
+includeBuild '../simple-module'
+includeBuild '../transitive-dependencies'

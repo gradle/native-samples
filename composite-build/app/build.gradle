@@ -1,7 +1,0 @@
-plugins {
-    id 'swift-executable'
-}
-
-dependencies {
-    implementation 'org.gradle.swift-samples:hello:1.2'
-}
