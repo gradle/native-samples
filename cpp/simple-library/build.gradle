@@ -2,3 +2,5 @@ plugins {
     id 'cpp-library'
     id 'xcode'
 }
+
+group = 'org.gradle.cpp-samples'

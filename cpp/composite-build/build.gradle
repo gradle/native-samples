@@ -1,0 +1,8 @@
+plugins {
+    id 'cpp-executable'
+}
+
+dependencies {
+    implementation 'org.gradle.cpp-samples:greeter:1.5'
+    implementation 'org.gradle.cpp-samples:hello:1.2'
+}

@@ -1,0 +1,2 @@
+includeBuild '../simple-library'
+includeBuild '../transitive-dependencies'
