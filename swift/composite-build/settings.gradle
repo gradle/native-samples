@@ -1,2 +1,2 @@
-includeBuild '../simple-module'
+includeBuild '../simple-library'
 includeBuild '../transitive-dependencies'
