@@ -1,0 +1,7 @@
+plugins {
+    id 'cpp-executable'
+}
+
+dependencies {
+    implementation project(':hello')
+}

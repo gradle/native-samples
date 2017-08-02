@@ -1,0 +1,7 @@
+plugins {
+    id 'cpp-library'
+}
+
+dependencies {
+    implementation project(':greeting')
+}
