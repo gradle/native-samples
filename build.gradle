@@ -1,16 +1,14 @@
 import groovy.io.FileType
 
-task test
-
-String taskName(File sampleDir) {
+String taskName(String verb, File sampleDir) {
     def languageName = sampleDir.parentFile.name
     def sampleName = sampleDir.name
 
-    "test${sampleName.capitalize()}${languageName.capitalize()}"
+    "${verb}${sampleName.capitalize()}${languageName.capitalize()}"
 }
 
-Task createTestTask(TaskContainer tasks, File sampleDir) {
-    tasks.create(taskName(sampleDir), Exec) {
+def createTestTask = { TaskContainer tasks, File sampleDir ->
+    tasks.create(taskName('test', sampleDir), Exec) {
         commandLine './gradlew', 'clean', 'assemble'
         if (!sampleDir.name.contains('composite')) {
             args 'cleanXcode', 'xcode'
@@ -19,5 +17,24 @@ Task createTestTask(TaskContainer tasks, File sampleDir) {
     }
 }
 
-file('swift').eachFile(FileType.DIRECTORIES) { test.dependsOn createTestTask(tasks, it) }
-file('cpp').eachFile(FileType.DIRECTORIES) { test.dependsOn createTestTask(tasks, it) }
+def createCleanTask = { TaskContainer tasks, File sampleDir ->
+    tasks.create(taskName('clean', sampleDir), Exec) {
+        commandLine './gradlew', 'clean'
+        if (!sampleDir.name.contains('composite')) {
+            args 'cleanXcode'
+        }
+        workingDir sampleDir
+    }
+}
+
+Task createLifecycleTask(TaskContainer tasks, String taskName, def createSampleLifecycleTask) {
+    Task lifecycleTask = tasks.create(taskName)
+
+    file('swift').eachFile(FileType.DIRECTORIES) { lifecycleTask.dependsOn createSampleLifecycleTask(tasks, it) }
+    file('cpp').eachFile(FileType.DIRECTORIES)   { lifecycleTask.dependsOn createSampleLifecycleTask(tasks, it) }
+
+    return lifecycleTask
+}
+
+createLifecycleTask(tasks, 'test', createTestTask)
+createLifecycleTask(tasks, 'clean', createCleanTask)
