@@ -1,4 +1,4 @@
-# Swift Sample Projects
+# Swift and C++ Sample Projects
 
 This repository holds several sample Gradle Projects which demonstrate how to
 use Gradle to build Swift/C++ libraries and executables including dependencies on
@@ -54,7 +54,7 @@ demonstrating how another module can be linked in.
 
 BUILD SUCCESSFUL in 0s
 2 actionable tasks: 2 executed
-> ./app/build/install/app/app
+> ./build/install/app/app
 Hello, World!
 ```
 
@@ -85,7 +85,7 @@ and the projects take part of a composite build. To run it:
 
 BUILD SUCCESSFUL in 0s
 
-> ./app/build/install/app/app
+> ./build/install/app/app
 Hello, World!
 Hello, World!
 ```
