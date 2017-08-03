@@ -3,6 +3,6 @@ plugins {
 }
 
 dependencies {
-    implementation 'org.gradle.swift-samples:greeter:1.5'
-    implementation 'org.gradle.swift-samples:hello:1.2'
+    implementation 'org.gradle.swift-samples:Greeter:1.5'
+    implementation 'org.gradle.swift-samples:Hello:1.2'
 }

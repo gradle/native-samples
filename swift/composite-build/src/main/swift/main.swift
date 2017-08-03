@@ -1,5 +1,5 @@
-import greeter
-import hello
+import Greeter
+import Hello
 
 let greeter = Greeter()
 greeter.sayHello()

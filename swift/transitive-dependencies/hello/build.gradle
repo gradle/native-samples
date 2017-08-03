@@ -5,5 +5,5 @@ plugins {
 group = 'org.gradle.swift-samples'
 
 dependencies {
-    api project(':greeting')
+    api project(':Greeting')
 }
