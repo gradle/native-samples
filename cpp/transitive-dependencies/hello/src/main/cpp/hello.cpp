@@ -1,7 +1,7 @@
 #include "greeting.h"
 
-#include <iostream>
+#include "logger.h"
 
 void sayHello() {
-    std::cout << getHello() << std::endl;
+    log(getHello());
 }
