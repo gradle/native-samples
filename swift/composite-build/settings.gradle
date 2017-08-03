@@ -1,2 +1,4 @@
+rootProject.name = 'app'
+
 includeBuild '../simple-library'
 includeBuild '../transitive-dependencies'
