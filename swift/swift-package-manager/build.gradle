@@ -1,0 +1,36 @@
+allprojects {
+    apply plugin: 'xcode'
+}
+
+project(':app') {
+    apply plugin:  'swift-executable'
+
+    // Configure the source files of the executable
+    executable {
+        source {
+            // File names are resolved relative to the project directory, need to use the root project
+            from rootProject.file('Sources/main.swift')
+        }
+    }
+
+    // Configure the dependencies of the executable
+    dependencies {
+        implementation project(':greeter')
+    }
+}
+
+project(':greeter') {
+    apply plugin:  'swift-library'
+
+    // Configure the source files of the library
+    library {
+        source {
+            // File names are resolved relative to the project directory, need to use the root project
+            from rootProject.file('Sources/greeter.swift')
+        }
+    }
+
+    compileSwift {
+        moduleName = 'Greeter'
+    }
+}
