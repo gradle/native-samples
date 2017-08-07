@@ -8,8 +8,9 @@ Packages
 *.xcodeproj
 *.xcworkspace
 
-# AppCode Files
+# AppCode/IDEA Files
 .idea
+*.iml
 
 # Mac OS Junk
 .DS_Store
