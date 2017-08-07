@@ -30,8 +30,8 @@ def createCleanTask = { TaskContainer tasks, File sampleDir ->
 Task createLifecycleTask(TaskContainer tasks, String taskName, def createSampleLifecycleTask) {
     Task lifecycleTask = tasks.create(taskName)
 
-    file('swift').eachFile(FileType.DIRECTORIES) { lifecycleTask.dependsOn createSampleLifecycleTask(tasks, it) }
-    file('cpp').eachFile(FileType.DIRECTORIES)   { lifecycleTask.dependsOn createSampleLifecycleTask(tasks, it) }
+    file('../swift').eachFile(FileType.DIRECTORIES) { lifecycleTask.dependsOn createSampleLifecycleTask(tasks, it) }
+    file('../cpp').eachFile(FileType.DIRECTORIES)   { lifecycleTask.dependsOn createSampleLifecycleTask(tasks, it) }
 
     return lifecycleTask
 }
