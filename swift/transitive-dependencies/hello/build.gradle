@@ -5,5 +5,9 @@ plugins {
 group = 'org.gradle.swift-samples'
 
 dependencies {
-    api project(':Greeting')
+    api project(':greeting')
+}
+
+compileSwift {
+    moduleName = 'Hello'
 }

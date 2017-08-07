@@ -4,3 +4,7 @@ plugins {
 }
 
 group = 'org.gradle.swift-samples'
+
+compileSwift {
+    moduleName = 'Greeter'
+}

@@ -1,3 +1,1 @@
 include 'app', 'hello', 'greeting'
-
-rootProject.children.each { it.name = it.name.capitalize() }
