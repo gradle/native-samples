@@ -10,7 +10,7 @@ String taskName(String verb, File sampleDir) {
 def createTestTask = { TaskContainer tasks, File sampleDir ->
     tasks.create(taskName('test', sampleDir), Exec) {
         commandLine './gradlew', 'clean', 'assemble'
-        if (!sampleDir.name.contains('composite')) {
+        if (usesXcode(sampleDir)) {
             args 'cleanXcode', 'xcode'
         }
         workingDir sampleDir
@@ -20,11 +20,15 @@ def createTestTask = { TaskContainer tasks, File sampleDir ->
 def createCleanTask = { TaskContainer tasks, File sampleDir ->
     tasks.create(taskName('clean', sampleDir), Exec) {
         commandLine './gradlew', 'clean'
-        if (!sampleDir.name.contains('composite')) {
+        if (usesXcode(sampleDir)) {
             args 'cleanXcode'
         }
         workingDir sampleDir
     }
+}
+
+boolean usesXcode(File sampleDir) {
+    return new File(sampleDir, "build.gradle").text.contains('xcode')
 }
 
 Task createLifecycleTask(TaskContainer tasks, String taskName, def createSampleLifecycleTask) {
