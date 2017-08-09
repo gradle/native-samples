@@ -9,7 +9,7 @@ project(':app') {
     executable {
         source {
             // File names are resolved relative to the project directory, need to use the root project
-            from rootProject.file('Sources/main.swift')
+            from rootProject.file('Sources/App')
         }
     }
 
@@ -26,7 +26,7 @@ project(':greeter') {
     library {
         source {
             // File names are resolved relative to the project directory, need to use the root project
-            from rootProject.file('Sources/greeter.swift')
+            from rootProject.file('Sources/Greeter')
         }
     }
 

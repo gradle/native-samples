@@ -101,8 +101,10 @@ Hello, World!
 
 ## Swift package manager conventions (swift-package-manager)
 
-This build shows how to configure Gradle to use the typical layout for a Swift package manager package.
-It contains an executable and a single library. The source files for the executable and libraries are all in a single `Sources` directory. 
+This build shows how to configure Gradle to use the typical layout for a Swift Package Manager package.
+It contains an executable and a single library. The source files for the executable and libraries are all under a single `Sources` directory. 
+
+This sample also includes a Swift Package Manager build file, so the same source can be built using Swift Package Manager
 
 ```
 > cd swift-package-manager
