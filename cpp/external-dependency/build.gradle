@@ -1,0 +1,19 @@
+plugins {
+    id 'cpp-executable'
+    id 'xcode'
+}
+
+def greeterLib = file('../simple-library/build/lib/libgreeter.dylib')
+def greeterIncludePath = file('../simple-library/src/main/public')
+
+compileCpp.doFirst {
+    if (!greeterLib.exists() || !greeterIncludePath.exists()) {
+        throw new GradleException("Please build project at ${file('../simple-library')}.")
+    }
+}
+
+dependencies {
+    nativeLink files(greeterLib)
+    nativeRuntime files(greeterLib)
+    cppCompileIncludePath files(greeterIncludePath)
+}

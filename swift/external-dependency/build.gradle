@@ -1,0 +1,19 @@
+plugins {
+    id 'swift-executable'
+    id 'xcode'
+}
+
+def greeterLib = file('../simple-library/build/lib/libgreeter.dylib')
+def greeterImportPath = file('../simple-library/build/main/objs')
+
+compileSwift.doFirst {
+    if (!greeterLib.exists() || !greeterImportPath.exists()) {
+        throw new GradleException("Please build project at ${file('../simple-library')}.")
+    }
+}
+
+dependencies {
+    nativeLink files(greeterLib)
+    nativeRuntime files(greeterLib)
+    swiftImportPath files(greeterImportPath)
+}

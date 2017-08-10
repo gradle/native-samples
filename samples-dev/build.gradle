@@ -42,3 +42,10 @@ Task createLifecycleTask(TaskContainer tasks, String taskName, def createSampleL
 
 createLifecycleTask(tasks, 'test', createTestTask)
 createLifecycleTask(tasks, 'clean', createCleanTask)
+
+Task getTestTaskFor(String samplePath) {
+    tasks.getByName(taskName('test', rootProject.file(samplePath)))
+}
+
+getTestTaskFor('swift/external-dependency').mustRunAfter(getTestTaskFor('swift/simple-library'))
+getTestTaskFor('cpp/external-dependency').mustRunAfter(getTestTaskFor('cpp/simple-library'))
