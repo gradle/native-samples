@@ -47,5 +47,5 @@ Task getTestTaskFor(String samplePath) {
     tasks.getByName(taskName('test', rootProject.file(samplePath)))
 }
 
-getTestTaskFor('swift/external-dependency').mustRunAfter(getTestTaskFor('swift/simple-library'))
-getTestTaskFor('cpp/external-dependency').mustRunAfter(getTestTaskFor('cpp/simple-library'))
+getTestTaskFor('swift/external-file-dependency').mustRunAfter(getTestTaskFor('swift/simple-library'))
+getTestTaskFor('cpp/external-file-dependency').mustRunAfter(getTestTaskFor('cpp/simple-library'))
