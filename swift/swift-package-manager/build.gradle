@@ -7,10 +7,7 @@ project(':app') {
 
     // Configure the source files of the executable
     executable {
-        source {
-            // File names are resolved relative to the project directory, need to use the root project
-            from rootProject.file('Sources/App')
-        }
+        source.from rootProject.file('Sources/App')
     }
 
     // Configure the dependencies of the executable
@@ -24,13 +21,16 @@ project(':greeter') {
 
     // Configure the source files of the library
     library {
-        source {
-            // File names are resolved relative to the project directory, need to use the root project
-            from rootProject.file('Sources/Greeter')
-        }
+        source.from rootProject.file('Sources/Greeter')
     }
 
+    // Configure the module name. Currently it defaults to the name of the project
     compileSwift {
         moduleName = 'Greeter'
     }
+}
+
+// Move the build directories for all projects into a single top-level directory
+allprojects { p ->
+    buildDir = rootProject.file("build/${p.name}")
 }
