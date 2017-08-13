@@ -63,6 +63,7 @@ This build shows how a Swift/C++ executable can be built with Gradle.
 
 BUILD SUCCESSFUL in 0s
 2 actionable tasks: 2 executed
+
 > ./build/install/app/app
 Hello, World!
 ```
@@ -110,9 +111,8 @@ This sample also includes a Swift Package Manager build file, so the same source
 > cd swift-package-manager
 > ./gradlew assemble
 
-
 BUILD SUCCESSFUL in 0s
 
-> ./app/build/install/app/app
+> ./build/app/install/app/app
 Hello, World!
 ```
