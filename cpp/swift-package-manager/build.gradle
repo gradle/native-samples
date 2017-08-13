@@ -1,0 +1,31 @@
+allprojects {
+    apply plugin: 'xcode'
+}
+
+project(':app') {
+    apply plugin: 'cpp-executable'
+
+    // Configure the source files of the executable
+    executable {
+        source.from rootProject.file('Sources/App')
+    }
+
+    dependencies {
+        implementation project(':greeter')
+    }
+}
+
+project(':greeter') {
+    apply plugin: 'cpp-library'
+
+    // Configure the source files of the library
+    library {
+        source.from rootProject.file('Sources/Greeter')
+        publicHeaders.from rootProject.file('Sources/Greeter/include')
+    }
+}
+
+// Move the build directories for all projects into a single top-level directory
+allprojects { p ->
+    buildDir = rootProject.file("build/${p.name}")
+}
