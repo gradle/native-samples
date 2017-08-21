@@ -23,11 +23,6 @@ project(':greeter') {
     library {
         source.from rootProject.file('Sources/Greeter')
     }
-
-    // Configure the module name. Currently it defaults to the name of the project
-    compileSwift {
-        moduleName = 'Greeter'
-    }
 }
 
 // Move the build directories for all projects into a single top-level directory

@@ -7,7 +7,3 @@ group = 'org.gradle.swift-samples'
 dependencies {
     api project(':greeting')
 }
-
-compileSwift {
-    moduleName = 'Hello'
-}
