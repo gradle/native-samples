@@ -3,17 +3,17 @@ plugins {
     id 'xcode'
 }
 
-def greeterLib = file('../simple-library/build/lib/libgreeter.dylib')
-def greeterImportPath = file('../simple-library/build/main/objs')
+def greeterLib = file('../simple-library/build/lib/main/debug/libgreeter.dylib')
+def greeterImportPath = file('../simple-library/build/obj/main/debug')
 
-compileSwift.doFirst {
+compileDebugSwift.doFirst {
     if (!greeterLib.exists() || !greeterImportPath.exists()) {
         throw new GradleException("Please build project at ${file('../simple-library')}.")
     }
 }
 
 dependencies {
-    nativeLink files(greeterLib)
-    nativeRuntime files(greeterLib)
-    swiftImportPath files(greeterImportPath)
+    nativeLinkDebug files(greeterLib)
+    nativeRuntimeDebug files(greeterLib)
+    swiftImportDebug files(greeterImportPath)
 }

@@ -22,6 +22,7 @@ All of the samples have Xcode support, added by applying the `xcode` plugin. To 
 
 This build just shows that Swift modules can be built with Gradle. There
 are no dependencies, just the module itself. To run it:
+
 ```
 > cd simple-module
 > ./gradlew assemble
@@ -29,28 +30,10 @@ are no dependencies, just the module itself. To run it:
 BUILD SUCCESSFUL in 0s
 2 actionable tasks: 2 executed
 
-> find build  # C++ project will differ a bit
+> ls build/lib/main/debug  # C++ project will differ a bit
 build
 build/lib
 build/lib/libhello.dylib
-build/main
-build/main/objs
-build/main/objs/2oepwq5hb4xzy326h8tk3lnu
-build/main/objs/2oepwq5hb4xzy326h8tk3lnu/hello.o
-build/main/objs/2oepwq5hb4xzy326h8tk3lnu/hello~partial.swiftdoc
-build/main/objs/2oepwq5hb4xzy326h8tk3lnu/hello~partial.swiftmodule
-build/main/objs/7nvd7tof895oopgq6sztmh5rf
-build/main/objs/7nvd7tof895oopgq6sztmh5rf/sum.o
-build/main/objs/7nvd7tof895oopgq6sztmh5rf/sum~partial.swiftdoc
-build/main/objs/7nvd7tof895oopgq6sztmh5rf/sum~partial.swiftmodule
-build/main/objs/hello.swiftdoc
-build/main/objs/hello.swiftmodule
-build/main/objs/output-file-map.json
-build/tmp
-build/tmp/compileSwift
-build/tmp/compileSwift/output.txt
-build/tmp/linkMain
-build/tmp/linkMain/output.txt
 ```
 
 ## Executable (executable)
