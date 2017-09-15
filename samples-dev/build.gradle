@@ -10,8 +10,11 @@ String taskName(String verb, File sampleDir) {
 def createTestTask = { TaskContainer tasks, File sampleDir ->
     tasks.create(taskName('test', sampleDir), Exec) {
         commandLine './gradlew', 'clean'
-        commandLine './gradlew', 'assemble'
-        commandLine './gradlew', 'linkRelease'
+        args 'assemble'
+        args 'linkRelease'
+        if (usesMavenPublish(sampleDir)) {
+            args 'publish'
+        }
         if (usesXcode(sampleDir)) {
             args 'cleanXcode', 'xcode'
         }
@@ -33,17 +36,29 @@ boolean usesXcode(File sampleDir) {
     return new File(sampleDir, "build.gradle").text.contains('xcode')
 }
 
+boolean usesMavenPublish(File sampleDir) {
+    return new File(sampleDir, "build.gradle").text.contains('maven-publish')
+}
+
 Task createLifecycleTask(TaskContainer tasks, String taskName, def createSampleLifecycleTask) {
     Task lifecycleTask = tasks.create(taskName)
 
-    file('../swift').eachFile(FileType.DIRECTORIES) { lifecycleTask.dependsOn createSampleLifecycleTask(tasks, it) }
-    file('../cpp').eachFile(FileType.DIRECTORIES)   { lifecycleTask.dependsOn createSampleLifecycleTask(tasks, it) }
+    [file('../swift'), file('../cpp')]*.eachFile(FileType.DIRECTORIES) {
+        if (it.name == 'repo') {
+            return
+        }
+        lifecycleTask.dependsOn createSampleLifecycleTask(tasks, it)
+    }
 
     return lifecycleTask
 }
 
 createLifecycleTask(tasks, 'test', createTestTask)
 createLifecycleTask(tasks, 'clean', createCleanTask)
+
+def cleanRepo = tasks.create('cleanRepo', Delete)
+cleanRepo.delete(file('../cpp/repo'))
+clean.dependsOn cleanRepo
 
 Task getTestTaskFor(String samplePath) {
     tasks.getByName(taskName('test', rootProject.file(samplePath)))

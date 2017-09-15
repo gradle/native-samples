@@ -2,8 +2,6 @@ plugins {
     id 'cpp-library'
 }
 
-group = 'org.gradle.cpp-samples'
-
 dependencies {
     implementation project(':greeting')
 }

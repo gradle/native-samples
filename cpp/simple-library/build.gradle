@@ -1,6 +1,16 @@
 plugins {
     id 'cpp-library'
     id 'xcode'
+    id 'maven-publish'
 }
 
 group = 'org.gradle.cpp-samples'
+version = '1.2'
+
+publishing {
+    repositories {
+        maven {
+            url = '../repo'
+        }
+    }
+}

@@ -2,6 +2,9 @@
 build
 .gradle
 
+# Local repository
+cpp/repo
+
 # Swift Package Manager Files
 .build
 Packages
