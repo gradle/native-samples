@@ -6,7 +6,7 @@ native libraries written in other native languages like C, C++, and Objective-C.
 
 Each sample build is listed below with a bit of information related to the
 features of Gradle that are demonstrated in that build. Each samples are functionally
-the same for both Swift and C++ language.
+the same for both Swift and C++ languages.
 
 ### Xcode support
 
@@ -38,7 +38,7 @@ BUILD SUCCESSFUL in 0s
 2 actionable tasks: 2 executed
 
 > find build/lib/main/debug  # C++ project will differ a bit
-build/lib/main/debug/libhello.dylib
+build/lib/main/debug/libmath.dylib
 ```
 
 ## Executable (executable)
@@ -87,7 +87,7 @@ BUILD SUCCESSFUL in 0s
 
 > ./build/install/main/debug/app
 Hello, World!
-Hello, World!
+The sum of 40 and 2 is 42!
 ```
 
 ## Prebuilt binaries (prebuilt-binaries)

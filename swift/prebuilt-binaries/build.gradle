@@ -5,8 +5,8 @@ plugins {
 
 def greeterDebugImportPath = file('../simple-library/build/obj/main/debug')
 def greeterReleaseImportPath = file('../simple-library/build/obj/main/release')
-def greeterDebugLib = file('../simple-library/build/lib/main/debug/libgreeter.dylib')
-def greeterReleaseLib = file('../simple-library/build/lib/main/release/libgreeter.dylib')
+def greeterDebugLib = file('../simple-library/build/lib/main/debug/libmath.dylib')
+def greeterReleaseLib = file('../simple-library/build/lib/main/release/libmath.dylib')
 
 compileDebugSwift.doFirst {
     if (!greeterDebugLib.exists() || !greeterReleaseLib.exists() || !greeterDebugImportPath.exists() || !greeterReleaseImportPath.exists()) {

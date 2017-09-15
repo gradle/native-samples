@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'org.gradle.cpp-samples'
-version = '1.2'
+version = '1.5'
 
 publishing {
     repositories {

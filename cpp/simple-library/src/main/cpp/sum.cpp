@@ -1,5 +1,5 @@
-#include "greeter.h"
+#include "mathlib.h"
 
-int sum(int a, int b) {
+int Math::sum(int a, int b) {
     return a + b;
 }
