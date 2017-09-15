@@ -9,7 +9,9 @@ String taskName(String verb, File sampleDir) {
 
 def createTestTask = { TaskContainer tasks, File sampleDir ->
     tasks.create(taskName('test', sampleDir), Exec) {
-        commandLine './gradlew', 'clean', 'assemble'
+        commandLine './gradlew', 'clean'
+        commandLine './gradlew', 'assemble'
+        commandLine './gradlew', 'linkRelease'
         if (usesXcode(sampleDir)) {
             args 'cleanXcode', 'xcode'
         }
@@ -47,5 +49,5 @@ Task getTestTaskFor(String samplePath) {
     tasks.getByName(taskName('test', rootProject.file(samplePath)))
 }
 
-getTestTaskFor('swift/external-file-dependency').mustRunAfter(getTestTaskFor('swift/simple-library'))
-getTestTaskFor('cpp/external-file-dependency').mustRunAfter(getTestTaskFor('cpp/simple-library'))
+getTestTaskFor('swift/prebuilt-binaries').mustRunAfter(getTestTaskFor('swift/simple-library'))
+getTestTaskFor('cpp/prebuilt-binaries').mustRunAfter(getTestTaskFor('cpp/simple-library'))

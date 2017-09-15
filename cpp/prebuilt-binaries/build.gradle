@@ -3,17 +3,22 @@ plugins {
     id 'xcode'
 }
 
-def greeterLib = file('../simple-library/build/lib/main/debug/libgreeter.dylib')
 def greeterIncludePath = file('../simple-library/src/main/public')
 
+def greeterDebugLib = file('../simple-library/build/lib/main/debug/libgreeter.dylib')
+def greeterReleaseLib = file('../simple-library/build/lib/main/release/libgreeter.dylib')
+
 compileDebugCpp.doFirst {
-    if (!greeterLib.exists() || !greeterIncludePath.exists()) {
+    if (!greeterDebugLib.exists() || !greeterReleaseLib.exists() || !greeterIncludePath.exists()) {
         throw new GradleException("Please build project at ${file('../simple-library')}.")
     }
 }
 
 dependencies {
-    nativeLinkDebug files(greeterLib)
-    nativeRuntimeDebug files(greeterLib)
     cppCompileDebug files(greeterIncludePath)
+    cppCompileRelease files(greeterIncludePath)
+    nativeLinkDebug files(greeterDebugLib)
+    nativeLinkRelease files(greeterReleaseLib)
+    nativeRuntimeDebug files(greeterDebugLib)
+    nativeRuntimeRelease files(greeterReleaseLib)
 }
