@@ -92,9 +92,9 @@ The sum of 40 and 2 is 42!
 
 ## Binary dependencies (binary-dependencies)
 
-This build shows how to use C++ libraries from a Maven repository. This is currently only supported for C++ and not Swift.  
+This build shows how to publish C++ libraries to a Maven repository and use them from another build. This is currently only supported for C++.
 
-To use the sample, first create the repository using the `simple-library` build:
+To use the sample, first publish a library to the repository using the `simple-library` build:
 
 ```
 > cd simple-library
@@ -105,7 +105,7 @@ BUILD SUCCESSFUL in 0s
 
 You can find the repository in the `cpp/repo` directory.
 
-Next, run the sample that uses the binaries from this repository.
+Next, run the sample that uses the library from this repository.
 
 ```
 > cd ../binary-dependencies
