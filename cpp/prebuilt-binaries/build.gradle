@@ -9,8 +9,11 @@ def greeterDebugLib = file('../simple-library/build/lib/main/debug/libmath.dylib
 def greeterReleaseLib = file('../simple-library/build/lib/main/release/libmath.dylib')
 
 compileDebugCpp.doFirst {
-    if (!greeterDebugLib.exists() || !greeterReleaseLib.exists() || !greeterIncludePath.exists()) {
-        throw new GradleException("Please build project at ${file('../simple-library')}.")
+    if (!greeterDebugLib.exists() || !greeterReleaseLib.exists()) {
+        throw new GradleException("Please build project at ${file('../simple-library')} with: './gradlew linkRelease linkDebug'")
+    }
+    if (!greeterIncludePath.exists()) {
+        throw new GradleException("Please ensure in include path: ${greeterIncludePath} exists")
     }
 }
 
