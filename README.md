@@ -90,6 +90,32 @@ Hello, World!
 Hello, World!
 ```
 
+## Prebuilt binaries (prebuilt-binaries)
+
+This build show how to use pre-built binaries that are already available on the local machine. Currently, Gradle does not offer a convenient way to do this but it is possible to configure Gradle to use these binaries.
+
+To use the sample, first create the binaries using the `simple-library` build:
+
+```
+> cd simple-library
+> ./gradlew assemble
+
+BUILD SUCCESSFUL in 0s
+
+```
+
+Next, run the sample that uses these binaries:
+
+```
+> cd ../prebuilt-binaries
+> ./gradlew assemble
+
+BUILD SUCCESSFUL in 0s
+
+> ./build/install/main/debug/App
+The sum of 40 and 2 is 42!
+```
+
 ## Swift package manager conventions (swift-package-manager)
 
 This build shows how to configure Gradle to use the typical layout for a Swift Package Manager package.
