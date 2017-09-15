@@ -1,0 +1,14 @@
+plugins {
+    id 'cpp-executable'
+    id 'xcode'
+}
+
+repositories {
+    maven {
+        url '../repo'
+    }
+}
+
+dependencies {
+    implementation 'org.gradle.cpp-samples:math:1.5'
+}

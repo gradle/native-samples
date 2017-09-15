@@ -66,3 +66,4 @@ Task getTestTaskFor(String samplePath) {
 
 getTestTaskFor('swift/prebuilt-binaries').mustRunAfter(getTestTaskFor('swift/simple-library'))
 getTestTaskFor('cpp/prebuilt-binaries').mustRunAfter(getTestTaskFor('cpp/simple-library'))
+getTestTaskFor('cpp/binary-dependencies').mustRunAfter(getTestTaskFor('cpp/simple-library'))

@@ -90,9 +90,36 @@ Hello, World!
 The sum of 40 and 2 is 42!
 ```
 
+## Binary dependencies (binary-dependencies)
+
+This build shows how to use C++ libraries from a Maven repository. This is currently only supported for C++ and not Swift.  
+
+To use the sample, first create the repository using the `simple-library` build:
+
+```
+> cd simple-library
+> ./gradlew publish
+
+BUILD SUCCESSFUL in 0s
+```
+
+You can find the repository in the `cpp/repo` directory.
+
+Next, run the sample that uses the binaries from this repository.
+
+```
+> cd ../binary-dependencies
+> ./gradlew assemble
+
+BUILD SUCCESSFUL in 0s
+
+> ./build/install/main/debug/app
+The sum of 40 and 2 is 42!
+```
+
 ## Prebuilt binaries (prebuilt-binaries)
 
-This build show how to use pre-built binaries that are already available on the local machine. Currently, Gradle does not offer a convenient way to do this but it is possible to configure Gradle to use these binaries.
+This build shows how to use pre-built binaries that are already available on the local machine. Currently, Gradle does not offer a convenient way to do this but it is possible to configure Gradle to use these binaries.
 
 To use the sample, first create the binaries using the `simple-library` build:
 
@@ -101,7 +128,6 @@ To use the sample, first create the binaries using the `simple-library` build:
 > ./gradlew assemble
 
 BUILD SUCCESSFUL in 0s
-
 ```
 
 Next, run the sample that uses these binaries:
@@ -112,7 +138,7 @@ Next, run the sample that uses these binaries:
 
 BUILD SUCCESSFUL in 0s
 
-> ./build/install/main/debug/App
+> ./build/install/main/debug/app
 The sum of 40 and 2 is 42!
 ```
 
