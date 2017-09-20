@@ -25,6 +25,18 @@ The Swift/C++ plugins add a 'debug' and 'release' variant for each library or ap
 At this stage, there are no convenience tasks to build the release variant, or all variants, of a library or application.
 To build the release variant of a library, use the `linkRelease` task. To build the release variant of an application, use the `installRelease` task.
 
+### Publishing binaries to a Maven repository
+
+Some of the C++ samples are configured to publish binaries to a local Maven repository. For these samples you can run:
+
+```
+> cd <sample-dir>
+> ./gradle publish
+> tree ../repo/
+```
+
+This will build and publish the debug and release binaries for each library and executables. The binaries are published to a repository in the `cpp/repo` directory.
+
 ## Simple Library (simple-library)
 
 This build just shows that Swift or C++ libraries can be built with Gradle. There
