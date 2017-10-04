@@ -18,6 +18,16 @@ All of the samples have Xcode support, added by applying the `xcode` plugin. To 
 > open <root-project>.xcworkspace
 ```
 
+### XCTest support
+
+Both Swift sample `simple-library` and `executable` demonstrate XCTest support in Gradle. As a user, you can either
+interact with the test code as you would usually do through Xcode or you can run the test directly from the command line:
+
+```
+> cd <sample-dir>
+> ./gradlew test
+```
+
 ### Debug and release variants
 
 The Swift/C++ plugins add a 'debug' and 'release' variant for each library or application. By default, the `assemble` will task will build the debug variant only. 
