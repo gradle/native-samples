@@ -181,9 +181,9 @@ BUILD SUCCESSFUL in 0s
 Hello, World!
 ```
 
-## Source Depndencies (Swift)
+## Source Dependencies (Swift)
 
-This build demonstrates using External Source Dependencies to build a Swift executable based on two libraries.
+This build demonstrates using External Source Dependencies to build a Swift executable that requires two external libraries.
 
 ```
 > cd swift/source-dependencies
