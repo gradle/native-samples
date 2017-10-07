@@ -181,12 +181,12 @@ BUILD SUCCESSFUL in 0s
 Hello, World!
 ```
 
-## Source Depndencies (swfit)
+## Source Depndencies (Swift)
 
-This build demonstrates using External Source Dependencies to build a swift executable based on two libraries.
+This build demonstrates using External Source Dependencies to build a Swift executable based on two libraries.
 
 ```
-> cd swfit/source-dependencies
+> cd swift/source-dependencies
 > ./gradlew assemble
 
 BUILD SUCCESSFUL in 3s
