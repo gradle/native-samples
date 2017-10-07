@@ -1,0 +1,8 @@
+plugins {
+    id 'swift-executable'
+    id 'xcode'
+}
+
+dependencies {
+    implementation 'swift:Hello:latest.integration'
+}

@@ -1,0 +1,18 @@
+rootProject.name = 'app'
+
+import org.gradle.vcs.internal.DirectoryRepositorySpec
+
+sourceControl {
+    vcsMappings {
+        withModule('swift:Hello') {
+            from vcs(DirectoryRepositorySpec) {
+                sourceDir = file('repos/hello')
+            }
+        }
+        withModule('swift:Greeting') {
+            from vcs(DirectoryRepositorySpec) {
+                sourceDir = file('repos/greeting')
+            }
+        }
+    }
+}

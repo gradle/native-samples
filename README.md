@@ -30,7 +30,7 @@ interact with the test code as you would usually do through Xcode or you can run
 
 ### Debug and release variants
 
-The Swift/C++ plugins add a 'debug' and 'release' variant for each library or application. By default, the `assemble` will task will build the debug variant only. 
+The Swift/C++ plugins add a 'debug' and 'release' variant for each library or application. By default, the `assemble` will task will build the debug variant only.
 
 At this stage, there are no convenience tasks to build the release variant, or all variants, of a library or application.
 To build the release variant of a library, use the `linkRelease` task. To build the release variant of an application, use the `installRelease` task.
@@ -167,7 +167,7 @@ The sum of 40 and 2 is 42!
 ## Swift package manager conventions (swift-package-manager)
 
 This build shows how to configure Gradle to use the typical layout for a Swift Package Manager package.
-It contains an executable and a single library. The source files for the executable and libraries are all under a single `Sources` directory. 
+It contains an executable and a single library. The source files for the executable and libraries are all under a single `Sources` directory.
 
 This sample also includes a Swift Package Manager build file, so the same source can be built using Swift Package Manager
 
@@ -178,5 +178,19 @@ This sample also includes a Swift Package Manager build file, so the same source
 BUILD SUCCESSFUL in 0s
 
 > ./build/app/install/main/debug/app
+Hello, World!
+```
+
+## Source Depndencies (swfit)
+
+This build demonstrates using External Source Dependencies to build a swift executable based on two libraries.
+
+```
+> cd swfit/source-dependencies
+> ./gradlew assemble
+
+BUILD SUCCESSFUL in 3s
+
+> ./build/exe/main/debug/App
 Hello, World!
 ```
