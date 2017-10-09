@@ -181,10 +181,11 @@ BUILD SUCCESSFUL in 0s
 Hello, World!
 ```
 
-## Source Dependencies (Swift)
+## Source Dependencies (Swift and C++)
 
-This build demonstrates using External Source Dependencies to build a Swift executable that requires two external libraries.
+These builds demonstrate using External Source Dependencies to build Swift and C++ executables that require two external libraries.
 
+### Swift
 ```
 > cd swift/source-dependencies
 > ./gradlew assemble
@@ -192,5 +193,16 @@ This build demonstrates using External Source Dependencies to build a Swift exec
 BUILD SUCCESSFUL in 3s
 
 > ./build/exe/main/debug/App
+Hello, World!
+```
+
+### C++
+```
+> cd cpp/source-dependencies
+> ./gradlew assemble
+
+BUILD SUCCESSFUL in 3s
+
+> ./build/exe/main/debug/app
 Hello, World!
 ```

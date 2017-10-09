@@ -1,0 +1,25 @@
+rootProject.name = 'app'
+
+import org.gradle.vcs.internal.DirectoryRepositorySpec
+
+// This example uses a simple version control system that just copies the
+// sourceDir.
+
+// A real Git-backed version control system exists if you use
+// GitVersionControlSpec instead
+// see https://docs.gradle.org/nightly/javadoc/org/gradle/vcs/git/GitVersionControlSpec.html
+
+sourceControl {
+    vcsMappings {
+        withModule('org.gradle.cpp-samples:hello') {
+            from vcs(DirectoryRepositorySpec) {
+                sourceDir = file('repos/hello')
+            }
+        }
+        withModule('org.gradle.cpp-samples:greeting') {
+            from vcs(DirectoryRepositorySpec) {
+                sourceDir = file('repos/greeting')
+            }
+        }
+    }
+}

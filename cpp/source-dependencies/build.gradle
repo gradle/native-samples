@@ -1,0 +1,9 @@
+plugins {
+    id 'cpp-executable'
+}
+
+group = 'org.gradle.cpp-samples'
+
+dependencies {
+    implementation 'org.gradle.cpp-samples:hello:latest.integration'
+}
