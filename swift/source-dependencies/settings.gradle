@@ -3,7 +3,7 @@ rootProject.name = 'app'
 import org.gradle.vcs.internal.DirectoryRepositorySpec
 
 // This example uses a simple version control system that just copies the
-// sourceDir.  
+// sourceDir.
 
 // A real Git-backed version control system exists if you use
 // GitVersionControlSpec instead
@@ -11,12 +11,12 @@ import org.gradle.vcs.internal.DirectoryRepositorySpec
 
 sourceControl {
     vcsMappings {
-        withModule('swift:Hello') {
+        withModule('org.gradle.swift-samples:Hello') {
             from vcs(DirectoryRepositorySpec) {
                 sourceDir = file('repos/hello')
             }
         }
-        withModule('swift:Greeting') {
+        withModule('org.gradle.swift-samples:Greeting') {
             from vcs(DirectoryRepositorySpec) {
                 sourceDir = file('repos/greeting')
             }
