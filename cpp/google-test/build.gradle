@@ -1,0 +1,17 @@
+plugins {
+    id 'cpp-library'
+    id 'cpp-test'
+}
+
+group = 'org.gradle.cpp-samples'
+version = '1.5'
+
+dependencies {
+    testImplementation 'org.gradle:googletest:latest.integration'
+}
+
+repositories {
+    maven {
+        url 'https://repo.gradle.org/gradle/repo'
+    }
+}
