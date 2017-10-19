@@ -49,7 +49,7 @@ class SampleIntegrationTest extends Specification {
                 sample('cpp/simple-library'),
                 sample('cpp/swift-package-manager'),
                 sample('cpp/transitive-dependencies'),
-                sample('cpp/source-dependencies', true),
+                sample('cpp/source-dependencies'),
                 sample('cpp/prebuilt-binaries'),
                 sample('cpp/binary-dependencies'),
 
@@ -58,14 +58,14 @@ class SampleIntegrationTest extends Specification {
                 sample('swift/simple-library'),
                 sample('swift/swift-package-manager'),
                 sample('swift/transitive-dependencies'),
-                sample('swift/source-dependencies', true),
+                sample('swift/source-dependencies'),
                 sample('swift/prebuilt-binaries'),
         ]
 
     }
 
-    private NativeSample sample(String name, boolean ignored = false) {
-        return new NativeSample(name: name, rootSampleDir: getRootSampleDir(), ignored: ignored)
+    private NativeSample sample(String name) {
+        return new NativeSample(name: name, rootSampleDir: getRootSampleDir())
     }
 
     private File getRootSampleDir() {

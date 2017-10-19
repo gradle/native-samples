@@ -1,3 +1,4 @@
+// ignored
 rootProject.name = 'app'
 
 import org.gradle.vcs.internal.DirectoryRepositorySpec

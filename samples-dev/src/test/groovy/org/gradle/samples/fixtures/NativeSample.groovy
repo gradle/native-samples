@@ -3,7 +3,6 @@ package org.gradle.samples.fixtures
 class NativeSample {
     String name
     File rootSampleDir
-    boolean ignored
     private List<String> tasks
 
     String getLanguage() {
@@ -29,13 +28,17 @@ class NativeSample {
         return tasks
     }
 
+    boolean isIgnored() {
+        return null != new File(sampleDir, 'settings.gradle').readLines().find { it.startsWith('// ignored') }
+    }
+
     List<NativeSample> getDependencies() {
         new File(sampleDir, 'settings.gradle').readLines().findAll { it.startsWith('// dependsOn') }.collect {
             def tokens = it.split(' ')
             def name = tokens[2]
             def tasks = tokens[3].split(',')
 
-            return new NativeSample(name: name, tasks: tasks, rootSampleDir: rootSampleDir, ignored: ignored)
+            return new NativeSample(name: name, tasks: tasks, rootSampleDir: rootSampleDir)
         }
     }
 
