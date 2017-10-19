@@ -12,6 +12,7 @@ def createTestTask = { TaskContainer tasks, File sampleDir ->
         commandLine './gradlew', 'clean'
         args 'assemble'
         args 'linkRelease'
+        environment PATH: "${System.env['PATH']}:/opt/swift/latest/usr/bin"
         if (usesMavenPublish(sampleDir)) {
             args 'publish'
         }
