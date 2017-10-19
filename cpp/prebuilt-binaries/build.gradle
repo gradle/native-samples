@@ -5,8 +5,9 @@ plugins {
 
 def greeterIncludePath = file('../simple-library/src/main/public')
 
-def greeterDebugLib = file('../simple-library/build/lib/main/debug/libmath.dylib')
-def greeterReleaseLib = file('../simple-library/build/lib/main/release/libmath.dylib')
+def extension = System.properties['os.name'].contains('Mac') ? 'dylib' : 'so'
+def greeterDebugLib = file("../simple-library/build/lib/main/debug/libmath.$extension")
+def greeterReleaseLib = file("../simple-library/build/lib/main/release/libmath.$extension")
 
 compileDebugCpp.doFirst {
     if (!greeterDebugLib.exists() || !greeterReleaseLib.exists()) {
