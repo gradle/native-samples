@@ -14,6 +14,9 @@ Packages
 # AppCode/IDEA Files
 .idea
 *.iml
+*.ipr
+*.iws
+out/
 
 # Mac OS Junk
 .DS_Store

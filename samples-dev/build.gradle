@@ -1,3 +1,20 @@
+plugins {
+    id 'groovy'
+    id 'idea'
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    testImplementation gradleTestKit()
+    testImplementation localGroovy()
+    testImplementation('org.spockframework:spock-core:1.1-groovy-2.4') {
+        exclude group: 'org.codehaus.groovy'
+    }
+}
+
 import groovy.io.FileType
 
 String taskName(String verb, File sampleDir) {
@@ -54,8 +71,8 @@ Task createLifecycleTask(TaskContainer tasks, String taskName, def createSampleL
     return lifecycleTask
 }
 
-createLifecycleTask(tasks, 'test', createTestTask)
-createLifecycleTask(tasks, 'clean', createCleanTask)
+createLifecycleTask(tasks, 'testSamples', createTestTask)
+createLifecycleTask(tasks, 'cleanSamples', createCleanTask)
 
 def cleanRepo = tasks.create('cleanRepo', Delete)
 cleanRepo.delete(file('../cpp/repo'))
