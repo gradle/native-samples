@@ -7,8 +7,8 @@ def greeterDebugImportPath = file('../simple-library/build/obj/main/debug')
 def greeterReleaseImportPath = file('../simple-library/build/obj/main/release')
 
 def extension = System.properties['os.name'].contains('Mac') ? 'dylib' : 'so'
-def greeterDebugLib = file("../simple-library/build/lib/main/debug/libmath.$extension")
-def greeterReleaseLib = file("../simple-library/build/lib/main/release/libmath.$extension")
+def greeterDebugLib = file("../simple-library/build/lib/main/debug/libMath.$extension")
+def greeterReleaseLib = file("../simple-library/build/lib/main/release/libMath.$extension")
 
 compileDebugSwift.doFirst {
     if (!greeterDebugLib.exists() || !greeterReleaseLib.exists() || !greeterDebugImportPath.exists() || !greeterReleaseImportPath.exists()) {
