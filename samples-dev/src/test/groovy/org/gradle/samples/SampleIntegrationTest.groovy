@@ -1,5 +1,6 @@
 package org.gradle.samples
 
+import groovy.io.FileType
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.samples.fixtures.NativeSample
 import org.gradle.testkit.runner.GradleRunner
@@ -12,7 +13,6 @@ import static org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE
 
 class SampleIntegrationTest extends Specification {
     // Goals
-    // * Autodiscovery
     // * Isolation for parallelization
     // * Better assertion (light weight)
     def setup() {
@@ -43,25 +43,22 @@ class SampleIntegrationTest extends Specification {
         linkReleaseTasks*.outcome.every { it == SUCCESS || it == UP_TO_DATE }
 
         where:
-        target << [
-                sample('cpp/composite-build'),
-                sample('cpp/executable'),
-                sample('cpp/simple-library'),
-                sample('cpp/swift-package-manager'),
-                sample('cpp/transitive-dependencies'),
-                sample('cpp/source-dependencies'),
-                sample('cpp/prebuilt-binaries'),
-                sample('cpp/binary-dependencies'),
+        target << getSamples()
 
-                sample('swift/composite-build'),
-                sample('swift/executable'),
-                sample('swift/simple-library'),
-                sample('swift/swift-package-manager'),
-                sample('swift/transitive-dependencies'),
-                sample('swift/source-dependencies'),
-                sample('swift/prebuilt-binaries'),
-        ]
+    }
 
+    List<NativeSample> getSamples() {
+        def result = []
+        ['swift', 'cpp'].collect { new File(rootSampleDir, it) }*.eachFile(FileType.DIRECTORIES) {
+            if (it.name == 'repo') {
+                return
+            }
+
+            def languageName = it.parentFile.name
+            def sampleName = it.name
+            result << sample("$languageName/$sampleName")
+        }
+        return result
     }
 
     private NativeSample sample(String name) {
