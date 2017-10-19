@@ -1,4 +1,7 @@
+package org.gradle.samples
+
 import org.gradle.internal.os.OperatingSystem
+import org.gradle.samples.fixtures.NativeSample
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Assume
 import spock.lang.Specification
@@ -9,19 +12,19 @@ import static org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE
 
 class SampleIntegrationTest extends Specification {
     @Unroll
-    def "can use sample '#sampleName'"() {
+    def "can use sample '#sample.name'"() {
         Assume.assumeNotNull(findInPath('swiftc'))
 
         when:
         def tasks = ['clean', 'assemble', 'linkRelease']
-        if (usesMavenPublish(sampleDir)) {
+        if (sample.usesMavenPublish) {
             tasks << 'publish'
         }
-        if (usesXcode(sampleDir)) {
+        if (sample.usesXcode) {
             tasks << 'cleanXcode' << 'xcode'
         }
         def result = GradleRunner.create()
-                .withProjectDir(sampleDir)
+                .withProjectDir(sample.sampleDir)
                 .withArguments(tasks)
                 .build()
 
@@ -30,32 +33,31 @@ class SampleIntegrationTest extends Specification {
         linkReleaseTasks*.outcome.every { it == SUCCESS || it == UP_TO_DATE }
 
         where:
-        [sampleName, sampleDir] << getSamples()
+        sample << getSamples()
 
     }
 
-    private List<File> getSamples() {
+    private List<NativeSample> getSamples() {
         File sampleDir = getRootSampleDir()
         def result = [
-//                'cpp/prebuild-binaries',
-//                'cpp/binary-dependencies',
+//                'cpp/prebuild-binaries',  // mustRunAfter(getTestTaskFor('cpp/simple-library'))
+//                'cpp/binary-dependencies',  // mustRunAfter(getTestTaskFor('cpp/simple-library'))
                 'cpp/composite-build',
                 'cpp/executable',
                 'cpp/simple-library',
                 'cpp/swift-package-manager',
                 'cpp/transitive-dependencies',
-//                'cpp/google-test',
-//                'cpp/source-dependencies',
+//                'cpp/google-test',  // enabled = false
+//                'cpp/source-dependencies',  // enabled = false
 
-//                'swift/prebuilt-binaries',
-//                'swift/binary-dependencies',
+//                'swift/prebuilt-binaries',  // mustRunAfter(getTestTaskFor('cpp/simple-library'))
                 'swift/composite-build',
                 'swift/executable',
                 'swift/simple-library',
                 'swift/swift-package-manager',
                 'swift/transitive-dependencies',
-//                'swift/source-dependencies',
-        ].collect { [it, new File(sampleDir, it)] }
+//                'swift/source-dependencies',  // enabled = false
+        ].collect { new NativeSample(name: it, sampleDir: new File(sampleDir, it)) }
         return result
     }
 
@@ -65,14 +67,6 @@ class SampleIntegrationTest extends Specification {
             result = result.parentFile
         }
         return result
-    }
-
-    private static boolean usesXcode(File sampleDir) {
-        return new File(sampleDir, "build.gradle").text.contains('xcode')
-    }
-
-    private static boolean usesMavenPublish(File sampleDir) {
-        return new File(sampleDir, "build.gradle").text.contains('maven-publish')
     }
 
     private static File findInPath(String name) {

@@ -24,22 +24,6 @@ String taskName(String verb, File sampleDir) {
     "${verb}${sampleName.capitalize()}${languageName.capitalize()}"
 }
 
-def createTestTask = { TaskContainer tasks, File sampleDir ->
-    tasks.create(taskName('test', sampleDir), Exec) {
-        commandLine './gradlew', 'clean'
-        args 'assemble'
-        args 'linkRelease'
-        environment PATH: "${System.env['PATH']}:/opt/swift/latest/usr/bin"
-        if (usesMavenPublish(sampleDir)) {
-            args 'publish'
-        }
-        if (usesXcode(sampleDir)) {
-            args 'cleanXcode', 'xcode'
-        }
-        workingDir sampleDir
-    }
-}
-
 def createCleanTask = { TaskContainer tasks, File sampleDir ->
     tasks.create(taskName('clean', sampleDir), Exec) {
         commandLine './gradlew', 'clean'
@@ -52,10 +36,6 @@ def createCleanTask = { TaskContainer tasks, File sampleDir ->
 
 boolean usesXcode(File sampleDir) {
     return new File(sampleDir, "build.gradle").text.contains('xcode')
-}
-
-boolean usesMavenPublish(File sampleDir) {
-    return new File(sampleDir, "build.gradle").text.contains('maven-publish')
 }
 
 Task createLifecycleTask(TaskContainer tasks, String taskName, def createSampleLifecycleTask) {
@@ -71,20 +51,10 @@ Task createLifecycleTask(TaskContainer tasks, String taskName, def createSampleL
     return lifecycleTask
 }
 
-createLifecycleTask(tasks, 'testSamples', createTestTask)
 createLifecycleTask(tasks, 'cleanSamples', createCleanTask)
 
 def cleanRepo = tasks.create('cleanRepo', Delete)
 cleanRepo.delete(file('../cpp/repo'))
-clean.dependsOn cleanRepo
+cleanSamples.dependsOn cleanRepo
 
-Task getTestTaskFor(String samplePath) {
-    tasks.getByName(taskName('test', rootProject.file(samplePath)))
-}
-
-getTestTaskFor('swift/prebuilt-binaries').mustRunAfter(getTestTaskFor('swift/simple-library'))
-getTestTaskFor('cpp/prebuilt-binaries').mustRunAfter(getTestTaskFor('cpp/simple-library'))
-getTestTaskFor('cpp/binary-dependencies').mustRunAfter(getTestTaskFor('cpp/simple-library'))
-getTestTaskFor('cpp/google-test').enabled = false
-getTestTaskFor('swift/source-dependencies').enabled = false
-getTestTaskFor('cpp/source-dependencies').enabled = false
+clean.dependsOn cleanSamples
