@@ -1,1 +1,2 @@
+// dependsOn swift/simple-library linkRelease,linkDebug
 rootProject.name = 'app'

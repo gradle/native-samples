@@ -11,6 +11,10 @@ import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import static org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE
 
 class SampleIntegrationTest extends Specification {
+    // Goals
+    // * Autodiscovery
+    // * Isolation for parallelization
+    // * Better assertion (light weight)
     def setup() {
         Assume.assumeNotNull(findInPath('swiftc'))
     }
@@ -18,6 +22,14 @@ class SampleIntegrationTest extends Specification {
     @Unroll
     def "can run '#target.name'"() {
         Assume.assumeFalse("The sample has been ignored", target.ignored)
+        given:
+        target.dependencies.every {
+            def result = GradleRunner.create()
+                    .withProjectDir(it.sampleDir)
+                    .withArguments(it.tasks)
+                    .build()
+            println result.output
+        }
 
         when:
         def result = GradleRunner.create()
@@ -26,56 +38,34 @@ class SampleIntegrationTest extends Specification {
                 .build()
 
         then:
+        println result.output
         def linkReleaseTasks = result.tasks.findAll { it.path.endsWith('linkRelease') }
         linkReleaseTasks*.outcome.every { it == SUCCESS || it == UP_TO_DATE }
 
         where:
         target << [
-            sample('cpp/composite-build'),
-            sample('cpp/executable'),
-            sample('cpp/simple-library'),
-            sample('cpp/swift-package-manager'),
-            sample('cpp/transitive-dependencies'),
-            sample('cpp/source-dependencies', true),
+                sample('cpp/composite-build'),
+                sample('cpp/executable'),
+                sample('cpp/simple-library'),
+                sample('cpp/swift-package-manager'),
+                sample('cpp/transitive-dependencies'),
+                sample('cpp/source-dependencies', true),
+                sample('cpp/prebuilt-binaries'),
+                sample('cpp/binary-dependencies'),
 
-            sample('swift/composite-build'),
-            sample('swift/executable'),
-            sample('swift/simple-library'),
-            sample('swift/swift-package-manager'),
-            sample('swift/transitive-dependencies'),
-            sample('swift/source-dependencies', true),
+                sample('swift/composite-build'),
+                sample('swift/executable'),
+                sample('swift/simple-library'),
+                sample('swift/swift-package-manager'),
+                sample('swift/transitive-dependencies'),
+                sample('swift/source-dependencies', true),
+                sample('swift/prebuilt-binaries'),
         ]
 
     }
 
-    @Unroll
-    def "can run '#target.name' that depends on 'simple-library'"() {
-        Assume.assumeFalse("The sample has been ignored", target.ignored)
-
-        given:
-        def simpleLibrary = sample("${target.language}/simple-library")
-        GradleRunner.create()
-                .withProjectDir(simpleLibrary.sampleDir)
-                .withArguments(simpleLibrary.tasks)
-                .build()
-
-        when:
-        def result = GradleRunner.create()
-                .withProjectDir(target.sampleDir)
-                .withArguments(target.tasks)
-                .build()
-
-        then:
-        def linkReleaseTasks = result.tasks.findAll { it.path.endsWith('linkRelease') }
-        linkReleaseTasks*.outcome.every { it == SUCCESS || it == UP_TO_DATE }
-
-        where:
-        target << [sample('cpp/prebuilt-binaries'), sample('cpp/binary-dependencies'), sample('swift/prebuilt-binaries')]
-    }
-
     private NativeSample sample(String name, boolean ignored = false) {
-        File sampleDir = getRootSampleDir()
-        return new NativeSample(name: name, sampleDir: new File(sampleDir, name), ignored: ignored)
+        return new NativeSample(name: name, rootSampleDir: getRootSampleDir(), ignored: ignored)
     }
 
     private File getRootSampleDir() {

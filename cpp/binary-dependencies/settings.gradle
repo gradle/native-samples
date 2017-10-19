@@ -1,1 +1,2 @@
+// dependsOn cpp/simple-library publish
 rootProject.name = 'app'
