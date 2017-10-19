@@ -11,21 +11,18 @@ import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import static org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE
 
 class SampleIntegrationTest extends Specification {
-    @Unroll
-    def "can use sample '#sample.name'"() {
+    def setup() {
         Assume.assumeNotNull(findInPath('swiftc'))
+    }
+
+    @Unroll
+    def "can run '#target.name'"() {
+        Assume.assumeFalse("The sample has been ignored", target.ignored)
 
         when:
-        def tasks = ['clean', 'assemble', 'linkRelease']
-        if (sample.usesMavenPublish) {
-            tasks << 'publish'
-        }
-        if (sample.usesXcode) {
-            tasks << 'cleanXcode' << 'xcode'
-        }
         def result = GradleRunner.create()
-                .withProjectDir(sample.sampleDir)
-                .withArguments(tasks)
+                .withProjectDir(target.sampleDir)
+                .withArguments(target.tasks)
                 .build()
 
         then:
@@ -33,32 +30,52 @@ class SampleIntegrationTest extends Specification {
         linkReleaseTasks*.outcome.every { it == SUCCESS || it == UP_TO_DATE }
 
         where:
-        sample << getSamples()
+        target << [
+            sample('cpp/composite-build'),
+            sample('cpp/executable'),
+            sample('cpp/simple-library'),
+            sample('cpp/swift-package-manager'),
+            sample('cpp/transitive-dependencies'),
+            sample('cpp/source-dependencies', true),
+
+            sample('swift/composite-build'),
+            sample('swift/executable'),
+            sample('swift/simple-library'),
+            sample('swift/swift-package-manager'),
+            sample('swift/transitive-dependencies'),
+            sample('swift/source-dependencies', true),
+        ]
 
     }
 
-    private List<NativeSample> getSamples() {
-        File sampleDir = getRootSampleDir()
-        def result = [
-//                'cpp/prebuild-binaries',  // mustRunAfter(getTestTaskFor('cpp/simple-library'))
-//                'cpp/binary-dependencies',  // mustRunAfter(getTestTaskFor('cpp/simple-library'))
-                'cpp/composite-build',
-                'cpp/executable',
-                'cpp/simple-library',
-                'cpp/swift-package-manager',
-                'cpp/transitive-dependencies',
-//                'cpp/google-test',  // enabled = false
-//                'cpp/source-dependencies',  // enabled = false
+    @Unroll
+    def "can run '#target.name' that depends on 'simple-library'"() {
+        Assume.assumeFalse("The sample has been ignored", target.ignored)
 
-//                'swift/prebuilt-binaries',  // mustRunAfter(getTestTaskFor('cpp/simple-library'))
-                'swift/composite-build',
-                'swift/executable',
-                'swift/simple-library',
-                'swift/swift-package-manager',
-                'swift/transitive-dependencies',
-//                'swift/source-dependencies',  // enabled = false
-        ].collect { new NativeSample(name: it, sampleDir: new File(sampleDir, it)) }
-        return result
+        given:
+        def simpleLibrary = sample("${target.language}/simple-library")
+        GradleRunner.create()
+                .withProjectDir(simpleLibrary.sampleDir)
+                .withArguments(simpleLibrary.tasks)
+                .build()
+
+        when:
+        def result = GradleRunner.create()
+                .withProjectDir(target.sampleDir)
+                .withArguments(target.tasks)
+                .build()
+
+        then:
+        def linkReleaseTasks = result.tasks.findAll { it.path.endsWith('linkRelease') }
+        linkReleaseTasks*.outcome.every { it == SUCCESS || it == UP_TO_DATE }
+
+        where:
+        target << [sample('cpp/prebuilt-binaries'), sample('cpp/binary-dependencies'), sample('swift/prebuilt-binaries')]
+    }
+
+    private NativeSample sample(String name, boolean ignored = false) {
+        File sampleDir = getRootSampleDir()
+        return new NativeSample(name: name, sampleDir: new File(sampleDir, name), ignored: ignored)
     }
 
     private File getRootSampleDir() {
