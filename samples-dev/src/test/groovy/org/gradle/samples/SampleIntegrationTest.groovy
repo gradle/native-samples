@@ -16,7 +16,7 @@ class SampleIntegrationTest extends Specification {
     @Unroll
     def "can run '#target.name'"() {
         if (target.name.startsWith('swift')) {
-            Assume.assumeNotNull(findInPath('swiftc'))
+            Assume.assumeTrue(null != findInPath('swiftc'))
         }
         Assume.assumeFalse("The sample has been ignored", target.ignored)
 
