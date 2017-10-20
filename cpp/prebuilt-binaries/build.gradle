@@ -1,3 +1,5 @@
+import org.gradle.internal.os.OperatingSystem
+
 plugins {
     id 'cpp-executable'
     id 'xcode'
@@ -5,9 +7,8 @@ plugins {
 
 def greeterIncludePath = file('../simple-library/src/main/public')
 
-def extension = System.properties['os.name'].contains('Mac') ? 'dylib' : 'so'
-def greeterDebugLib = file("../simple-library/build/lib/main/debug/libmath.$extension")
-def greeterReleaseLib = file("../simple-library/build/lib/main/release/libmath.$extension")
+def greeterDebugLib = file(OperatingSystem.current().getSharedLibraryName('../simple-library/build/lib/main/debug/math'))
+def greeterReleaseLib = file(OperatingSystem.current().getSharedLibraryName('../simple-library/build/lib/main/release/math'))
 
 compileDebugCpp.doFirst {
     if (!greeterDebugLib.exists() || !greeterReleaseLib.exists()) {

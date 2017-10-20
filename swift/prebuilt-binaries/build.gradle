@@ -1,3 +1,5 @@
+import org.gradle.internal.os.OperatingSystem
+
 plugins {
     id 'swift-executable'
     id 'xcode'
@@ -6,9 +8,8 @@ plugins {
 def greeterDebugImportPath = file('../simple-library/build/obj/main/debug')
 def greeterReleaseImportPath = file('../simple-library/build/obj/main/release')
 
-def extension = System.properties['os.name'].contains('Mac') ? 'dylib' : 'so'
-def greeterDebugLib = file("../simple-library/build/lib/main/debug/libMath.$extension")
-def greeterReleaseLib = file("../simple-library/build/lib/main/release/libMath.$extension")
+def greeterDebugLib = file(OperatingSystem.current().getSharedLibraryName('../simple-library/build/lib/main/debug/Math'))
+def greeterReleaseLib = file(OperatingSystem.current().getSharedLibraryName('../simple-library/build/lib/main/release/Math'))
 
 compileDebugSwift.doFirst {
     if (!greeterDebugLib.exists() || !greeterReleaseLib.exists() || !greeterDebugImportPath.exists() || !greeterReleaseImportPath.exists()) {
