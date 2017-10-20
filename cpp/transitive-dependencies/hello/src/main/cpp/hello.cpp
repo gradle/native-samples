@@ -2,6 +2,6 @@
 
 #include "logger.h"
 
-void sayHello() {
+GREETER_API void sayHello() {
     log(getHello());
 }
