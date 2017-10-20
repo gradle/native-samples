@@ -10,19 +10,14 @@ import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
-import static org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE
-
 class SampleIntegrationTest extends Specification {
     @Rule TemporaryFolder tmpDir = new TemporaryFolder();
-    // Goals
-    // * Better assertion (light weight)
-    def setup() {
-        Assume.assumeNotNull(findInPath('swiftc'))
-    }
 
     @Unroll
     def "can run '#target.name'"() {
+        if (target.name.startsWith('swift')) {
+            Assume.assumeNotNull(findInPath('swiftc'))
+        }
         Assume.assumeFalse("The sample has been ignored", target.ignored)
 
         given:
@@ -35,22 +30,17 @@ class SampleIntegrationTest extends Specification {
             println result.output
         }
 
-        when:
-        def result = GradleRunner.create()
-                .withProjectDir(target.sampleDir)
-                .withArguments(target.tasks)
-                .build()
-
-        then:
-        println result.output
-        def linkReleaseTasks = result.tasks.findAll { it.path.endsWith('linkRelease') }
-        linkReleaseTasks*.outcome.every { it == SUCCESS }
+        expect:
+        GradleRunner.create()
+            .withProjectDir(target.sampleDir)
+            .withArguments(target.tasks)
+            .build()
 
         where:
         target << getSamples()
     }
 
-    List<NativeSample> getSamples() {
+    private List<NativeSample> getSamples() {
         def result = []
         ['swift', 'cpp'].collect { new File(rootSampleDir, it) }*.eachFile(FileType.DIRECTORIES) {
             if (it.name == 'repo') {
