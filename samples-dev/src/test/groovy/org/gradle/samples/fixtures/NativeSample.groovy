@@ -16,12 +16,12 @@ class NativeSample {
             return tasks
         }
 
-        def tasks = ['clean', 'assemble', 'linkRelease']
+        def tasks = ['assemble', 'linkRelease']
         if (usesMavenPublish) {
             tasks << 'publish'
         }
         if (usesXcode) {
-            tasks << 'cleanXcode' << 'xcode'
+            tasks << 'xcode'
         }
         return tasks
     }
@@ -33,9 +33,12 @@ class NativeSample {
         FileUtils.copyDirectory(sampleDir, new File(destination, name), new FileFilter() {
             @Override
             boolean accept(File pathname) {
-                return !(pathname.name in ['build', '.gradle'])
+                [/build/, /\.gradle/, /.+\.xcworkspace/, /.+\.xcodeproj/].every { !(pathname.name ==~ it) }
             }
         })
+
+        assert !new File(destination, name + '/build').exists()
+        assert !new File(destination, name + '/.gradle').exists()
 
         return new NativeSample(name: name, rootSampleDir: destination, tasks: tasks)
     }
@@ -47,9 +50,10 @@ class NativeSample {
     List<NativeSample> getDependencies() {
         new File(sampleDir, 'settings.gradle').readLines().findAll { it.startsWith('// dependsOn') }.collect {
             def tokens = it.split(' ')
+            assert tokens.size() == 4
+
             def name = tokens[2]
             def tasks = tokens[3].split(',')
-
             return new NativeSample(name: name, tasks: tasks, rootSampleDir: rootSampleDir)
         }
     }
@@ -57,8 +61,9 @@ class NativeSample {
     List<NativeSample> getCompositeDependencies() {
         new File(sampleDir, 'settings.gradle').readLines().findAll { it.startsWith('// copy') }.collect {
             def tokens = it.split(' ')
-            def name = tokens[2]
+            assert tokens.size() == 3
 
+            def name = tokens[2]
             return new NativeSample(name: name, rootSampleDir: rootSampleDir)
         }
     }
