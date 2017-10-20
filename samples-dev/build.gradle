@@ -1,3 +1,5 @@
+import groovy.io.FileType
+
 plugins {
     id 'groovy'
     id 'idea'
@@ -15,46 +17,27 @@ dependencies {
     }
 }
 
-import groovy.io.FileType
-
-String taskName(String verb, File sampleDir) {
-    def languageName = sampleDir.parentFile.name
-    def sampleName = sampleDir.name
-
-    "${verb}${sampleName.capitalize()}${languageName.capitalize()}"
-}
-
-def createCleanTask = { TaskContainer tasks, File sampleDir ->
-    tasks.create(taskName('clean', sampleDir), Exec) {
-        commandLine './gradlew', 'clean'
-        if (usesXcode(sampleDir)) {
-            args 'cleanXcode'
-        }
-        workingDir sampleDir
+test {
+    inputs.files files('../swift', '../cpp').asFileTree.matching {PatternFilterable pattern ->
+        pattern.exclude '**/build', '**/.gradle', '**/*.xcworkspace', '**/*.xcodeproj', '**/repo'
     }
 }
 
-boolean usesXcode(File sampleDir) {
-    return new File(sampleDir, "build.gradle").text.contains('xcode')
+task cleanRepo(type: Delete) {
+    delete file('../cpp/repo')
 }
 
-Task createLifecycleTask(TaskContainer tasks, String taskName, def createSampleLifecycleTask) {
-    Task lifecycleTask = tasks.create(taskName)
-
-    [file('../swift'), file('../cpp')]*.eachFile(FileType.DIRECTORIES) {
-        if (it.name == 'repo') {
-            return
+task cleanSamples {
+    dependsOn cleanRepo
+    doLast {
+        def toDelete = []
+        [file('../swift'), file('../cpp')]*.eachFileRecurse(FileType.DIRECTORIES) { File dir ->
+            if ([/repo/, /build/, /\.gradle/, /.+\.xcworkspace/, /.+\.xcodeproj/].any { dir.name ==~ it }) {
+                toDelete << dir
+            }
         }
-        lifecycleTask.dependsOn createSampleLifecycleTask(tasks, it)
+        toDelete.each { it.deleteDir() }
     }
-
-    return lifecycleTask
 }
-
-createLifecycleTask(tasks, 'cleanSamples', createCleanTask)
-
-def cleanRepo = tasks.create('cleanRepo', Delete)
-cleanRepo.delete(file('../cpp/repo'))
-cleanSamples.dependsOn cleanRepo
 
 clean.dependsOn cleanSamples
