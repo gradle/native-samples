@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef _WIN32
-#  ifdef _DLL
+#  ifdef MATH_MODULE_EXPORT
 #    define MATH_API __declspec(dllexport)
 #  else
 #    define MATH_API __declspec(dllimport)

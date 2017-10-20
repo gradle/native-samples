@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef _WIN32
-#  ifdef _DLL
+#  ifdef HELLO_MODULE_EXPORT
 #    define HELLO_API __declspec(dllexport)
 #  else
 #    define HELLO_API __declspec(dllimport)

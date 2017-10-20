@@ -1,3 +1,4 @@
+#define GREETING_MODULE_EXPORT
 #include "greeting.h"
 
 #include "logger.h"

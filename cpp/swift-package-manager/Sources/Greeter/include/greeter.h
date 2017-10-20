@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef _WIN32
-#  ifdef _DLL
+#  ifdef GREETER_MODULE_EXPORT
 #    define GREETER_API __declspec(dllexport)
 #  else
 #    define GREETER_API __declspec(dllimport)

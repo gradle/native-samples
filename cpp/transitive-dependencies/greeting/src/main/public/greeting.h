@@ -3,7 +3,7 @@
 #include <string>
 
 #ifdef _WIN32
-#  ifdef _DLL
+#  ifdef GREETING_MODULE_EXPORT
 #    define GREETING_API __declspec(dllexport)
 #  else
 #    define GREETING_API __declspec(dllimport)
