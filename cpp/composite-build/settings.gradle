@@ -1,3 +1,5 @@
+// copy cpp/simple-library
+// copy cpp/transitive-dependencies
 rootProject.name = 'app'
 
 includeBuild '../simple-library'

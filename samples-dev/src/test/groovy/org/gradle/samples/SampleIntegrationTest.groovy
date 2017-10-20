@@ -5,6 +5,8 @@ import org.gradle.internal.os.OperatingSystem
 import org.gradle.samples.fixtures.NativeSample
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Assume
+import org.junit.Rule
+import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -12,8 +14,8 @@ import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import static org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE
 
 class SampleIntegrationTest extends Specification {
+    @Rule TemporaryFolder tmpDir = new TemporaryFolder();
     // Goals
-    // * Isolation for parallelization
     // * Better assertion (light weight)
     def setup() {
         Assume.assumeNotNull(findInPath('swiftc'))
@@ -22,7 +24,9 @@ class SampleIntegrationTest extends Specification {
     @Unroll
     def "can run '#target.name'"() {
         Assume.assumeFalse("The sample has been ignored", target.ignored)
+
         given:
+        target = target.copyToTemp(tmpDir.root)
         target.dependencies.every {
             def result = GradleRunner.create()
                     .withProjectDir(it.sampleDir)
@@ -40,11 +44,10 @@ class SampleIntegrationTest extends Specification {
         then:
         println result.output
         def linkReleaseTasks = result.tasks.findAll { it.path.endsWith('linkRelease') }
-        linkReleaseTasks*.outcome.every { it == SUCCESS || it == UP_TO_DATE }
+        linkReleaseTasks*.outcome.every { it == SUCCESS }
 
         where:
         target << getSamples()
-
     }
 
     List<NativeSample> getSamples() {

@@ -1,3 +1,5 @@
+// copy swift/simple-library
+// copy swift/transitive-dependencies
 rootProject.name = 'app'
 
 includeBuild '../simple-library'
