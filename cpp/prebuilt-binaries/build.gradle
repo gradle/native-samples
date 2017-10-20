@@ -10,6 +10,9 @@ def greeterIncludePath = file('../simple-library/src/main/public')
 def greeterDebugLib = file(OperatingSystem.current().getSharedLibraryName('../simple-library/build/lib/main/debug/math'))
 def greeterReleaseLib = file(OperatingSystem.current().getSharedLibraryName('../simple-library/build/lib/main/release/math'))
 
+def greeterDebugLinkLib = file(OperatingSystem.current().getLinkLibraryName('../simple-library/build/lib/main/debug/math'))
+def greeterReleaseLinkLib = file(OperatingSystem.current().getLinkLibraryName('../simple-library/build/lib/main/release/math'))
+
 compileDebugCpp.doFirst {
     if (!greeterDebugLib.exists() || !greeterReleaseLib.exists()) {
         throw new GradleException("Please build project at ${file('../simple-library')} with: './gradlew linkRelease linkDebug'")
@@ -22,8 +25,8 @@ compileDebugCpp.doFirst {
 dependencies {
     cppCompileDebug files(greeterIncludePath)
     cppCompileRelease files(greeterIncludePath)
-    nativeLinkDebug files(greeterDebugLib)
-    nativeLinkRelease files(greeterReleaseLib)
+    nativeLinkDebug files(greeterDebugLinkLib)
+    nativeLinkRelease files(greeterReleaseLinkLib)
     nativeRuntimeDebug files(greeterDebugLib)
     nativeRuntimeRelease files(greeterReleaseLib)
 }
