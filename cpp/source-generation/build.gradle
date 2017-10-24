@@ -1,0 +1,49 @@
+plugins {
+    id 'cpp-executable'
+    id 'xcode'
+}
+
+task codeGeneration(type: CodeGenerator) {
+    cppDir = project.layout.buildDirectory.dir("generated/cpp")
+    headersDir = project.layout.buildDirectory.dir("generated/headers")
+}
+
+executable {
+    source.from codeGeneration.cppDir
+    privateHeaders.from codeGeneration.headersDir
+}
+
+
+// Code generation implementation could be in another plugin or buildSrc
+class CodeGenerator extends DefaultTask {
+    @OutputDirectory
+    DirectoryProperty cppDir = newOutputDirectory()
+    
+    @OutputDirectory
+    DirectoryProperty headersDir = newOutputDirectory()
+
+    @TaskAction
+    public void generate() {
+        generateSources(cppDir.getAsFile().get())
+        generateHeaders(headersDir.getAsFile().get())
+    }
+
+    private void generateSources(File generatedDir) {
+        new File(generatedDir, "main.cpp").text = """
+#include <iostream>
+#include "header.h"
+
+int main() {
+    std::cout << MESSAGE << std::endl;
+    return 0;
+}
+        """
+    }
+    private void generateHeaders(File generatedDir) {
+        new File(generatedDir, "header.h").text = """
+#pragma once
+
+#define MESSAGE "Hello, World!"
+        """
+    }
+}
