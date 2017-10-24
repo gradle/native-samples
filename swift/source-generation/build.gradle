@@ -1,0 +1,34 @@
+plugins {
+    id 'swift-executable'
+    id 'xcode'
+}
+
+task codeGeneration(type: CodeGenerator) {
+    generatedDir = project.layout.buildDirectory.dir("generated/swift")
+}
+
+executable {
+    source.from codeGeneration.generatedDir
+}
+
+// Code generation implementation could be in another plugin or buildSrc
+class CodeGenerator extends DefaultTask {
+    @OutputDirectory
+    DirectoryProperty generatedDir = newOutputDirectory()
+
+    @TaskAction
+    public void generate() {
+        generateSources(generatedDir.getAsFile().get())
+    }
+
+    private void generateSources(File generatedDir) {
+        new File(generatedDir, "main.swift").text = """
+internal func getMessage() -> String {
+    return "Hello, World!"
+}
+
+// Simple hello world app
+print(getMessage())
+        """
+    }
+}
