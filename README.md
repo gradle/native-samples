@@ -182,6 +182,19 @@ BUILD SUCCESSFUL in 0s
 Hello, World!
 ```
 
+## Source generation (Swift and C++) 
+
+These builds demonstrate using a task to generate source code before building a Swift or C++ executable.
+
+```
+> cd source-generation
+> ./gradlew assemble
+
+BUILD SUCCESSFUL in 0s
+```
+
+Generated sources will be under `build/generated`.
+
 ## Source Dependencies (Swift and C++)
 
 These builds demonstrate using External Source Dependencies to build Swift and C++ executables that require two external libraries.
