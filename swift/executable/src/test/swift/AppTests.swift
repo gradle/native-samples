@@ -1,7 +1,7 @@
 import XCTest
 @testable import App
 
-class MainTest: XCTestCase {
+class AppTests: XCTestCase {
     func testEqualsExpectedMessage() {
         XCTAssertEqual("Hello, World!", getMessage())
     }
