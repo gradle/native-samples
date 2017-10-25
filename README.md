@@ -96,6 +96,8 @@ BUILD SUCCESSFUL in 0s
 Hello, World!
 ```
 
+The build script also demonstrates how to configure convenience tasks like `assembleDebuggable`, which will assemble all "debuggable" binaries.
+
 ## Executable Composite Build with Transitive Dependencies (composite-build)
 
 This build shows that several otherwise independent Swift/C++ libraries can be built together with Gradle. The

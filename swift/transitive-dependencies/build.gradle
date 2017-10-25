@@ -1,3 +1,18 @@
 allprojects {
     apply plugin: "xcode"
+
+    task assembleDebuggable {
+        group = "Build"
+        description = "Assemble all debuggable Swift binaries."
+        components.withType(SwiftExecutable) { binary ->
+            if (binary.isDebuggable()) {
+               dependsOn binary.executableFile
+            }
+        }
+        components.withType(SwiftSharedLibrary) { binary ->
+            if (binary.isDebuggable()) {
+               dependsOn binary.runtimeFile
+            }
+        }
+    }
 }
