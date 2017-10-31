@@ -1,5 +1,6 @@
 allprojects {
     apply plugin: 'xcode'
+    apply plugin: 'xctest'
 }
 
 project(':app') {
@@ -8,6 +9,10 @@ project(':app') {
     // Configure the source files of the executable
     executable {
         source.from rootProject.file('Sources/App')
+    }
+    
+    xctest {
+        source.from rootProject.file('Tests/AppTests')
     }
 
     // Configure the dependencies of the executable
@@ -22,6 +27,10 @@ project(':greeter') {
     // Configure the source files of the library
     library {
         source.from rootProject.file('Sources/Greeter')
+    }
+
+    xctest {
+        source.from rootProject.file('Tests/GreeterTests')
     }
 }
 
