@@ -9,6 +9,10 @@ Each sample build is listed below with a bit of information related to the
 features of Gradle that are demonstrated in that build. Each samples are functionally
 the same for both Swift and C++ languages.
 
+### Contribution
+
+If you want to contribute improvement to the samples, please refer to the [`samples-dev` subproject](samples-dev/README.md).
+
 ### Xcode support
 
 All of the samples have Xcode support, added by applying the `xcode` plugin. To open a sample build in Xcode:
