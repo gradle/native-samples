@@ -2,6 +2,11 @@ import XCTest
 import Math
 
 class SumTest: XCTestCase {
+    public static var allTests = [
+        ("testCanSumNumbersTo42", testCanSumNumbersTo42),
+        ("testIncorrectSums", testIncorrectSums),
+        ("testSumIsPerformant", testSumIsPerformant),
+    ]
     func testCanSumNumbersTo42() {
         let main = Math()
         XCTAssertEqual(42, main.sum(a: 40, b: 2))

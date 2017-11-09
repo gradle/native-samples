@@ -1,3 +1,11 @@
+import org.gradle.internal.os.OperatingSystem
+def maybeExcludeLinuxMain(FileTree files) {
+  if (OperatingSystem.current().macOsX) {
+    return files.matching { exclude 'main.swift' }
+  }
+  return files
+}
+
 allprojects {
     apply plugin: 'xcode'
     apply plugin: 'xctest'
@@ -30,7 +38,7 @@ project(':greeter') {
     }
 
     xctest {
-        source.from rootProject.file('Tests/GreeterTests')
+        source.from maybeExcludeLinuxMain(rootProject.fileTree(dir: 'Tests/GreeterTests', include: '**/*.swift'))
     }
 }
 
