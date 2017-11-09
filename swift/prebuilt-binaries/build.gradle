@@ -5,8 +5,8 @@ plugins {
     id 'xcode'
 }
 
-def greeterDebugImportPath = file('../simple-library/build/obj/main/debug')
-def greeterReleaseImportPath = file('../simple-library/build/obj/main/release')
+def greeterDebugImportPath = file('../simple-library/build/modules/main/debug/Math.swiftmodule')
+def greeterReleaseImportPath = file('../simple-library/build/modules/main/release/Math.swiftmodule')
 
 def greeterDebugLib = file(OperatingSystem.current().getSharedLibraryName('../simple-library/build/lib/main/debug/Math'))
 def greeterReleaseLib = file(OperatingSystem.current().getSharedLibraryName('../simple-library/build/lib/main/release/Math'))
@@ -18,8 +18,8 @@ compileDebugSwift.doFirst {
 }
 
 dependencies {
-    swiftImportDebug files(greeterDebugImportPath)
-    swiftImportRelease files(greeterReleaseImportPath)
+    swiftCompileDebug files(greeterDebugImportPath)
+    swiftCompileRelease files(greeterReleaseImportPath)
     nativeLinkDebug files(greeterDebugLib)
     nativeLinkRelease files(greeterReleaseLib)
     nativeRuntimeDebug files(greeterDebugLib)
