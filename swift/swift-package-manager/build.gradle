@@ -20,7 +20,7 @@ project(':app') {
     }
     
     xctest {
-        source.from rootProject.file('Tests/AppTests')
+        source.from maybeExcludeLinuxMain(rootProject.fileTree(dir: 'Tests/AppTests', include: '**/*.swift'))
     }
 
     // Configure the dependencies of the executable
