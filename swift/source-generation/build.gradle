@@ -1,5 +1,5 @@
 plugins {
-    id 'swift-executable'
+    id 'swift-application'
     id 'xcode'
 }
 
@@ -7,7 +7,7 @@ task codeGeneration(type: CodeGenerator) {
     generatedDir = project.layout.buildDirectory.dir("generated/swift")
 }
 
-executable {
+application {
     source.from codeGeneration.generatedDir
 }
 

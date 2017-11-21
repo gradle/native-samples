@@ -1,5 +1,5 @@
 plugins {
-    id 'cpp-executable'
+    id 'cpp-application'
 }
 
 group = 'org.gradle.cpp-samples'

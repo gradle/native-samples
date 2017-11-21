@@ -1,5 +1,5 @@
 plugins {
-    id 'cpp-executable'
+    id 'cpp-application'
     id 'xcode'
 }
 
@@ -8,7 +8,7 @@ task codeGeneration(type: CodeGenerator) {
     headersDir = project.layout.buildDirectory.dir("generated/headers")
 }
 
-executable {
+application {
     source.from codeGeneration.cppDir
     privateHeaders.from codeGeneration.headersDir
 }

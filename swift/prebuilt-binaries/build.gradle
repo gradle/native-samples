@@ -1,7 +1,7 @@
 import org.gradle.internal.os.OperatingSystem
 
 plugins {
-    id 'swift-executable'
+    id 'swift-application'
     id 'xcode'
 }
 

@@ -3,10 +3,10 @@ allprojects {
 }
 
 project(':app') {
-    apply plugin: 'cpp-executable'
+    apply plugin: 'cpp-application'
 
     // Configure the source files of the executable
-    executable {
+    application {
         source.from rootProject.file('Sources/App')
     }
 

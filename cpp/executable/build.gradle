@@ -1,4 +1,4 @@
 plugins {
-    id 'cpp-executable'
+    id 'cpp-application'
     id 'xcode'
 }
