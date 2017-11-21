@@ -9,4 +9,12 @@ class AppTests: XCTestCase {
     func testEqualsExpectedMessage() {
         XCTAssertEqual("Hello, World!", getMessage())
     }
+
+    func testNoExceptionThrown() {
+        XCTAssertNoThrow(getMessage())
+    }
+
+    func testNoExpectedMessage() {
+        XCTAssertNotEqual("Goodbye, World!", getMessage())
+    }
 }
