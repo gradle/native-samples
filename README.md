@@ -2,7 +2,7 @@
 # Swift and C++ Sample Projects
 
 This repository holds several sample Gradle builds which demonstrate how to
-use Gradle to build Swift/C++ libraries and executables including dependencies on
+use Gradle to build Swift/C++ libraries and applications including dependencies on
 native libraries written in other native languages like C, C++, and Objective-C.
 
 Each sample build is listed below with a bit of information related to the
@@ -25,7 +25,7 @@ All of the samples have Xcode support, added by applying the `xcode` plugin. To 
 
 ### XCTest support
 
-Both Swift sample `simple-library` and `executable` demonstrate XCTest support in Gradle. As a user, you can either
+Both Swift sample `simple-library` and `application` demonstrate XCTest support in Gradle. As a user, you can either
 interact with the test code as you would usually do through Xcode or you can run the test directly from the command line:
 
 ```
@@ -50,7 +50,7 @@ Some of the C++ samples are configured to publish binaries to a local Maven repo
 > tree ../repo/
 ```
 
-This will build and publish the debug and release binaries for each library and executables. The binaries are published to a repository in the `cpp/repo` directory.
+This will build and publish the debug and release binaries. The binaries are published to a repository in the `cpp/repo` directory.
 
 ## Simple Library (simple-library)
 
@@ -68,12 +68,12 @@ BUILD SUCCESSFUL in 0s
 build/lib/main/debug/libmath.dylib
 ```
 
-## Executable (executable)
+## Application (application)
 
-This build shows how a Swift/C++ executable can be built with Gradle.
+This build shows how a Swift/C++ application can be built with Gradle.
 
 ```
-> cd executable
+> cd application
 > ./gradlew assemble
 
 BUILD SUCCESSFUL in 0s
@@ -83,9 +83,9 @@ BUILD SUCCESSFUL in 0s
 Hello, World!
 ```
 
-## Executable Multi-Project with Transitive Dependencies (transitive-dependencies)
+## Multi-Project with Transitive Dependencies (transitive-dependencies)
 
-This builds shows how an executable and several Swift/C++ libraries can be built with Gradle and linked together. The
+This builds shows how an application and several Swift/C++ libraries can be built with Gradle and linked together. The
 dependencies are added transitively from the dependencies between modules.
 To run it:
 
@@ -102,7 +102,7 @@ Hello, World!
 
 The build script also demonstrates how to configure convenience tasks like `assembleDebuggable`, which will assemble all "debuggable" binaries.
 
-## Executable Composite Build with Transitive Dependencies (composite-build)
+## Composite Build with Transitive Dependencies (composite-build)
 
 This build shows that several otherwise independent Swift/C++ libraries can be built together with Gradle. The
 dependencies are added transitively from the dependencies between modules
@@ -174,7 +174,7 @@ The sum of 40 and 2 is 42!
 ## Swift package manager conventions (swift-package-manager)
 
 This build shows how to configure Gradle to use the typical layout for a Swift Package Manager package.
-It contains an executable and a single library. The source files for the executable and libraries are all under a single `Sources` directory.
+It contains an application and a single library. The source files for the application and libraries are all under a single `Sources` directory.
 
 This sample also includes a Swift Package Manager build file, so the same source can be built using Swift Package Manager
 
@@ -190,7 +190,7 @@ Hello, World!
 
 ## Source generation (Swift and C++) 
 
-These builds demonstrate using a task to generate source code before building a Swift or C++ executable.
+These builds demonstrate using a task to generate source code before building a Swift or C++ application.
 
 ```
 > cd source-generation
@@ -203,7 +203,7 @@ Generated sources will be under `build/generated`.
 
 ## Source Dependencies (Swift and C++)
 
-These builds demonstrate using External Source Dependencies to build Swift and C++ executables that require two external libraries.
+These builds demonstrate using External Source Dependencies to build Swift and C++ applications that require two external libraries.
 
 ### Swift
 ```
