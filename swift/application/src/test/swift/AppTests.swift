@@ -4,6 +4,8 @@ import XCTest
 class AppTests: XCTestCase {
     public static var allTests = [
         ("testEqualsExpectedMessage", testEqualsExpectedMessage),
+        ("testNoExceptionThrown", testNoExceptionThrown),
+        ("testNoExpectedMessage", testNoExpectedMessage),
     ]
 
     func testEqualsExpectedMessage() {
