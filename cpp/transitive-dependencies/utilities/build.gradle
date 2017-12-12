@@ -1,0 +1,11 @@
+plugins {
+    id 'cpp-library'
+}
+
+dependencies {
+    api project(':list')
+}
+
+tasks.withType(CppCompile) {
+    macros.put 'UTILITIES_MODULE_EXPORT', ''
+}
