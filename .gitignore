@@ -20,3 +20,5 @@ out/
 
 # Mac OS Junk
 .DS_Store
+**/repos/*-repo
+
