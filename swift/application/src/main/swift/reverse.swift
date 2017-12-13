@@ -1,6 +1,8 @@
 internal func reverse(source: String) -> String {
-    let reversedCharacters = source.reversed()
-    let reversedString = String(reversedCharacters)
+    var result = ""
+    for character in source.characters {
+        result = "\(character)" + result
+    }
 
-    return reversedString
+    return result
 }
