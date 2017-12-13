@@ -1,3 +1,4 @@
+#define LIST_MODULE_EXPORT
 #include "linked_list.h"
 
 #include "node.h"

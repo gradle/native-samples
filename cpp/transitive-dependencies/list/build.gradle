@@ -1,7 +1,3 @@
 plugins {
     id 'cpp-library'
 }
-
-tasks.withType(CppCompile) {
-    macros.put 'LIST_MODULE_EXPORT', ''
-}

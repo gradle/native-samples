@@ -1,3 +1,4 @@
+#define UTILITIES_MODULE_EXPORT
 #include "string_utils.h"
 
 #include "linked_list.h"

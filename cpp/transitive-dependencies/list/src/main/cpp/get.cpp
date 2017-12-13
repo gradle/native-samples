@@ -1,3 +1,4 @@
+#define LIST_MODULE_EXPORT
 #include <stdexcept>
 
 #include "linked_list.h"
