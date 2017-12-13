@@ -1,1 +1,11 @@
 rootProject.name = 'math'
+
+sourceControl {
+    vcsMappings {
+        withModule('org.gradle:googletest') {
+            from vcs(GitVersionControlSpec) {
+                url = 'https://github.com/gradle/googletest.git'
+            }
+        }
+    }
+}

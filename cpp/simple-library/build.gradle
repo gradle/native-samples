@@ -2,10 +2,15 @@ plugins {
     id 'cpp-library'
     id 'xcode'
     id 'maven-publish'
+    id 'cpp-unit-test'
 }
 
 group = 'org.gradle.cpp-samples'
 version = '1.5'
+
+dependencies {
+    unitTestImplementation 'org.gradle:googletest:latest.integration'
+}
 
 publishing {
     repositories {
