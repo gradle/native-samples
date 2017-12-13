@@ -14,7 +14,7 @@
 
 class node;
 
-LIST_API class linked_list {
+class LIST_API linked_list {
   public:
     linked_list() : head_(NULL) {}
     
