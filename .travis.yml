@@ -1,0 +1,2 @@
+language: cpp
+script: ./gradlew -p cpp/transitive-dependencies build
