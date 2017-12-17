@@ -1,2 +1,2 @@
 language: cpp
-script: ./gradlew -p cpp/transitive-dependencies build
+script: ./gradlew --console plain --project-dir cpp/transitive-dependencies build
