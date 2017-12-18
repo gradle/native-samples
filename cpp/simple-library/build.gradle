@@ -31,6 +31,11 @@ tasks.withType(CppCompile) {
         compilerArgs.add('-std=c++11')
     }
 }
+tasks.withType(LinkSharedLibrary) {
+    if (toolChain instanceof Gcc) {
+        linkerArgs.add('-std=c++11')
+    }
+}
 
 publishing {
     repositories {
