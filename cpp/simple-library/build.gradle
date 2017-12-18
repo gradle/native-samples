@@ -17,7 +17,9 @@ repositories {
 def targetPlatform = compileDebugCpp.targetPlatform
 
 dependencies {
-    unitTestImplementation "org.gradle.cpp-samples:googletest_${targetPlatform.operatingSystem.name.replace(' ', '').toLowerCase()}_4.5:latest.integration"
+    def osName = targetPlatform.operatingSystem.name.replace(' ', '').toLowerCase()
+    def archName = targetPlatform.architecture.name.replace(' ', '').toLowerCase()
+    unitTestImplementation "org.gradle.cpp-samples:googletest_${osName}_${archName}_4.5:latest.integration"
 }
 
 publishing {
