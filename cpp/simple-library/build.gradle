@@ -18,6 +18,10 @@ def targetPlatform = compileDebugCpp.targetPlatform
 
 dependencies {
     def osName = targetPlatform.operatingSystem.name.replace(' ', '').toLowerCase()
+    if (osName.startsWith('windows')) {
+        // Windows 10 binaries are backward compatible with Windows 7
+        osName = 'windows10'
+    }
     def archName = targetPlatform.architecture.name.replace(' ', '').toLowerCase()
     unitTestImplementation "org.gradle.cpp-samples:googletest_${osName}_${archName}_4.5:latest.integration"
 }
