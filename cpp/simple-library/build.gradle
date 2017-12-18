@@ -22,6 +22,12 @@ dependencies {
     unitTestImplementation "org.gradle.cpp-samples:googletest_${osName}_${archName}_4.5:latest.integration"
 }
 
+tasks.withType(CppCompile) {
+    if (toolChain instanceof Gcc) {
+        compilerArgs.add('-std=c++11')
+    }
+}
+
 publishing {
     repositories {
         maven {
