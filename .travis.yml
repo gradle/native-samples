@@ -1,4 +1,5 @@
 language: cpp
-script: ./gradlew --console plain --project-dir cpp/composite-build build
-script: ./gradlew --console plain --project-dir cpp/transitive-dependencies build
-script: ./gradlew --console plain --project-dir cpp/simple-library build
+script:
+- ./gradlew --console plain --project-dir cpp/composite-build build
+- ./gradlew --console plain --project-dir cpp/transitive-dependencies build
+- ./gradlew --console plain --project-dir cpp/simple-library build
