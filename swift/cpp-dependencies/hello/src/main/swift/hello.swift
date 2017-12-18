@@ -1,5 +1,5 @@
 import greeting
 
-public func sayHello() {
-    print(String(cString: getHello()))
+public func sayHello() -> String {
+    return String(cString: getHello())
 }
