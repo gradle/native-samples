@@ -11,17 +11,24 @@ def greeterReleaseImportPath = file('../simple-library/build/modules/main/releas
 def greeterDebugLib = file(OperatingSystem.current().getSharedLibraryName('../simple-library/build/lib/main/debug/Math'))
 def greeterReleaseLib = file(OperatingSystem.current().getSharedLibraryName('../simple-library/build/lib/main/release/Math'))
 
-compileDebugSwift.doFirst {
-    if (!greeterDebugLib.exists() || !greeterReleaseLib.exists() || !greeterDebugImportPath.exists() || !greeterReleaseImportPath.exists()) {
-        throw new GradleException("Please build project at ${file('../simple-library')}.")
+tasks.withType(SwiftCompile) {
+    doFirst {
+        if (!greeterDebugLib.exists() || !greeterReleaseLib.exists() || !greeterDebugImportPath.exists() || !greeterReleaseImportPath.exists()) {
+            throw new GradleException("Please build project at ${file('../simple-library')}.")
+        }
     }
 }
 
-dependencies {
-    swiftCompileDebug files(greeterDebugImportPath)
-    swiftCompileRelease files(greeterReleaseImportPath)
-    nativeLinkDebug files(greeterDebugLib)
-    nativeLinkRelease files(greeterReleaseLib)
-    nativeRuntimeDebug files(greeterDebugLib)
-    nativeRuntimeRelease files(greeterReleaseLib)
+components.main.binaries.whenElementFinalized { binary ->
+    dependencies {
+        if (binary.optimized) {
+            add(binary.importPathConfiguration.name, files(greeterReleaseImportPath))
+            add(binary.linkLibraries.name, files(greeterReleaseLib))
+            add(binary.runtimeLibraries.name, files(greeterReleaseLib))
+        } else {
+            add(binary.importPathConfiguration.name, files(greeterDebugImportPath))
+            add(binary.linkLibraries.name, files(greeterDebugLib))
+            add(binary.runtimeLibraries.name, files(greeterDebugLib))
+        }
+    }
 }
