@@ -8,8 +8,16 @@ plugins {
 group = 'org.gradle.cpp-samples'
 version = '1.5'
 
+repositories {
+    maven {
+        url = 'https://repo.gradle.org/gradle/libs-snapshots-local/'
+    }
+}
+
+def targetPlatform = compileDebugCpp.targetPlatform
+
 dependencies {
-    unitTestImplementation 'org.gradle:googletest:latest.integration'
+    unitTestImplementation "org.gradle.cpp-samples:googletest_${targetPlatform.operatingSystem.name.replace(' ', '').toLowerCase()}_4.5:latest.integration"
 }
 
 publishing {
