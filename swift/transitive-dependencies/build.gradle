@@ -1,5 +1,7 @@
 allprojects {
     apply plugin: "xcode"
+    
+    group = 'org.gradle.swift-samples'
 
     task assembleDebuggable {
         group = "Build"

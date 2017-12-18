@@ -1,3 +1,5 @@
+import org.gradle.internal.os.OperatingSystem
+
 plugins {
     id 'swift-application'
     id 'xctest'
@@ -6,3 +8,10 @@ plugins {
 dependencies {
     implementation project(':hello')
 }
+
+if (!OperatingSystem.current().linux) {
+    xctest {
+        source.from fileTree(dir: 'src/test/swift', include: '**/*.swift', exclude: 'main.swift')
+    }
+}
+

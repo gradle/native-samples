@@ -1,10 +1,17 @@
+import org.gradle.internal.os.OperatingSystem
+
 plugins {
     id 'swift-library'
     id 'xctest'
 }
 
-group = 'org.gradle.swift-samples'
-
 dependencies {
     api project(':greeting')
 }
+
+if (!OperatingSystem.current().linux) {
+    xctest {
+        source.from fileTree(dir: 'src/test/swift', include: '**/*.swift', exclude: 'main.swift')
+    }
+}
+
