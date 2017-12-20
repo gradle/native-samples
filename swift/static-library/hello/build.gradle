@@ -1,0 +1,11 @@
+plugins {
+    id 'swift-library'
+}
+
+library {
+    linkage = [Linkage.STATIC]
+}
+
+dependencies {
+    api project(':greeting')
+}
