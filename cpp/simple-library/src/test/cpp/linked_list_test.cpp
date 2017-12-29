@@ -23,11 +23,20 @@ TEST(LinkedListTests, test_remove) {
 
     list.add("one");
     list.add("two");
-    list.remove("one");
+    ASSERT_TRUE(list.remove("one"));
 
     ASSERT_EQ(list.size(), 1);
     ASSERT_EQ(list.get(0), "two");
 
-    list.remove("two");
+    ASSERT_TRUE(list.remove("two"));
     ASSERT_EQ(list.size(), 0);
+}
+
+TEST(LinkedListTests, test_remove_missing) {
+    linked_list list;
+
+    list.add("one");
+    list.add("two");
+    ASSERT_FALSE(list.remove("three"));
+    ASSERT_EQ(list.size(), 2);
 }

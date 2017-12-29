@@ -20,6 +20,7 @@ bool linked_list::remove(const std::string & element) {
         if (0 == element.compare(it->data())) {
             result = true;
             unlink(&head_, previous_it, it);
+            break;
         }
     }
 
