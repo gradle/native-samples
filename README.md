@@ -254,7 +254,7 @@ Hello, World!
 
 ## Application with static library dependencies (static-library)
 
-This build demonstrates building and static libraries.
+This build demonstrates building and using static libraries.
 
 ```
 > cd static-library

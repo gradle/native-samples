@@ -40,7 +40,7 @@ task cleanSamples {
     doLast {
         def toDelete = []
         [file("../swift"), file("../cpp")]*.eachFileRecurse(FileType.DIRECTORIES) { def dir ->
-            if ([/repo/, /build/, /\.gradle/, /.+\.xcworkspace/, /.+\.xcodeproj/].any { dir.name ==~ it }) {
+            if ([/repo/, /build/, /\.gradle/, /\.build/, /.+\.xcworkspace/, /.+\.xcodeproj/].any { dir.name ==~ it }) {
                 toDelete << dir
             }
         }
@@ -48,7 +48,7 @@ task cleanSamples {
     }
 }
 
-clean.dependsOn cleanSamples
+clean.dependsOn cleanSamples, cleanRepo
 
 task configureNightlyWrapper {
     doLast {
@@ -145,9 +145,9 @@ task cppStaticLibrary(type: SourceCopyTask) {
 task cppSwiftPackageManager(type: SourceCopyTask) {
     sampleDir = file("../cpp/swift-package-manager")
 
-    swiftPMProject("Sources/App").fromTemplate("cpp-app")
-    swiftPMProject("Sources/Utilities").fromTemplate("cpp-lib-with-api-dep")
-    swiftPMProject("Sources/List").fromTemplate("cpp-lib")
+    swiftPMProject(".", "App").fromTemplate("cpp-app")
+    swiftPMProject(".", "Utilities").fromTemplate("cpp-lib-with-api-dep")
+    swiftPMProject(".", "List").fromTemplate("cpp-lib")
 }
 
 def swiftUtilsLib = SwiftLibraryTemplate.of("swift-lib-with-api-dep", "Utilities")
@@ -215,6 +215,14 @@ task swiftCppDependencies(type: SourceCopyTask) {
     appProject("app").fromTemplate("swift-app")
 }
 
+task swiftSwiftPackageManager(type: SourceCopyTask) {
+    sampleDir = file("../swift/swift-package-manager")
+
+    swiftPMProject(".", "App").fromTemplate("swift-app")
+    swiftPMProject(".", "Utilities").fromTemplate(swiftUtilsLib)
+    swiftPMProject(".", "List").fromTemplate(swiftListLib)
+}
+
 task generateCppRepos(type: GitRepoTask) {
     sampleDir = file("../cpp/source-dependencies/repos")
 }
@@ -232,34 +240,30 @@ class SourceCopyTask extends DefaultTask {
     def go() {
         def cleaned = new HashSet()
         projects.values().each { p ->
-            def projectDir = sampleDir.dir(p.projectDir).get().asFile
             def modules = p.includedModules.collect { "import $it" as String }
             def testModules = p.includedModules.collect { "@testable import $it" as String }
-            p.templates.each { t ->
-                def templateBaseDir = templatesDir.dir(t.templateName).get().asFile
-                p.visitDirs { s, d ->
-                    def srcDir = new File(templateBaseDir, s)
-                    if (!srcDir.directory) {
-                        return
-                    }
-                    def destDir = new File(projectDir, d)
-                    println "copy $srcDir to $destDir"
-                    if (cleaned.add(destDir)) {
-                        // TODO - generate the test main.swift
-                        project.delete project.fileTree(destDir, { exclude '**/main.swift' })
-                    }
-                    project.copy {
-                        from srcDir
-                        into destDir
-                        filter { line ->
-                            if (modules.contains(line)) {
-                                return null
-                            }
-                            if (testModules.contains(line)) {
-                                return "@testable import " + p.module
-                            }
-                            line
+            p.visitDirs { src, dest->
+                def srcDir = templatesDir.dir(src).get().asFile
+                if (!srcDir.directory) {
+                    return
+                }
+                def destDir = sampleDir.dir(dest).get().asFile
+                println "copy $srcDir to $destDir"
+                if (cleaned.add(destDir)) {
+                    // TODO - generate the test main.swift
+                    project.delete project.fileTree(destDir, { exclude '**/main.swift' })
+                }
+                project.copy {
+                    from srcDir
+                    into destDir
+                    filter { line ->
+                        if (modules.contains(line)) {
+                            return null
                         }
+                        if (testModules.contains(line)) {
+                            return "@testable import " + p.module
+                        }
+                        line
                     }
                 }
             }
@@ -274,15 +278,15 @@ class SourceCopyTask extends DefaultTask {
         return add(new LibTarget(projectDir))
     }
 
-    SwiftPmTarget swiftPMProject(String projectDir) {
-        return add(new SwiftPmTarget(projectDir))
+    SwiftPmTarget swiftPMProject(String projectDir, String targetName) {
+        return add(new SwiftPmTarget(projectDir, targetName))
     }
 
     private def add(TemplateTarget target) {
-        if (projects.containsKey(target.projectDir)) {
+        if (projects.containsKey(target.key)) {
             return projects.get(target.projectDir)
         }
-        projects.put(target.projectDir, target)
+        projects.put(target.key, target)
         return target
     }
 
@@ -313,10 +317,42 @@ class SourceCopyTask extends DefaultTask {
             return libs.collect { it.module }
         }
 
+        abstract String getKey()
+
+        /**
+         * Visits each src, dest directory pair for this project.
+         * @param cl
+         */
         abstract void visitDirs(Closure cl)
     }
 
-    static class AppTarget extends TemplateTarget {
+    static abstract class GradleTarget extends TemplateTarget {
+        GradleTarget(String projectDir) {
+            super(projectDir)
+        }
+
+        @Override
+        String getKey() {
+            return projectDir
+        }
+
+        @Override
+        void visitDirs(Closure cl) {
+            templates.each { template ->
+                visitDirMappings { src, dest ->
+                    cl.call("${template.templateName}/${src}", "${projectDir}/${dest}")
+                }
+            }
+        }
+
+        /**
+         * Visits each candidate src, dest directory pair for this project.
+         * @param cl
+         */
+        abstract void visitDirMappings(Closure cl)
+    }
+
+    static class AppTarget extends GradleTarget {
         AppTarget(String projectDir) {
             super(projectDir)
         }
@@ -327,7 +363,7 @@ class SourceCopyTask extends DefaultTask {
         }
 
         @Override
-        void visitDirs(Closure cl) {
+        void visitDirMappings(Closure cl) {
             cl.call("src/main/cpp", "src/main/cpp")
             cl.call("src/main/headers", "src/main/headers")
             cl.call("src/main/public", "src/main/headers")
@@ -336,13 +372,13 @@ class SourceCopyTask extends DefaultTask {
         }
     }
 
-    static class LibTarget extends TemplateTarget {
+    static class LibTarget extends GradleTarget {
         LibTarget(String projectDir) {
             super(projectDir)
         }
 
         @Override
-        void visitDirs(Closure cl) {
+        void visitDirMappings(Closure cl) {
             cl.call("src/main/cpp", "src/main/cpp")
             cl.call("src/main/headers", "src/main/headers")
             cl.call("src/main/public", "src/main/public")
@@ -352,17 +388,32 @@ class SourceCopyTask extends DefaultTask {
     }
 
     static class SwiftPmTarget extends TemplateTarget {
-        SwiftPmTarget(String projectDir) {
+        final String targetName
+
+        SwiftPmTarget(String projectDir, String targetName) {
             super(projectDir)
+            this.targetName = targetName
+        }
+
+        @java.lang.Override
+        String getModule() {
+            return targetName
+        }
+
+        @java.lang.Override
+        String getKey() {
+            return "$projectDir:$targetName"
         }
 
         @Override
         void visitDirs(Closure cl) {
-            cl.call("src/main/cpp", ".")
-            cl.call("src/main/headers", "include")
-            cl.call("src/main/public", "include")
-            cl.call("src/main/swift", ".")
-            cl.call("src/test/swift", "Test")
+            templates.each { template ->
+                cl.call("${template.templateName}/src/main/cpp", "${projectDir}/Sources/${targetName}")
+                cl.call("${template.templateName}/src/main/headers", "${projectDir}/Sources/${targetName}/include")
+                cl.call("${template.templateName}/src/main/public", "${projectDir}/Sources/${targetName}/include")
+                cl.call("${template.templateName}/src/main/swift", "${projectDir}/Sources/${targetName}")
+                cl.call("${template.templateName}/src/test/swift", "${projectDir}/Tests/${targetName}Tests")
+            }
         }
     }
 }
