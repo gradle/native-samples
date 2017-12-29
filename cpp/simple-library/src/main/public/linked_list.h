@@ -1,3 +1,7 @@
+/*
+ * A linked list implementation.
+ */
+
 #pragma once
 
 #include <string>
