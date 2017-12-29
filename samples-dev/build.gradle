@@ -58,6 +58,7 @@ task configureNightlyWrapper {
 task nightlyWrapper(type: Wrapper) {
     dependsOn configureNightlyWrapper
     group = "wrapper"
+    description = "Updates the samples to use the most recent nightly"
     scriptFile = "../gradlew"
     jarFile = "../gradle/wrapper/gradle-wrapper.jar"
 }
@@ -70,6 +71,7 @@ tasks.withType(SourceCopyTask) {
 task generateSource {
     dependsOn tasks.withType(SourceCopyTask)
     group = "source generation"
+    description = "generate the source files for all samples"
 }
 
 task cppTransitiveDependencies(type: SourceCopyTask) {
