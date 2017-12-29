@@ -142,6 +142,14 @@ task swiftTransitiveDependencies(type: SourceCopyTask) {
     copyToLibProject("swift-lib", "list")
 }
 
+task swiftCompositeBuild(type: SourceCopyTask) {
+    sampleDir = file("../swift/composite-build")
+
+    copyToAppProject("swift-app", ".")
+    copyToLibProject("swift-lib-with-api-dep", "utilities-library")
+    copyToLibProject("swift-lib", "list-library")
+}
+
 class SourceCopyTask extends DefaultTask {
     final DirectoryProperty sampleDir = project.layout.directoryProperty()
     final DirectoryProperty templatesDir = project.layout.directoryProperty()

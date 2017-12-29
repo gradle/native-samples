@@ -1,6 +1,7 @@
-import Math
-import Hello
+/*
+ * A simple hello world application. Uses a library to tokenize and join a string and prints the result.
+ */
+import Utilities
 
-sayHello()
-let math = Math()
-print("The sum of 40 and 2 is \(math.sum(a: 40, b: 2))!")
+let tokens = Util.split("Hello,      World!")
+print(Util.join(tokens))

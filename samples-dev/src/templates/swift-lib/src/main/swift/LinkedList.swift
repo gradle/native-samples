@@ -1,3 +1,7 @@
+/*
+ * A linked list implementation.
+ */
+
 public class LinkedList {
     var head: Node?
     var tail: Node?
@@ -16,7 +20,7 @@ public class LinkedList {
         }
     }
 
-    public func get(_ i: UInt32) -> String {
+    public func get(_ i: Int) -> String {
         var n = head
         var c = i
         while (c > 0 && n != nil) {
@@ -26,8 +30,8 @@ public class LinkedList {
         return n!.data
     }
 
-    public func size() -> UInt32 {
-        var c: UInt32 = 0
+    public func size() -> Int {
+        var c = 0
         var n = head
         while (n != nil) {
             c = c + 1

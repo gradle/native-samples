@@ -1,6 +1,13 @@
+/*
+ * A class that provides several utility functions.
+ */
+
 import List
 
 public class Util {
+    /*
+     * Splits the given string into a list of tokens. Tokens are separated by one or more whitespace characters.
+     */
     public class func split(_ s: String) -> LinkedList {
         let l = LinkedList()
         var pos = s.startIndex
@@ -23,8 +30,11 @@ public class Util {
         return l
     }
 
+    /*
+     * Joins the list of tokens into a string, separated by space characters.
+     */
     public class func join(_ l: LinkedList) -> String {
-        var i: UInt32 = 0
+        var i = 0
         var formatted = ""
         while (i < l.size()) {
             if (i > 0) {
