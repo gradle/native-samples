@@ -33,12 +33,24 @@ interact with the test code as you would usually do through Xcode or you can run
 > ./gradlew test
 ```
 
+### Google test support
+
+The C++ sample `simple-library` demonstrates some basic Google test support in Gradle. This is currently not as refined as the XCTest support. 
+
+To run the tests from the command line:
+
+```
+> cd <sample-dir>
+> ./gradlew test
+```
+
 ### Debug and release variants
 
 The Swift/C++ plugins add a 'debug' and 'release' variant for each library or application. By default, the `assemble` will task will build the debug variant only.
 
-At this stage, there are no convenience tasks to build the release variant, or all variants, of a library or application.
-To build the release variant of a library, use the `linkRelease` task. To build the release variant of an application, use the `installRelease` task.
+You can also use the `assembleDebug` and `assembleRelease` tasks to build a specific variant, or both variants.
+
+At this stage, there are no convenience tasks to build all variants of a library or application.
 
 ### Publishing binaries to a Maven repository
 
@@ -54,11 +66,12 @@ This will build and publish the debug and release binaries. The binaries are pub
 
 ## Simple Library (simple-library)
 
-This build just shows that Swift or C++ libraries can be built with Gradle. There
-are no dependencies, just the library itself. To run it:
+This build shows how a Swift or C++ libraries can be built with Gradle. There are no dependencies, just the library itself.
+
+To build the library:
 
 ```
-> cd simple-module
+> cd simple-library
 > ./gradlew assemble
 
 BUILD SUCCESSFUL in 0s
@@ -68,9 +81,18 @@ BUILD SUCCESSFUL in 0s
 build/lib/main/debug/libmath.dylib
 ```
 
+To run the unit tests for the library:
+
+```
+> cd simple-library
+> ./gradlew test
+```
+
 ## Application (application)
 
-This build shows how a Swift/C++ application can be built with Gradle.
+This build shows how a Swift/C++ application can be built with Gradle. The application has no dependencies.
+
+To build and run the application:
 
 ```
 > cd application
@@ -83,11 +105,12 @@ BUILD SUCCESSFUL in 0s
 Hello, World!
 ```
 
-## Multi-Project with Transitive Dependencies (transitive-dependencies)
+## Application with library dependencies a multi-project build (transitive-dependencies)
 
 This builds shows how an application and several Swift/C++ libraries can be built with Gradle and linked together. The
 dependencies are added transitively from the dependencies between modules.
-To run it:
+
+To build and run the application:
 
 ```
 > cd transitive-dependencies
@@ -102,11 +125,13 @@ Hello, World!
 
 The build script also demonstrates how to configure convenience tasks like `assembleDebuggable`, which will assemble all "debuggable" binaries.
 
-## Composite Build with Transitive Dependencies (composite-build)
+## Application with library dependencies in a composite build (composite-build)
 
 This build shows that several otherwise independent Swift/C++ libraries can be built together with Gradle. The
 dependencies are added transitively from the dependencies between modules
-and the build take part in a composite build. To run it:
+and the build take part in a composite build.
+
+To build and run the application:
 
 ```
 > cd composite-build
@@ -119,25 +144,24 @@ Hello, World!
 The sum of 40 and 2 is 42!
 ```
 
-## Binary dependencies (binary-dependencies)
+## Application with prebuilt library dependencies in a Maven repository (binary-dependencies)
 
 This build shows how to publish C++ libraries to a Maven repository and use them from another build. This is currently only supported for C++.
 
 To use the sample, first publish a library to the repository using the `simple-library` build:
 
 ```
-> cd simple-library
-> ./gradlew publish
+> cd binary-dependencies
+> ./gradlew -p ../simple-library publish
 
 BUILD SUCCESSFUL in 0s
 ```
 
 You can find the repository in the `cpp/repo` directory.
 
-Next, run the sample that uses the library from this repository.
+Next, build the application that uses the library from this repository.
 
 ```
-> cd ../binary-dependencies
 > ./gradlew assemble
 
 BUILD SUCCESSFUL in 0s
@@ -146,23 +170,22 @@ BUILD SUCCESSFUL in 0s
 The sum of 40 and 2 is 42!
 ```
 
-## Prebuilt binaries (prebuilt-binaries)
+## Application with prebuilt library dependencies (prebuilt-binaries)
 
 This build shows how to use pre-built binaries that are already available on the local machine. Currently, Gradle does not offer a convenient way to do this but it is possible to configure Gradle to use these binaries.
 
 To use the sample, first create the binaries using the `simple-library` build:
 
 ```
-> cd simple-library
-> ./gradlew assemble
+> cd prebuilt-binaries
+> ./gradlew -p ../simple-library assemble
 
 BUILD SUCCESSFUL in 0s
 ```
 
-Next, run the sample that uses these binaries:
+Next, build and run the application that uses these binaries:
 
 ```
-> cd ../prebuilt-binaries
 > ./gradlew assemble
 
 BUILD SUCCESSFUL in 0s
@@ -171,7 +194,7 @@ BUILD SUCCESSFUL in 0s
 The sum of 40 and 2 is 42!
 ```
 
-## Swift package manager conventions (swift-package-manager)
+## Application with Swift package manager conventions (swift-package-manager)
 
 This build shows how to configure Gradle to use the typical layout for a Swift Package Manager package.
 It contains an application and a single library. The source files for the application and libraries are all under a single `Sources` directory.
@@ -201,9 +224,9 @@ BUILD SUCCESSFUL in 0s
 
 Generated sources will be under `build/generated`.
 
-## Source Dependencies (Swift and C++)
+## Application with source library dependencies (Swift and C++)
 
-These builds demonstrate using External Source Dependencies to build Swift and C++ applications that require two external libraries.
+These builds demonstrate using external source dependencies to build Swift and C++ applications that require two external libraries.
 
 ### Swift
 ```
