@@ -1,8 +1,8 @@
 import groovy.io.FileType
 
 plugins {
-    id 'groovy'
-    id 'idea'
+    id "groovy"
+    id "idea"
 }
 
 repositories {
@@ -12,26 +12,26 @@ repositories {
 dependencies {
     testImplementation gradleTestKit()
     testImplementation localGroovy()
-    testImplementation('org.spockframework:spock-core:1.1-groovy-2.4') {
-        exclude group: 'org.codehaus.groovy'
+    testImplementation("org.spockframework:spock-core:1.1-groovy-2.4") {
+        exclude group: "org.codehaus.groovy"
     }
 }
 
 test {
-    inputs.files files('../swift', '../cpp').asFileTree.matching {PatternFilterable pattern ->
-        pattern.exclude '**/build', '**/.gradle', '**/*.xcworkspace', '**/*.xcodeproj', '**/repo'
+    inputs.files files("../swift", '../cpp').asFileTree.matching { PatternFilterable pattern ->
+        pattern.exclude "**/build", "**/.gradle", "**/*.xcworkspace", "**/*.xcodeproj", "**/repo"
     }
 }
 
 task cleanRepo(type: Delete) {
-    delete file('../cpp/repo')
+    delete file("../cpp/repo")
 }
 
 task cleanSamples {
     dependsOn cleanRepo
     doLast {
         def toDelete = []
-        [file('../swift'), file('../cpp')]*.eachFileRecurse(FileType.DIRECTORIES) { File dir ->
+        [file("../swift"), file("../cpp")]*.eachFileRecurse(FileType.DIRECTORIES) { def dir ->
             if ([/repo/, /build/, /\.gradle/, /.+\.xcworkspace/, /.+\.xcodeproj/].any { dir.name ==~ it }) {
                 toDelete << dir
             }
