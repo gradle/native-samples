@@ -1,3 +1,6 @@
+/*
+ * A simple hello world application. Uses a library to tokenize and join a string and prints the result.
+ */
 #include <iostream>
 
 #include "string_utils.h"

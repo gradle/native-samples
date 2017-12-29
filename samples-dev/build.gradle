@@ -134,6 +134,14 @@ task cppSwiftPackageManager(type: SourceCopyTask) {
     copyToSwiftPMProject("cpp-lib", "Sources/List")
 }
 
+task swiftTransitiveDependencies(type: SourceCopyTask) {
+    sampleDir = file("../swift/transitive-dependencies")
+
+    copyToAppProject("swift-app", "app")
+    copyToLibProject("swift-lib-with-api-dep", "utilities")
+    copyToLibProject("swift-lib", "list")
+}
+
 class SourceCopyTask extends DefaultTask {
     final DirectoryProperty sampleDir = project.layout.directoryProperty()
     final DirectoryProperty templatesDir = project.layout.directoryProperty()
@@ -195,6 +203,7 @@ class SourceCopyTask extends DefaultTask {
         @Override
         void visitDirs(Closure cl) {
             cl.call("src/main/cpp", "src/main/cpp")
+            cl.call("src/main/swift", "src/main/swift")
             cl.call("src/main/headers", "src/main/headers")
             cl.call("src/main/public", "src/main/headers")
         }
@@ -208,6 +217,7 @@ class SourceCopyTask extends DefaultTask {
         @Override
         void visitDirs(Closure cl) {
             cl.call("src/main/cpp", "src/main/cpp")
+            cl.call("src/main/swift", "src/main/swift")
             cl.call("src/main/headers", "src/main/headers")
             cl.call("src/main/public", "src/main/public")
         }
@@ -221,6 +231,7 @@ class SourceCopyTask extends DefaultTask {
         @Override
         void visitDirs(Closure cl) {
             cl.call("src/main/cpp", ".")
+            cl.call("src/main/swift", ".")
             cl.call("src/main/headers", "include")
             cl.call("src/main/public", "include")
         }
