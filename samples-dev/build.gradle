@@ -1,5 +1,4 @@
 import groovy.io.FileType
-import org.gradle.cache.internal.MapBackedCache
 
 plugins {
     id "groovy"
@@ -78,61 +77,61 @@ task generateSource {
 task cppTransitiveDependencies(type: SourceCopyTask) {
     sampleDir = file("../cpp/transitive-dependencies")
 
-    copyToAppProject("cpp-app", "app")
-    copyToLibProject("cpp-lib-with-api-dep", "utilities")
-    copyToLibProject("cpp-lib", "list")
+    appProject("app").fromTemplate("cpp-app")
+    libProject("utilities").fromTemplate("cpp-lib-with-api-dep")
+    libProject("list").fromTemplate("cpp-lib")
 }
 
 task cppApplication(type: SourceCopyTask) {
     sampleDir = file("../cpp/application")
 
-    copyToAppProject("cpp-app", ".")
-    copyToAppProject("cpp-lib-with-api-dep", ".")
-    copyToAppProject("cpp-lib", ".")
+    appProject(".").fromTemplate("cpp-app")
+    appProject(".").fromTemplate("cpp-lib-with-api-dep")
+    appProject(".").fromTemplate("cpp-lib")
 }
 
 task cppLibrary(type: SourceCopyTask) {
     sampleDir = file("../cpp/simple-library")
 
-    copyToLibProject("cpp-lib", ".")
+    libProject(".").fromTemplate("cpp-lib")
 }
 
 task cppBinaryDependencies(type: SourceCopyTask) {
     sampleDir = file("../cpp/binary-dependencies")
 
-    copyToAppProject("cpp-app", ".")
-    copyToAppProject("cpp-lib-with-api-dep", ".")
+    appProject(".").fromTemplate("cpp-app")
+    appProject(".").fromTemplate("cpp-lib-with-api-dep")
 }
 
 task cppPrebuiltBinaries(type: SourceCopyTask) {
     sampleDir = file("../cpp/prebuilt-binaries")
 
-    copyToAppProject("cpp-app", ".")
-    copyToAppProject("cpp-lib-with-api-dep", ".")
+    appProject(".").fromTemplate("cpp-app")
+    appProject(".").fromTemplate("cpp-lib-with-api-dep")
 }
 
 task cppCompositeBuild(type: SourceCopyTask) {
     sampleDir = file("../cpp/composite-build")
 
-    copyToAppProject("cpp-app", ".")
-    copyToLibProject("cpp-lib-with-api-dep", "utilities-library")
-    copyToLibProject("cpp-lib", "list-library")
+    appProject(".").fromTemplate("cpp-app")
+    libProject("utilities-library").fromTemplate("cpp-lib-with-api-dep")
+    libProject("list-library").fromTemplate("cpp-lib")
 }
 
 task cppSourceDependencies(type: SourceCopyTask) {
     sampleDir = file("../cpp/source-dependencies")
 
-    copyToAppProject("cpp-app", ".")
-    copyToLibProject("cpp-lib-with-api-dep", "repos/utilities")
-    copyToLibProject("cpp-lib", "repos/list")
+    appProject(".").fromTemplate("cpp-app")
+    libProject("repos/utilities").fromTemplate("cpp-lib-with-api-dep")
+    libProject("repos/list").fromTemplate("cpp-lib")
 }
 
 task cppSwiftPackageManager(type: SourceCopyTask) {
     sampleDir = file("../cpp/swift-package-manager")
 
-    copyToSwiftPMProject("cpp-app", "Sources/App")
-    copyToSwiftPMProject("cpp-lib-with-api-dep", "Sources/Utilities")
-    copyToSwiftPMProject("cpp-lib", "Sources/List")
+    swiftPMProject("Sources/App").fromTemplate("cpp-app")
+    swiftPMProject("Sources/Utilities").fromTemplate("cpp-lib-with-api-dep")
+    swiftPMProject("Sources/List").fromTemplate("cpp-lib")
 }
 
 def swiftUtilsLib = SwiftLibraryTemplate.of("swift-lib-with-api-dep", "Utilities")
@@ -141,151 +140,167 @@ def swiftListLib = SwiftLibraryTemplate.of("swift-lib", "List")
 task swiftApplication(type: SourceCopyTask) {
     sampleDir = file("../swift/application")
 
-    copyToAppProject("swift-app", ".")
-    copyToLibProject(swiftUtilsLib, ".")
-    copyToLibProject(swiftListLib, ".")
+    appProject(".").fromTemplate("swift-app")
+    appProject(".").fromTemplate(swiftUtilsLib)
+    appProject(".").fromTemplate(swiftListLib)
 }
 
 task swiftTransitiveDependencies(type: SourceCopyTask) {
     sampleDir = file("../swift/transitive-dependencies")
 
-    copyToAppProject("swift-app", "app")
-    copyToLibProject(swiftUtilsLib, "utilities")
-    copyToLibProject(swiftListLib, "list")
+    appProject("app").fromTemplate("swift-app")
+    libProject("utilities").fromTemplate(swiftUtilsLib)
+    libProject("list").fromTemplate(swiftListLib)
 }
 
 task swiftCompositeBuild(type: SourceCopyTask) {
     sampleDir = file("../swift/composite-build")
 
-    copyToAppProject("swift-app", ".")
-    copyToLibProject(swiftUtilsLib, "utilities-library")
-    copyToLibProject(swiftListLib, "list-library")
+    appProject(".").fromTemplate("swift-app")
+    libProject("utilities-library").fromTemplate(swiftUtilsLib)
+    libProject("list-library").fromTemplate(swiftListLib)
 }
 
 class SourceCopyTask extends DefaultTask {
     final DirectoryProperty sampleDir = project.layout.directoryProperty()
     final DirectoryProperty templatesDir = project.layout.directoryProperty()
-    final Map<String, Set<String>> modulesInProject = [:]
-    final List<TemplateTarget> templates = []
+    final Map<String, TemplateTarget> projects = [:]
 
     @TaskAction
     def go() {
         def cleaned = new HashSet()
-        templates.each { t ->
-            def templateBaseDir = templatesDir.dir(t.template.templateName).get().asFile
-            def projectDir = sampleDir.dir(t.projectDir).get().asFile
-            def modules = modulesInProject[t.projectDir].collect { "import $it" as String }
-            t.visitDirs { s, d ->
-                def srcDir = new File(templateBaseDir, s)
-                if (!srcDir.directory) {
-                    return
-                }
-                def destDir = new File(projectDir, d)
-                println "copy $srcDir to $destDir"
-                if (cleaned.add(destDir)) {
-                    project.delete(destDir)
-                }
-                project.copy {
-                    from srcDir
-                    into destDir
-                    filter { line ->
-                        if (modules.contains(line)) {
-                            return null
+        projects.values().each { p ->
+            def projectDir = sampleDir.dir(p.projectDir).get().asFile
+            def modules = p.includedModules.collect { "import $it" as String }
+            def testModules = p.includedModules.collect { "@testable import $it" as String }
+            p.templates.each { t ->
+                def templateBaseDir = templatesDir.dir(t.templateName).get().asFile
+                p.visitDirs { s, d ->
+                    def srcDir = new File(templateBaseDir, s)
+                    if (!srcDir.directory) {
+                        return
+                    }
+                    def destDir = new File(projectDir, d)
+                    println "copy $srcDir to $destDir"
+                    if (cleaned.add(destDir)) {
+                        // TODO - generate the test main.swift
+                        project.delete project.fileTree(destDir, { exclude '**/main.swift' })
+                    }
+                    project.copy {
+                        from srcDir
+                        into destDir
+                        filter { line ->
+                            if (modules.contains(line)) {
+                                return null
+                            }
+                            if (testModules.contains(line)) {
+                                return "@testable import " + p.module
+                            }
+                            line
                         }
-                        line
                     }
                 }
             }
         }
     }
 
-    void copyToAppProject(String template, String projectDir) {
-        add(new AppTarget(new Template(template), projectDir))
+    AppTarget appProject(String projectDir) {
+        return add(new AppTarget(projectDir))
     }
 
-    void copyToAppProject(Template template, String projectDir) {
-        add(new AppTarget(template, projectDir))
+    LibTarget libProject(String projectDir) {
+        return add(new LibTarget(projectDir))
     }
 
-    void copyToLibProject(String template, String projectDir) {
-        add(new LibTarget(new Template(template), projectDir))
+    SwiftPmTarget swiftPMProject(String projectDir) {
+        return add(new SwiftPmTarget(projectDir))
     }
 
-    void copyToLibProject(Template template, String projectDir) {
-        add(new LibTarget(template, projectDir))
-    }
-
-    void copyToSwiftPMProject(String template, String projectDir) {
-        add(new SwiftPmTarget(new Template(template), projectDir))
-    }
-
-    void copyToSwiftPMProject(Template template, String projectDir) {
-        add(new SwiftPmTarget(template, projectDir))
-    }
-
-    private void add(TemplateTarget target) {
-        templates.add(target)
-        if (target.template instanceof SwiftLibraryTemplate) {
-            def modules = modulesInProject[target.projectDir]
-            if (modules == null) {
-                modules = new HashSet()
-                modulesInProject.put(target.projectDir, modules)
-            }
-            modules.add(target.template.module)
+    private def add(TemplateTarget target) {
+        if (projects.containsKey(target.projectDir)) {
+            return projects.get(target.projectDir)
         }
+        projects.put(target.projectDir, target)
+        return target
     }
 
     static abstract class TemplateTarget {
-        final Template template
+        final List<Template> templates = []
         final String projectDir
 
-        TemplateTarget(Template template, String projectDir) {
-            this.template = template
+        TemplateTarget(String projectDir) {
             this.projectDir = projectDir
+        }
+
+        TemplateTarget fromTemplate(String templateName) {
+            return fromTemplate(Template.of(templateName))
+        }
+
+        TemplateTarget fromTemplate(Template template) {
+            templates.add(template)
+            return this
+        }
+
+        String getModule() {
+            def libs = templates.findAll { it instanceof SwiftLibraryTemplate }
+            return libs.first().module
+        }
+
+        List<String> getIncludedModules() {
+            def libs = templates.findAll { it instanceof SwiftLibraryTemplate }
+            return libs.collect { it.module }
         }
 
         abstract void visitDirs(Closure cl)
     }
 
     static class AppTarget extends TemplateTarget {
-        AppTarget(Template template, String projectDir) {
-            super(template, projectDir)
+        AppTarget(String projectDir) {
+            super(projectDir)
+        }
+
+        @Override
+        String getModule() {
+            return "App"
         }
 
         @Override
         void visitDirs(Closure cl) {
             cl.call("src/main/cpp", "src/main/cpp")
-            cl.call("src/main/swift", "src/main/swift")
             cl.call("src/main/headers", "src/main/headers")
             cl.call("src/main/public", "src/main/headers")
+            cl.call("src/main/swift", "src/main/swift")
+            cl.call("src/test/swift", "src/test/swift")
         }
     }
 
     static class LibTarget extends TemplateTarget {
-        LibTarget(Template template, String projectDir) {
-            super(template, projectDir)
+        LibTarget(String projectDir) {
+            super(projectDir)
         }
 
         @Override
         void visitDirs(Closure cl) {
             cl.call("src/main/cpp", "src/main/cpp")
-            cl.call("src/main/swift", "src/main/swift")
             cl.call("src/main/headers", "src/main/headers")
             cl.call("src/main/public", "src/main/public")
+            cl.call("src/main/swift", "src/main/swift")
+            cl.call("src/test/swift", "src/test/swift")
         }
     }
 
     static class SwiftPmTarget extends TemplateTarget {
-        SwiftPmTarget(Template template, String projectDir) {
-            super(template, projectDir)
+        SwiftPmTarget(String projectDir) {
+            super(projectDir)
         }
 
         @Override
         void visitDirs(Closure cl) {
             cl.call("src/main/cpp", ".")
-            cl.call("src/main/swift", ".")
             cl.call("src/main/headers", "include")
             cl.call("src/main/public", "include")
+            cl.call("src/main/swift", ".")
+            cl.call("src/test/swift", "Test")
         }
     }
 }
@@ -295,6 +310,10 @@ class Template {
 
     Template(String templateName) {
         this.templateName = templateName
+    }
+
+    static of(String templateName) {
+        return new Template(templateName)
     }
 }
 
