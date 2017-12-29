@@ -60,7 +60,7 @@ class SampleIntegrationTest extends Specification {
 
     private File getRootSampleDir() {
         File result = new File(this.class.getProtectionDomain().getCodeSource().getLocation().getPath())
-        while (!new File(result, 'settings.gradle.kts').exists()) {
+        while (!new File(result, 'settings.gradle').exists()) {
             result = result.parentFile
         }
         return result
