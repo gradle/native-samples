@@ -11,21 +11,42 @@ project(':app') {
     }
 
     dependencies {
-        implementation project(':greeter')
+        implementation project(':utilities')
     }
 }
 
-project(':greeter') {
+project(':utilities') {
     apply plugin: 'cpp-library'
 
     // Configure the source files of the library
     library {
-        source.from rootProject.file('Sources/Greeter')
-        publicHeaders.from rootProject.file('Sources/Greeter/include')
+        source.from rootProject.file('Sources/Utilities')
+        publicHeaders.from rootProject.file('Sources/Utilities/include')
+    }
+
+    dependencies {
+        api project(':list')
+    }
+}
+
+project(':list') {
+    apply plugin: 'cpp-library'
+
+    // Configure the source files of the library
+    library {
+        source.from rootProject.file('Sources/List')
+        publicHeaders.from rootProject.file('Sources/List/include')
     }
 }
 
 // Move the build directories for all projects into a single top-level directory
 allprojects { p ->
     buildDir = rootProject.file("build/${p.name}")
+
+    // Work around for https://github.com/gradle/gradle-native/issues/376
+    tasks.withType(AbstractLinkTask) {
+        doFirst {
+            p.projectDir.mkdirs()
+        }
+    }
 }

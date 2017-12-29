@@ -126,6 +126,14 @@ task cppSourceDependencies(type: SourceCopyTask) {
     copyToLibProject("cpp-lib", "repos/list")
 }
 
+task cppSwiftPackageManager(type: SourceCopyTask) {
+    sampleDir = file("../cpp/swift-package-manager")
+
+    copyToSwiftPMProject("cpp-app", "Sources/App")
+    copyToSwiftPMProject("cpp-lib-with-api-dep", "Sources/Utilities")
+    copyToSwiftPMProject("cpp-lib", "Sources/List")
+}
+
 class SourceCopyTask extends DefaultTask {
     final DirectoryProperty sampleDir = project.layout.directoryProperty()
     final DirectoryProperty templatesDir = project.layout.directoryProperty()
@@ -163,6 +171,10 @@ class SourceCopyTask extends DefaultTask {
         templates.add(new LibTarget(template, projectDir))
     }
 
+    void copyToSwiftPMProject(String template, String projectDir) {
+        templates.add(new SwiftPmTarget(template, projectDir))
+    }
+
     static abstract class TemplateTarget {
         final String template
         final String projectDir
@@ -198,6 +210,19 @@ class SourceCopyTask extends DefaultTask {
             cl.call("src/main/cpp", "src/main/cpp")
             cl.call("src/main/headers", "src/main/headers")
             cl.call("src/main/public", "src/main/public")
+        }
+    }
+
+    static class SwiftPmTarget extends TemplateTarget {
+        SwiftPmTarget(String template, String projectDir) {
+            super(template, projectDir)
+        }
+
+        @Override
+        void visitDirs(Closure cl) {
+            cl.call("src/main/cpp", ".")
+            cl.call("src/main/headers", "include")
+            cl.call("src/main/public", "include")
         }
     }
 }
