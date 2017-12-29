@@ -11,12 +11,8 @@ def greeterReleaseImportPath = file('../simple-library/build/modules/main/releas
 def greeterDebugLib = file(OperatingSystem.current().getSharedLibraryName('../simple-library/build/lib/main/debug/Math'))
 def greeterReleaseLib = file(OperatingSystem.current().getSharedLibraryName('../simple-library/build/lib/main/release/Math'))
 
-tasks.withType(SwiftCompile) {
-    doFirst {
-        if (!greeterDebugLib.exists() || !greeterReleaseLib.exists() || !greeterDebugImportPath.exists() || !greeterReleaseImportPath.exists()) {
-            throw new GradleException("Please build project at ${file('../simple-library')}.")
-        }
-    }
+if (!greeterDebugLib.exists() || !greeterReleaseLib.exists() || !greeterDebugImportPath.exists() || !greeterReleaseImportPath.exists()) {
+    throw new GradleException("Please build project at ${file('../simple-library')} using './gradlew -p ../simple-library assembleRelease assembleDebug'")
 }
 
 components.main.binaries.whenElementFinalized { binary ->

@@ -14,22 +14,22 @@ repositories {
     }
 }
 
-def targetPlatform = compileDebugCpp.targetPlatform
-
 dependencies {
     // Currently, the operating system and architecture are not considered by dependency management
     // Encode the operating system and architecture in the module name instead
     // Also, as the Gradle publishing format for C++ is not yet stable, encode the Gradle version in the module as well
     // None of this will be necessarily in later releases and Gradle will take care of these things instead
-    def osName = targetPlatform.operatingSystem.name.replace(' ', '').toLowerCase()
-    if (osName.startsWith('windows')) {
-        // Windows 10 binaries are backward compatible with Windows 7
-        osName = 'windows10'
-    }
-    def archName = targetPlatform.architecture.name.replace(' ', '').toLowerCase()
-    def gradleVersion = '4.5'
+    library.binaries.whenElementFinalized {
+        def osName = targetPlatform.operatingSystem.name.replace(' ', '').toLowerCase()
+        if (osName.startsWith('windows')) {
+            // Windows 10 binaries are backward compatible with Windows 7
+            osName = 'windows10'
+        }
+        def archName = targetPlatform.architecture.name.replace(' ', '').toLowerCase()
+        def gradleVersion = '4.5'
 
-    unitTestImplementation "org.gradle.cpp-samples:googletest_${osName}_${archName}_${gradleVersion}:latest.integration"
+        testImplementation "org.gradle.cpp-samples:googletest_${osName}_${archName}_${gradleVersion}:latest.integration"
+    }
 }
 
 tasks.withType(CppCompile) {

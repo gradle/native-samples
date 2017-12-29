@@ -13,20 +13,23 @@ def greeterReleaseLib = file(OperatingSystem.current().getSharedLibraryName('../
 def greeterDebugLinkLib = file(OperatingSystem.current().getLinkLibraryName('../simple-library/build/lib/main/debug/math'))
 def greeterReleaseLinkLib = file(OperatingSystem.current().getLinkLibraryName('../simple-library/build/lib/main/release/math'))
 
-compileDebugCpp.doFirst {
-    if (!greeterDebugLib.exists() || !greeterReleaseLib.exists()) {
-        throw new GradleException("Please build project at ${file('../simple-library')} with: './gradlew linkRelease linkDebug'")
-    }
-    if (!greeterIncludePath.exists()) {
-        throw new GradleException("Please ensure in include path: ${greeterIncludePath} exists")
-    }
+if (!greeterDebugLib.exists() || !greeterReleaseLib.exists()) {
+    throw new GradleException("Please build project at ${file('../simple-library')} with: './gradlew -p ../simple-library assembleRelease assembleDebug'")
+}
+if (!greeterIncludePath.exists()) {
+    throw new GradleException("Please ensure in include path: ${greeterIncludePath} exists")
 }
 
-dependencies {
-    cppCompileDebug files(greeterIncludePath)
-    cppCompileRelease files(greeterIncludePath)
-    nativeLinkDebug files(greeterDebugLinkLib)
-    nativeLinkRelease files(greeterReleaseLinkLib)
-    nativeRuntimeDebug files(greeterDebugLib)
-    nativeRuntimeRelease files(greeterReleaseLib)
+components.main.binaries.whenElementFinalized { binary ->
+    dependencies {
+        if (binary.optimized) {
+            add(binary.includePathConfiguration.name, files(greeterIncludePath))
+            add(binary.linkLibraries.name, files(greeterReleaseLinkLib))
+            add(binary.runtimeLibraries.name, files(greeterReleaseLib))
+        } else {
+            add(binary.includePathConfiguration.name, files(greeterIncludePath))
+            add(binary.linkLibraries.name, files(greeterDebugLinkLib))
+            add(binary.runtimeLibraries.name, files(greeterDebugLib))
+        }
+    }
 }
