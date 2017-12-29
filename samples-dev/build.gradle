@@ -190,6 +190,14 @@ task swiftSourceDependencies(type: SourceCopyTask) {
     libProject("repos/list").fromTemplate(swiftListLib)
 }
 
+task swiftStaticLibrary(type: SourceCopyTask) {
+    sampleDir = file("../swift/static-library")
+
+    appProject("app").fromTemplate("swift-app")
+    libProject("utilities").fromTemplate(swiftUtilsLib)
+    libProject("list").fromTemplate(swiftListLib)
+}
+
 task swiftCppDependencies(type: SourceCopyTask) {
     sampleDir = file("../swift/cpp-dependencies")
 

@@ -1,0 +1,8 @@
+plugins {
+    id 'swift-library'
+    id 'xctest'
+}
+
+library {
+    linkage = [Linkage.SHARED, Linkage.STATIC]
+}
