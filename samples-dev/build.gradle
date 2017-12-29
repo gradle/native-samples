@@ -71,6 +71,15 @@ task cppTransitiveDependencies(type: SourceCopyTask) {
     copyToLibProject("cpp-lib-with-api-dep", "utilities")
 }
 
+task cppApplication(type: SourceCopyTask) {
+    sampleDir = file("../cpp/application")
+    templatesDir = file("src/templates")
+
+    copyToAppProject("cpp-app", ".")
+    copyToAppProject("cpp-lib", ".")
+    copyToAppProject("cpp-lib-with-api-dep", ".")
+}
+
 class SourceCopyTask extends DefaultTask {
     final DirectoryProperty sampleDir = project.layout.directoryProperty()
     final DirectoryProperty templatesDir = project.layout.directoryProperty()
@@ -82,12 +91,12 @@ class SourceCopyTask extends DefaultTask {
         templates.each { t ->
             def templateBaseDir = templatesDir.dir(t.template).get().asFile
             def projectDir = sampleDir.dir(t.projectDir).get().asFile
-            ["src/main/cpp", "src/main/public", "src/main/headers"].each {
-                def srcDir = new File(templateBaseDir, it)
+            t.visitDirs { s, d ->
+                def srcDir = new File(templateBaseDir, s)
                 if (!srcDir.directory) {
                     return
                 }
-                def destDir = new File(projectDir, it)
+                def destDir = new File(projectDir, d)
                 println "copy $srcDir to $destDir"
                 if (cleaned.add(destDir)) {
                     project.delete(destDir)
@@ -101,20 +110,48 @@ class SourceCopyTask extends DefaultTask {
     }
 
     void copyToAppProject(String template, String projectDir) {
-        templates.add(new TemplateTarget(template, projectDir))
+        templates.add(new AppTarget(template, projectDir))
     }
 
     void copyToLibProject(String template, String projectDir) {
-        templates.add(new TemplateTarget(template, projectDir))
+        templates.add(new LibTarget(template, projectDir))
     }
 
-    static class TemplateTarget {
+    static abstract class TemplateTarget {
         final String template
         final String projectDir
 
         TemplateTarget(String template, String projectDir) {
             this.template = template
             this.projectDir = projectDir
+        }
+
+        abstract void visitDirs(Closure cl)
+    }
+
+    static class AppTarget extends TemplateTarget {
+        AppTarget(String template, String projectDir) {
+            super(template, projectDir)
+        }
+
+        @Override
+        void visitDirs(Closure cl) {
+            cl.call("src/main/cpp", "src/main/cpp")
+            cl.call("src/main/headers", "src/main/headers")
+            cl.call("src/main/public", "src/main/headers")
+        }
+    }
+
+    static class LibTarget extends TemplateTarget {
+        LibTarget(String template, String projectDir) {
+            super(template, projectDir)
+        }
+
+        @Override
+        void visitDirs(Closure cl) {
+            cl.call("src/main/cpp", "src/main/cpp")
+            cl.call("src/main/headers", "src/main/headers")
+            cl.call("src/main/public", "src/main/public")
         }
     }
 }
