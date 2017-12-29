@@ -177,6 +177,15 @@ task swiftSourceDependencies(type: SourceCopyTask) {
     libProject("repos/list").fromTemplate(swiftListLib)
 }
 
+task swiftCppDependencies(type: SourceCopyTask) {
+    sampleDir = file("../swift/cpp-dependencies")
+
+    libProject("list").fromTemplate("cpp-lib-with-c-api")
+    appProject("app").fromTemplate(SwiftLibraryTemplate.of("swift-lib-uses-c-api", "List"))
+    appProject("app").fromTemplate(swiftUtilsLib)
+    appProject("app").fromTemplate("swift-app")
+}
+
 task generateCppRepos(type: GitRepoTask) {
     sampleDir = file("../cpp/source-dependencies/repos")
 }
@@ -383,6 +392,8 @@ class GitRepoTask extends DefaultTask {
             add.call()
             git.commit().setMessage("Initial version").call()
             git.tag().setName("1.0").call()
+            new File(destDir, "build.gradle") << "\n"
+            git.commit().setAll(true).setMessage("Initial version").call()
             git.tag().setName("2.0").call()
         } finally {
             git.close()

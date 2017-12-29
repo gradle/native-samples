@@ -1,7 +1,6 @@
-import Hello
+/*
+ * A simple hello world application. Uses a library to tokenize and join a string and prints the result.
+ */
 
-internal func getMessage() -> String {
-    return sayHello()
-}
-
-print(getMessage())
+let tokens = Util.split("Hello,      World!")
+print(Util.join(tokens))

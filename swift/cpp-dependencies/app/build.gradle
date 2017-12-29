@@ -6,7 +6,7 @@ plugins {
 }
 
 dependencies {
-    implementation project(':hello')
+    implementation project(':list')
 }
 
 if (!OperatingSystem.current().linux) {
