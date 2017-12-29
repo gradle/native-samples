@@ -61,3 +61,60 @@ task nightlyWrapper(type: Wrapper) {
     scriptFile = "../gradlew"
     jarFile = "../gradle/wrapper/gradle-wrapper.jar"
 }
+
+task cppTransitiveDependencies(type: SourceCopyTask) {
+    sampleDir = file("../cpp/transitive-dependencies")
+    templatesDir = file("src/templates")
+
+    copyToAppProject("cpp-app", "app")
+    copyToLibProject("cpp-lib", "list")
+    copyToLibProject("cpp-lib-with-api-dep", "utilities")
+}
+
+class SourceCopyTask extends DefaultTask {
+    final DirectoryProperty sampleDir = project.layout.directoryProperty()
+    final DirectoryProperty templatesDir = project.layout.directoryProperty()
+    private final List<TemplateTarget> templates = []
+
+    @TaskAction
+    def go() {
+        def cleaned = new HashSet()
+        templates.each { t ->
+            def templateBaseDir = templatesDir.dir(t.template).get().asFile
+            def projectDir = sampleDir.dir(t.projectDir).get().asFile
+            ["src/main/cpp", "src/main/public", "src/main/headers"].each {
+                def srcDir = new File(templateBaseDir, it)
+                if (!srcDir.directory) {
+                    return
+                }
+                def destDir = new File(projectDir, it)
+                println "copy $srcDir to $destDir"
+                if (cleaned.add(destDir)) {
+                    project.delete(destDir)
+                }
+                project.copy {
+                    from srcDir
+                    into destDir
+                }
+            }
+        }
+    }
+
+    void copyToAppProject(String template, String projectDir) {
+        templates.add(new TemplateTarget(template, projectDir))
+    }
+
+    void copyToLibProject(String template, String projectDir) {
+        templates.add(new TemplateTarget(template, projectDir))
+    }
+
+    static class TemplateTarget {
+        final String template
+        final String projectDir
+
+        TemplateTarget(String template, String projectDir) {
+            this.template = template
+            this.projectDir = projectDir
+        }
+    }
+}
