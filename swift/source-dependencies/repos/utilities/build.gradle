@@ -1,10 +1,11 @@
 plugins {
     id 'swift-library'
     id 'xcode'
+    id 'xctest'
 }
 
 group = 'org.gradle.swift-samples'
 
 dependencies {
-    api 'org.gradle.swift-samples:greeting:latest.integration'
+    api 'org.gradle.swift-samples:list:2.0'
 }

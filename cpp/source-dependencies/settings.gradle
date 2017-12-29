@@ -1,11 +1,11 @@
-// ignored
+// dependsOn . generateCppRepos
 rootProject.name = 'app'
 
 sourceControl {
     vcsMappings {
         def repos = [ file('repos/utilities-repo'), file('repos/list-repo') ]
         if (repos.any { !it.exists() }) {
-            throw new GradleException("Regenerate remote git repositories with './generate-repos.sh'")
+            throw new GradleException("Regenerate remote git repositories with './gradlew -p ../.. generateCppRepos'")
         }
         withModule('org.gradle.cpp-samples:utilities') {
             from vcs(GitVersionControlSpec) {

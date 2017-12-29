@@ -1,4 +1,12 @@
 import groovy.io.FileType
+import org.eclipse.jgit.api.Git
+import org.eclipse.jgit.api.InitCommand
+
+buildscript {
+    dependencies {
+        classpath "org.eclipse.jgit:org.eclipse.jgit:4.9.1.201712030800-r"
+    }
+}
 
 plugins {
     id "groovy"
@@ -159,6 +167,22 @@ task swiftCompositeBuild(type: SourceCopyTask) {
     appProject(".").fromTemplate("swift-app")
     libProject("utilities-library").fromTemplate(swiftUtilsLib)
     libProject("list-library").fromTemplate(swiftListLib)
+}
+
+task swiftSourceDependencies(type: SourceCopyTask) {
+    sampleDir = file("../swift/source-dependencies")
+
+    appProject(".").fromTemplate("swift-app")
+    libProject("repos/utilities").fromTemplate(swiftUtilsLib)
+    libProject("repos/list").fromTemplate(swiftListLib)
+}
+
+task generateCppRepos(type: GitRepoTask) {
+    sampleDir = file("../cpp/source-dependencies/repos")
+}
+
+task generateSwiftRepos(type: GitRepoTask) {
+    sampleDir = file("../swift/source-dependencies/repos")
 }
 
 class SourceCopyTask extends DefaultTask {
@@ -327,5 +351,41 @@ class SwiftLibraryTemplate extends Template {
 
     static of(String templateName, String module) {
         return new SwiftLibraryTemplate(templateName, module)
+    }
+}
+
+class GitRepoTask extends DefaultTask {
+    final DirectoryProperty sampleDir = project.layout.directoryProperty()
+
+    @TaskAction
+    def go() {
+        createRepo("utilities")
+        createRepo("list")
+    }
+
+    private void createRepo(String sourceRepo) {
+        def srcDir = sampleDir.dir(sourceRepo).get().asFile
+        def destDir = sampleDir.dir(sourceRepo + "-repo").get().asFile
+        project.delete(destDir)
+        InitCommand init = Git.init();
+        Git git = init.setDirectory(destDir).call()
+        try {
+            def files = []
+            project.copy {
+                from srcDir
+                into destDir
+                eachFile { d -> files.add(d.relativePath) }
+            }
+            def add = git.add()
+            files.each {
+                add.addFilepattern(it.pathString)
+            }
+            add.call()
+            git.commit().setMessage("Initial version").call()
+            git.tag().setName("1.0").call()
+            git.tag().setName("2.0").call()
+        } finally {
+            git.close()
+        }
     }
 }

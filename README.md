@@ -105,7 +105,7 @@ BUILD SUCCESSFUL in 0s
 Hello, World!
 ```
 
-## Application with library dependencies a multi-project build (transitive-dependencies)
+## Application with library dependencies in a multi-project build (transitive-dependencies)
 
 This builds shows how an application and several Swift/C++ libraries can be built with Gradle and linked together. The
 dependencies are added transitively from the dependencies between modules.
@@ -211,7 +211,7 @@ BUILD SUCCESSFUL in 0s
 Hello, World!
 ```
 
-## Source generation (Swift and C++) 
+## Source generation (source-generation) 
 
 These builds demonstrate using a task to generate source code before building a Swift or C++ application.
 
@@ -224,13 +224,14 @@ BUILD SUCCESSFUL in 0s
 
 Generated sources will be under `build/generated`.
 
-## Application with source library dependencies (Swift and C++)
+## Application with source library dependencies (source-dependencies)
 
 These builds demonstrate using external source dependencies to build Swift and C++ applications that require two external libraries.
 
 ### Swift
 ```
 > cd swift/source-dependencies
+> ./gradlew -p ../.. generateSwiftRepos
 > ./gradlew assemble
 
 BUILD SUCCESSFUL in 3s
@@ -242,6 +243,7 @@ Hello, World!
 ### C++
 ```
 > cd cpp/source-dependencies
+> ./gradlew -p ../.. generateCppRepos
 > ./gradlew assemble
 
 BUILD SUCCESSFUL in 3s
@@ -249,3 +251,7 @@ BUILD SUCCESSFUL in 3s
 > ./build/exe/main/debug/app
 Hello, World!
 ```
+
+## Application with static library dependencies (static-library)
+
+## Swift application with C++ library dependencies (cpp-dependencies)
