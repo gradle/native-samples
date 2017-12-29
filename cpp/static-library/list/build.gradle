@@ -1,0 +1,7 @@
+plugins {
+    id 'cpp-library'
+}
+
+library {
+    linkage = [Linkage.STATIC, Linkage.SHARED]
+}

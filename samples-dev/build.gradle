@@ -134,6 +134,14 @@ task cppSourceDependencies(type: SourceCopyTask) {
     libProject("repos/list").fromTemplate("cpp-lib")
 }
 
+task cppStaticLibrary(type: SourceCopyTask) {
+    sampleDir = file("../cpp/static-library")
+
+    appProject("app").fromTemplate("cpp-app")
+    libProject("utilities").fromTemplate("cpp-lib-with-api-dep")
+    libProject("list").fromTemplate("cpp-lib")
+}
+
 task cppSwiftPackageManager(type: SourceCopyTask) {
     sampleDir = file("../cpp/swift-package-manager")
 

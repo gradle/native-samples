@@ -213,7 +213,7 @@ Hello, World!
 
 ## Source generation (source-generation) 
 
-These builds demonstrate using a task to generate source code before building a Swift or C++ application.
+This build demonstrate using a task to generate source code before building a Swift or C++ application.
 
 ```
 > cd source-generation
@@ -226,7 +226,7 @@ Generated sources will be under `build/generated`.
 
 ## Application with source library dependencies (source-dependencies)
 
-These builds demonstrate using external source dependencies to build Swift and C++ applications that require two external libraries.
+This build demonstrates using external source dependencies to build Swift and C++ applications that require two external libraries.
 
 ### Swift
 ```
@@ -254,4 +254,24 @@ Hello, World!
 
 ## Application with static library dependencies (static-library)
 
+This build demonstrates building and static libraries.
+
+```
+> cd static-library
+> ./gradlew assemble
+
+> ./build/exe/main/debug/app
+Hello, World!
+```
+
 ## Swift application with C++ library dependencies (cpp-dependencies)
+
+This build demonstrates using a C++ library from Swift.
+
+```
+> cd swift/cpp-dependencies
+> ./gradlew assemble
+
+> ./build/exe/main/debug/app
+Hello, World!
+```
