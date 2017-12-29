@@ -16,7 +16,7 @@ class NativeSample {
             return tasks
         }
 
-        def tasks = ['assemble', 'linkRelease']
+        def tasks = ['assemble', 'assembleRelease']
         if (usesMavenPublish) {
             tasks << 'publish'
         }
