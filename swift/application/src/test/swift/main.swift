@@ -1,3 +1,3 @@
 import XCTest
 
-XCTMain([testCase(AppTests.allTests)])
+XCTMain([testCase(LinkedListTests.allTests), testCase(LinkedListTests.allTests])

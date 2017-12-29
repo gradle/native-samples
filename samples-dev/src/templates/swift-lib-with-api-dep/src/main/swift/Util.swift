@@ -17,7 +17,9 @@ public class Util {
                 current.append(s[pos])
                 pos = s.index(after: pos)
             } else {
-                l.add(current)
+                if (!current.isEmpty) {
+                    l.add(current)
+                }
                 current = String()
                 repeat {
                     pos = s.index(after: pos)

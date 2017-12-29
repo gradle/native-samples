@@ -2,7 +2,6 @@
  * A class that provides several utility functions.
  */
 
-import List
 
 public class Util {
     /*

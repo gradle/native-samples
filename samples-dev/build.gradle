@@ -1,4 +1,5 @@
 import groovy.io.FileType
+import org.gradle.cache.internal.MapBackedCache
 
 plugins {
     id "groovy"
@@ -134,33 +135,46 @@ task cppSwiftPackageManager(type: SourceCopyTask) {
     copyToSwiftPMProject("cpp-lib", "Sources/List")
 }
 
+def swiftUtilsLib = SwiftLibraryTemplate.of("swift-lib-with-api-dep", "Utilities")
+def swiftListLib = SwiftLibraryTemplate.of("swift-lib", "List")
+
+task swiftApplication(type: SourceCopyTask) {
+    sampleDir = file("../swift/application")
+
+    copyToAppProject("swift-app", ".")
+    copyToLibProject(swiftUtilsLib, ".")
+    copyToLibProject(swiftListLib, ".")
+}
+
 task swiftTransitiveDependencies(type: SourceCopyTask) {
     sampleDir = file("../swift/transitive-dependencies")
 
     copyToAppProject("swift-app", "app")
-    copyToLibProject("swift-lib-with-api-dep", "utilities")
-    copyToLibProject("swift-lib", "list")
+    copyToLibProject(swiftUtilsLib, "utilities")
+    copyToLibProject(swiftListLib, "list")
 }
 
 task swiftCompositeBuild(type: SourceCopyTask) {
     sampleDir = file("../swift/composite-build")
 
     copyToAppProject("swift-app", ".")
-    copyToLibProject("swift-lib-with-api-dep", "utilities-library")
-    copyToLibProject("swift-lib", "list-library")
+    copyToLibProject(swiftUtilsLib, "utilities-library")
+    copyToLibProject(swiftListLib, "list-library")
 }
 
 class SourceCopyTask extends DefaultTask {
     final DirectoryProperty sampleDir = project.layout.directoryProperty()
     final DirectoryProperty templatesDir = project.layout.directoryProperty()
-    private final List<TemplateTarget> templates = []
+    final Map<String, Set<String>> modulesInProject = [:]
+    final List<TemplateTarget> templates = []
 
     @TaskAction
     def go() {
         def cleaned = new HashSet()
         templates.each { t ->
-            def templateBaseDir = templatesDir.dir(t.template).get().asFile
+            def templateBaseDir = templatesDir.dir(t.template.templateName).get().asFile
             def projectDir = sampleDir.dir(t.projectDir).get().asFile
+            def modules = modulesInProject[t.projectDir].collect { "import $it" as String }
             t.visitDirs { s, d ->
                 def srcDir = new File(templateBaseDir, s)
                 if (!srcDir.directory) {
@@ -174,28 +188,58 @@ class SourceCopyTask extends DefaultTask {
                 project.copy {
                     from srcDir
                     into destDir
+                    filter { line ->
+                        if (modules.contains(line)) {
+                            return null
+                        }
+                        line
+                    }
                 }
             }
         }
     }
 
     void copyToAppProject(String template, String projectDir) {
-        templates.add(new AppTarget(template, projectDir))
+        add(new AppTarget(new Template(template), projectDir))
+    }
+
+    void copyToAppProject(Template template, String projectDir) {
+        add(new AppTarget(template, projectDir))
     }
 
     void copyToLibProject(String template, String projectDir) {
-        templates.add(new LibTarget(template, projectDir))
+        add(new LibTarget(new Template(template), projectDir))
+    }
+
+    void copyToLibProject(Template template, String projectDir) {
+        add(new LibTarget(template, projectDir))
     }
 
     void copyToSwiftPMProject(String template, String projectDir) {
-        templates.add(new SwiftPmTarget(template, projectDir))
+        add(new SwiftPmTarget(new Template(template), projectDir))
+    }
+
+    void copyToSwiftPMProject(Template template, String projectDir) {
+        add(new SwiftPmTarget(template, projectDir))
+    }
+
+    private void add(TemplateTarget target) {
+        templates.add(target)
+        if (target.template instanceof SwiftLibraryTemplate) {
+            def modules = modulesInProject[target.projectDir]
+            if (modules == null) {
+                modules = new HashSet()
+                modulesInProject.put(target.projectDir, modules)
+            }
+            modules.add(target.template.module)
+        }
     }
 
     static abstract class TemplateTarget {
-        final String template
+        final Template template
         final String projectDir
 
-        TemplateTarget(String template, String projectDir) {
+        TemplateTarget(Template template, String projectDir) {
             this.template = template
             this.projectDir = projectDir
         }
@@ -204,7 +248,7 @@ class SourceCopyTask extends DefaultTask {
     }
 
     static class AppTarget extends TemplateTarget {
-        AppTarget(String template, String projectDir) {
+        AppTarget(Template template, String projectDir) {
             super(template, projectDir)
         }
 
@@ -218,7 +262,7 @@ class SourceCopyTask extends DefaultTask {
     }
 
     static class LibTarget extends TemplateTarget {
-        LibTarget(String template, String projectDir) {
+        LibTarget(Template template, String projectDir) {
             super(template, projectDir)
         }
 
@@ -232,7 +276,7 @@ class SourceCopyTask extends DefaultTask {
     }
 
     static class SwiftPmTarget extends TemplateTarget {
-        SwiftPmTarget(String template, String projectDir) {
+        SwiftPmTarget(Template template, String projectDir) {
             super(template, projectDir)
         }
 
@@ -243,5 +287,26 @@ class SourceCopyTask extends DefaultTask {
             cl.call("src/main/headers", "include")
             cl.call("src/main/public", "include")
         }
+    }
+}
+
+class Template {
+    final String templateName
+
+    Template(String templateName) {
+        this.templateName = templateName
+    }
+}
+
+class SwiftLibraryTemplate extends Template {
+    final String module
+
+    SwiftLibraryTemplate(String templateName, String module) {
+        super(templateName)
+        this.module = module
+    }
+
+    static of(String templateName, String module) {
+        return new SwiftLibraryTemplate(templateName, module)
     }
 }
