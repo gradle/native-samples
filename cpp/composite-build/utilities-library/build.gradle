@@ -1,0 +1,10 @@
+plugins {
+    id 'cpp-library'
+}
+
+group = 'org.gradle.cpp-samples'
+version = '1.2'
+
+dependencies {
+    api 'org.gradle.cpp-samples:list:1.5'
+}

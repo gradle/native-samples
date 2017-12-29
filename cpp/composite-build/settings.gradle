@@ -1,6 +1,4 @@
-// copy cpp/simple-library
-// copy cpp/transitive-dependencies
 rootProject.name = 'app'
 
-includeBuild '../simple-library'
-includeBuild '../transitive-dependencies'
+includeBuild 'list-library'
+includeBuild 'utilities-library'

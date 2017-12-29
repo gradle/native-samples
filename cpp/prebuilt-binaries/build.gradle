@@ -5,31 +5,31 @@ plugins {
     id 'xcode'
 }
 
-def greeterIncludePath = file('../simple-library/src/main/public')
+def libIncludePath = file('../simple-library/src/main/public')
 
-def greeterDebugLib = file(OperatingSystem.current().getSharedLibraryName('../simple-library/build/lib/main/debug/math'))
-def greeterReleaseLib = file(OperatingSystem.current().getSharedLibraryName('../simple-library/build/lib/main/release/math'))
+def libDebugLib = file(OperatingSystem.current().getSharedLibraryName('../simple-library/build/lib/main/debug/list'))
+def libReleaseLib = file(OperatingSystem.current().getSharedLibraryName('../simple-library/build/lib/main/release/list'))
 
-def greeterDebugLinkLib = file(OperatingSystem.current().getLinkLibraryName('../simple-library/build/lib/main/debug/math'))
-def greeterReleaseLinkLib = file(OperatingSystem.current().getLinkLibraryName('../simple-library/build/lib/main/release/math'))
+def libDebugLinkLib = file(OperatingSystem.current().getLinkLibraryName('../simple-library/build/lib/main/debug/list'))
+def libReleaseLinkLib = file(OperatingSystem.current().getLinkLibraryName('../simple-library/build/lib/main/release/list'))
 
-if (!greeterDebugLib.exists() || !greeterReleaseLib.exists()) {
+if (!libDebugLib.exists() || !libReleaseLib.exists()) {
     throw new GradleException("Please build project at ${file('../simple-library')} with: './gradlew -p ../simple-library assembleRelease assembleDebug'")
 }
-if (!greeterIncludePath.exists()) {
-    throw new GradleException("Please ensure in include path: ${greeterIncludePath} exists")
+if (!libIncludePath.exists()) {
+    throw new GradleException("Please ensure in include path: ${libIncludePath} exists")
 }
 
 components.main.binaries.whenElementFinalized { binary ->
     dependencies {
         if (binary.optimized) {
-            add(binary.includePathConfiguration.name, files(greeterIncludePath))
-            add(binary.linkLibraries.name, files(greeterReleaseLinkLib))
-            add(binary.runtimeLibraries.name, files(greeterReleaseLib))
+            add(binary.includePathConfiguration.name, files(libIncludePath))
+            add(binary.linkLibraries.name, files(libReleaseLinkLib))
+            add(binary.runtimeLibraries.name, files(libReleaseLib))
         } else {
-            add(binary.includePathConfiguration.name, files(greeterIncludePath))
-            add(binary.linkLibraries.name, files(greeterDebugLinkLib))
-            add(binary.runtimeLibraries.name, files(greeterDebugLib))
+            add(binary.includePathConfiguration.name, files(libIncludePath))
+            add(binary.linkLibraries.name, files(libDebugLinkLib))
+            add(binary.runtimeLibraries.name, files(libDebugLib))
         }
     }
 }

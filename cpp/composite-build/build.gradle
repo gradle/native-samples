@@ -4,6 +4,5 @@ plugins {
 }
 
 dependencies {
-    implementation 'org.gradle.cpp-samples:math:1.5'
     implementation 'org.gradle.cpp-samples:utilities:1.2'
 }

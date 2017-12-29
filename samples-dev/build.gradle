@@ -101,6 +101,21 @@ task cppBinaryDependencies(type: SourceCopyTask) {
     copyToAppProject("cpp-lib-with-api-dep", ".")
 }
 
+task cppPrebuiltBinaries(type: SourceCopyTask) {
+    sampleDir = file("../cpp/prebuilt-binaries")
+
+    copyToAppProject("cpp-app", ".")
+    copyToAppProject("cpp-lib-with-api-dep", ".")
+}
+
+task cppCompositeBuild(type: SourceCopyTask) {
+    sampleDir = file("../cpp/composite-build")
+
+    copyToAppProject("cpp-app", ".")
+    copyToLibProject("cpp-lib-with-api-dep", "utilities-library")
+    copyToLibProject("cpp-lib", "list-library")
+}
+
 class SourceCopyTask extends DefaultTask {
     final DirectoryProperty sampleDir = project.layout.directoryProperty()
     final DirectoryProperty templatesDir = project.layout.directoryProperty()
