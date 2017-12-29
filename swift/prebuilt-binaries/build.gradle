@@ -2,29 +2,30 @@ import org.gradle.internal.os.OperatingSystem
 
 plugins {
     id 'swift-application'
+    id 'xctest'
     id 'xcode'
 }
 
-def greeterDebugImportPath = file('../simple-library/build/modules/main/debug/Math.swiftmodule')
-def greeterReleaseImportPath = file('../simple-library/build/modules/main/release/Math.swiftmodule')
+def libDebugImportPath = file('../simple-library/build/modules/main/debug/List.swiftmodule')
+def libReleaseImportPath = file('../simple-library/build/modules/main/release/List.swiftmodule')
 
-def greeterDebugLib = file(OperatingSystem.current().getSharedLibraryName('../simple-library/build/lib/main/debug/Math'))
-def greeterReleaseLib = file(OperatingSystem.current().getSharedLibraryName('../simple-library/build/lib/main/release/Math'))
+def libDebugLib = file(OperatingSystem.current().getSharedLibraryName('../simple-library/build/lib/main/debug/List'))
+def libReleaseLib = file(OperatingSystem.current().getSharedLibraryName('../simple-library/build/lib/main/release/List'))
 
-if (!greeterDebugLib.exists() || !greeterReleaseLib.exists() || !greeterDebugImportPath.exists() || !greeterReleaseImportPath.exists()) {
+if (!libDebugLib.exists() || !libReleaseLib.exists() || !libDebugImportPath.exists() || !libReleaseImportPath.exists()) {
     throw new GradleException("Please build project at ${file('../simple-library')} using './gradlew -p ../simple-library assembleRelease assembleDebug'")
 }
 
-components.main.binaries.whenElementFinalized { binary ->
+components.withType(SwiftBinary) { binary ->
     dependencies {
         if (binary.optimized) {
-            add(binary.importPathConfiguration.name, files(greeterReleaseImportPath))
-            add(binary.linkLibraries.name, files(greeterReleaseLib))
-            add(binary.runtimeLibraries.name, files(greeterReleaseLib))
+            add(binary.importPathConfiguration.name, files(libReleaseImportPath))
+            add(binary.linkLibraries.name, files(libReleaseLib))
+            add(binary.runtimeLibraries.name, files(libReleaseLib))
         } else {
-            add(binary.importPathConfiguration.name, files(greeterDebugImportPath))
-            add(binary.linkLibraries.name, files(greeterDebugLib))
-            add(binary.runtimeLibraries.name, files(greeterDebugLib))
+            add(binary.importPathConfiguration.name, files(libDebugImportPath))
+            add(binary.linkLibraries.name, files(libDebugLib))
+            add(binary.runtimeLibraries.name, files(libDebugLib))
         }
     }
 }

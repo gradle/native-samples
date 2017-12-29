@@ -1,2 +1,2 @@
-// dependsOn swift/simple-library linkRelease,linkDebug
+// dependsOn swift/simple-library assembleRelease,assembleDebug
 rootProject.name = 'app'

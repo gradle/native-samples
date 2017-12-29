@@ -1,3 +1,3 @@
 import XCTest
 
-XCTMain([testCase(SumTest.allTests)])
+XCTMain([testCase(LinkedListTests.allTests)])

@@ -153,6 +153,19 @@ task swiftApplication(type: SourceCopyTask) {
     appProject(".").fromTemplate(swiftListLib)
 }
 
+task swiftSimpleLibrary(type: SourceCopyTask) {
+    sampleDir = file("../swift/simple-library")
+
+    libProject(".").fromTemplate(swiftListLib)
+}
+
+task swiftPrebuiltBinaries(type: SourceCopyTask) {
+    sampleDir = file("../swift/prebuilt-binaries")
+
+    appProject(".").fromTemplate("swift-app")
+    appProject(".").fromTemplate(swiftUtilsLib)
+}
+
 task swiftTransitiveDependencies(type: SourceCopyTask) {
     sampleDir = file("../swift/transitive-dependencies")
 
