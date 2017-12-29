@@ -16,15 +16,12 @@ class NativeSample {
             return tasks
         }
 
-        def tasks = ['assemble', 'assembleRelease']
+        def tasks = ['assemble', 'assembleRelease', 'check']
         if (usesMavenPublish) {
             tasks << 'publish'
         }
         if (usesXcode) {
             tasks << 'xcode'
-        }
-        if (usesTestPlugin) {
-            tasks << 'check'
         }
         return tasks
     }
@@ -77,9 +74,5 @@ class NativeSample {
 
     boolean isUsesMavenPublish() {
         return new File(sampleDir, "build.gradle").text.contains('maven-publish')
-    }
-
-    boolean isUsesTestPlugin() {
-        return new File(sampleDir, "build.gradle").text.contains('cpp-unit-test')
     }
 }
