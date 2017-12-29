@@ -27,20 +27,10 @@ function addTwoOh() {
 
 cd repos
 
-# Populate Hello library's repo
-createRepo "hello"
-cat << EOF > hello-repo/src/main/cpp/hello.cpp
-#include "greeting.h"
+# Populate util library's repo
+createRepo "utilities"
 
-#include "logger.h"
-
-void sayHello() {
-    log(getHello());
-    log(getGoodbye());
-}
-
-EOF
-cat << EOF > hello-repo/build.gradle
+cat << EOF > utilities-repo/build.gradle
 plugins {
     id 'cpp-library'
 }
@@ -48,30 +38,12 @@ plugins {
 group = 'org.gradle.cpp-samples'
 
 dependencies {
-    implementation 'org.gradle.cpp-samples:greeting:2.0'
+    api 'org.gradle.cpp-samples:list:2.0'
 }
 EOF
-addTwoOh "hello"
+addTwoOh "utilities"
 
-# Populate Greeting library's repo
-createRepo "greeting"
-cat << EOF > greeting-repo/src/main/cpp/greetings.cpp
-#include "greeting.h"
+# Populate list library's repo
+createRepo "list"
 
-std::string getHello() {
-    return "Hello, World!";
-}
-std::string getGoodbye() {
-    return "Goodbye, World!";
-}
-EOF
-cat << EOF > greeting-repo/src/main/public/greeting.h
-#pragma once
-
-#include <string>
-
-std::string getHello();
-std::string getGoodbye();
-EOF
-
-addTwoOh "greeting"
+addTwoOh "list"

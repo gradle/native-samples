@@ -118,6 +118,14 @@ task cppCompositeBuild(type: SourceCopyTask) {
     copyToLibProject("cpp-lib", "list-library")
 }
 
+task cppSourceDependencies(type: SourceCopyTask) {
+    sampleDir = file("../cpp/source-dependencies")
+
+    copyToAppProject("cpp-app", ".")
+    copyToLibProject("cpp-lib-with-api-dep", "repos/utilities")
+    copyToLibProject("cpp-lib", "repos/list")
+}
+
 class SourceCopyTask extends DefaultTask {
     final DirectoryProperty sampleDir = project.layout.directoryProperty()
     final DirectoryProperty templatesDir = project.layout.directoryProperty()

@@ -1,11 +1,12 @@
-#include "hello.h"
+#include <iostream>
 
-// `logger.h` is an implementation detail, aka private, headers of the hello project.
-// It cannot be included here.
-// #include "logger.h"
+#include "string_utils.h"
+#include "linked_list.h"
 
 // Simple hello world app
 int main() {
-    sayHello();
+    linked_list tokens;
+    tokens = split("Hello,      World!");
+    std::cout << join(tokens) << std::endl;
     return 0;
 }

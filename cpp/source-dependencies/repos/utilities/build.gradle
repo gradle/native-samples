@@ -5,5 +5,5 @@ plugins {
 group = 'org.gradle.cpp-samples'
 
 dependencies {
-    implementation 'org.gradle.cpp-samples:greeting:latest.integration'
+    api 'org.gradle.cpp-samples:list:1.0'
 }
