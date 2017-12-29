@@ -1,7 +1,6 @@
 /*
- * A class that provides several utility functions.
+ * A class that provides several string utility functions.
  */
-
 import List
 
 public class Util {

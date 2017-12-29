@@ -9,6 +9,9 @@ public class LinkedList {
     public init() {
     }
 
+    /*
+     * Adds the given string to this list.
+     */
     public func add(_ s: String) {
         let n = Node(data: s)
         if (head == nil) {
@@ -20,6 +23,9 @@ public class LinkedList {
         }
     }
 
+    /*
+     * Returns the string at the given index.
+     */
     public func get(_ i: Int) -> String {
         var n = head
         var c = i
@@ -30,6 +36,9 @@ public class LinkedList {
         return n!.data
     }
 
+    /*
+     * Returns the size of this list.
+     */
     public func size() -> Int {
         var c = 0
         var n = head
@@ -38,14 +47,5 @@ public class LinkedList {
             n = n!.next
         }
         return c
-    }
-}
-
-class Node {
-    let data: String
-    var next: Node?
-
-    init(data: String) {
-        self.data = data
     }
 }
