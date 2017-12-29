@@ -3,19 +3,19 @@
 
 TEST(LinkedListTests, test_constructor) {
     linked_list list;
-    ASSERT_TRUE(list.size() == 0);
+    ASSERT_EQ(list.size(), 0);
 }
 
 TEST(LinkedListTests, test_add) {
     linked_list list;
 
     list.add("one");
-    ASSERT_TRUE(list.size() == 1);
-    ASSERT_TRUE(list.get(0) == "one");
+    ASSERT_EQ(list.size(), 1);
+    ASSERT_EQ(list.get(0), "one");
 
     list.add("two");
-    ASSERT_TRUE(list.size() == 2);
-    ASSERT_TRUE(list.get(1) == "two");
+    ASSERT_EQ(list.size(), 2);
+    ASSERT_EQ(list.get(1), "two");
 }
 
 TEST(LinkedListTests, test_remove) {
@@ -25,9 +25,9 @@ TEST(LinkedListTests, test_remove) {
     list.add("two");
     list.remove("one");
 
-    ASSERT_TRUE(list.size() == 1);
-    ASSERT_TRUE(list.get(0) == "two");
+    ASSERT_EQ(list.size(), 1);
+    ASSERT_EQ(list.get(0), "two");
 
     list.remove("two");
-    ASSERT_TRUE(list.size() == 0);
+    ASSERT_EQ(list.size(), 0);
 }
