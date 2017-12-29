@@ -62,21 +62,42 @@ task nightlyWrapper(type: Wrapper) {
     jarFile = "../gradle/wrapper/gradle-wrapper.jar"
 }
 
+tasks.withType(SourceCopyTask) {
+    templatesDir = file("src/templates")
+    group = "source generation"
+}
+
+task generateSource {
+    dependsOn tasks.withType(SourceCopyTask)
+    group = "source generation"
+}
+
 task cppTransitiveDependencies(type: SourceCopyTask) {
     sampleDir = file("../cpp/transitive-dependencies")
-    templatesDir = file("src/templates")
 
     copyToAppProject("cpp-app", "app")
-    copyToLibProject("cpp-lib", "list")
     copyToLibProject("cpp-lib-with-api-dep", "utilities")
+    copyToLibProject("cpp-lib", "list")
 }
 
 task cppApplication(type: SourceCopyTask) {
     sampleDir = file("../cpp/application")
-    templatesDir = file("src/templates")
 
     copyToAppProject("cpp-app", ".")
+    copyToAppProject("cpp-lib-with-api-dep", ".")
     copyToAppProject("cpp-lib", ".")
+}
+
+task cppLibrary(type: SourceCopyTask) {
+    sampleDir = file("../cpp/simple-library")
+
+    copyToLibProject("cpp-lib", ".")
+}
+
+task cppBinaryDependencies(type: SourceCopyTask) {
+    sampleDir = file("../cpp/binary-dependencies")
+
+    copyToAppProject("cpp-app", ".")
     copyToAppProject("cpp-lib-with-api-dep", ".")
 }
 

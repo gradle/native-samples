@@ -1,9 +1,12 @@
 #include <iostream>
 
-#include "mathlib.h"
+#include "string_utils.h"
+#include "linked_list.h"
 
+// Simple hello world app
 int main() {
-    Math math;
-    std::cout << "The sum of 40 and 2 is " << math.sum(40, 2) << "!" << std::endl;
+    linked_list tokens;
+    tokens = split("Hello,      World!");
+    std::cout << join(tokens) << std::endl;
     return 0;
 }

@@ -10,5 +10,5 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.gradle.cpp-samples:math:1.5'
+    implementation 'org.gradle.cpp-samples:list:1.5'
 }
