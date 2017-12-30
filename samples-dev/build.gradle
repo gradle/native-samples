@@ -212,7 +212,7 @@ task swiftStaticLibrary(type: SourceCopyTask) {
 task swiftCppDependencies(type: SourceCopyTask) {
     sampleDir = file("../swift/cpp-dependencies")
 
-    libProject("list").fromTemplate("cpp-lib-with-c-api")
+    staticLibProject("list").fromTemplate("cpp-lib-with-c-api")
     appProject("app").fromTemplate(SwiftLibraryTemplate.of("swift-lib-uses-c-api", "List"))
     appProject("app").fromTemplate(swiftUtilsLib)
     appProject("app").fromTemplate("swift-app")

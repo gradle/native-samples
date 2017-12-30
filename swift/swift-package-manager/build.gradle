@@ -8,11 +8,11 @@ def maybeExcludeLinuxMain(FileTree files) {
 
 allprojects {
     apply plugin: 'xcode'
-    apply plugin: 'xctest'
 }
 
 project(':app') {
-    apply plugin:  'swift-application'
+    apply plugin: 'swift-application'
+    apply plugin: 'xctest'
 
     // Configure the source files of the executable
     application {
@@ -30,7 +30,8 @@ project(':app') {
 }
 
 project(':utilities') {
-    apply plugin:  'swift-library'
+    apply plugin: 'swift-library'
+    apply plugin: 'xctest'
 
     // Configure the source files of the library
     library {
@@ -47,7 +48,8 @@ project(':utilities') {
 }
 
 project(':list') {
-    apply plugin:  'swift-library'
+    apply plugin: 'swift-library'
+    apply plugin: 'xctest'
 
     // Configure the source files of the library
     library {
