@@ -6,15 +6,7 @@
 
 #include <string>
 
-#ifdef _WIN32
-#  ifdef LIST_MODULE_EXPORT
-#    define LIST_API __declspec(dllexport)
-#  else
-#    define LIST_API __declspec(dllimport)
-#  endif
-#else
-#  define LIST_API
-#endif
+#define LIST_API
 
 class node;
 

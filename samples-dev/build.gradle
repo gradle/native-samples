@@ -82,76 +82,79 @@ task generateSource {
     description = "generate the source files for all samples"
 }
 
+def cppUtilsLib = CppLibraryTemplate.of("cpp-lib-with-api-dep", "utilities")
+def cppListLib = CppLibraryTemplate.of("cpp-lib", "list")
+
+def swiftUtilsLib = SwiftLibraryTemplate.of("swift-lib-with-api-dep", "Utilities")
+def swiftListLib = SwiftLibraryTemplate.of("swift-lib", "List")
+
 task cppTransitiveDependencies(type: SourceCopyTask) {
     sampleDir = file("../cpp/transitive-dependencies")
 
     appProject("app").fromTemplate("cpp-app")
-    libProject("utilities").fromTemplate("cpp-lib-with-api-dep")
-    libProject("list").fromTemplate("cpp-lib")
+    libProject("utilities").fromTemplate(cppUtilsLib)
+    libProject("list").fromTemplate(cppListLib)
 }
 
 task cppApplication(type: SourceCopyTask) {
     sampleDir = file("../cpp/application")
 
     appProject(".").fromTemplate("cpp-app")
-    appProject(".").fromTemplate("cpp-lib-with-api-dep")
-    appProject(".").fromTemplate("cpp-lib")
+    appProject(".").fromTemplate(cppUtilsLib)
+    appProject(".").fromTemplate(cppListLib)
 }
 
 task cppLibrary(type: SourceCopyTask) {
     sampleDir = file("../cpp/simple-library")
 
-    libProject(".").fromTemplate("cpp-lib")
+    libProject(".").fromTemplate(cppListLib)
 }
 
 task cppBinaryDependencies(type: SourceCopyTask) {
     sampleDir = file("../cpp/binary-dependencies")
 
     appProject(".").fromTemplate("cpp-app")
-    appProject(".").fromTemplate("cpp-lib-with-api-dep")
+    appProject(".").fromTemplate(cppUtilsLib)
 }
 
 task cppPrebuiltBinaries(type: SourceCopyTask) {
     sampleDir = file("../cpp/prebuilt-binaries")
 
     appProject(".").fromTemplate("cpp-app")
-    appProject(".").fromTemplate("cpp-lib-with-api-dep")
+    appProject(".").fromTemplate(cppUtilsLib)
 }
 
 task cppCompositeBuild(type: SourceCopyTask) {
     sampleDir = file("../cpp/composite-build")
 
     appProject(".").fromTemplate("cpp-app")
-    libProject("utilities-library").fromTemplate("cpp-lib-with-api-dep")
-    libProject("list-library").fromTemplate("cpp-lib")
+    libProject("utilities-library").fromTemplate(cppUtilsLib)
+    libProject("list-library").fromTemplate(cppListLib)
 }
 
 task cppSourceDependencies(type: SourceCopyTask) {
     sampleDir = file("../cpp/source-dependencies")
 
     appProject(".").fromTemplate("cpp-app")
-    libProject("repos/utilities").fromTemplate("cpp-lib-with-api-dep")
-    libProject("repos/list").fromTemplate("cpp-lib")
+    libProject("repos/utilities").fromTemplate(cppUtilsLib)
+    libProject("repos/list").fromTemplate(cppListLib)
 }
 
 task cppStaticLibrary(type: SourceCopyTask) {
     sampleDir = file("../cpp/static-library")
 
     appProject("app").fromTemplate("cpp-app")
-    libProject("utilities").fromTemplate("cpp-lib-with-api-dep")
-    libProject("list").fromTemplate("cpp-lib")
+    staticLibProject("utilities").fromTemplate(cppUtilsLib)
+    libProject("list").fromTemplate(cppListLib)
 }
 
 task cppSwiftPackageManager(type: SourceCopyTask) {
     sampleDir = file("../cpp/swift-package-manager")
 
     swiftPMProject(".", "App").fromTemplate("cpp-app")
-    swiftPMProject(".", "Utilities").fromTemplate("cpp-lib-with-api-dep")
-    swiftPMProject(".", "List").fromTemplate("cpp-lib")
+    swiftPMProject(".", "Utilities").fromTemplate(cppUtilsLib)
+    swiftPMProject(".", "List").fromTemplate(cppListLib)
 }
-
-def swiftUtilsLib = SwiftLibraryTemplate.of("swift-lib-with-api-dep", "Utilities")
-def swiftListLib = SwiftLibraryTemplate.of("swift-lib", "List")
 
 task swiftApplication(type: SourceCopyTask) {
     sampleDir = file("../swift/application")
@@ -242,7 +245,7 @@ class SourceCopyTask extends DefaultTask {
         projects.values().each { p ->
             def modules = p.includedModules.collect { "import $it" as String }
             def testModules = p.includedModules.collect { "@testable import $it" as String }
-            p.visitDirs { src, dest->
+            p.visitDirs { src, dest, lineFilter ->
                 def srcDir = templatesDir.dir(src).get().asFile
                 if (!srcDir.directory) {
                     return
@@ -256,6 +259,9 @@ class SourceCopyTask extends DefaultTask {
                 project.copy {
                     from srcDir
                     into destDir
+                    if (lineFilter) {
+                        filter(lineFilter)
+                    }
                     filter { line ->
                         if (modules.contains(line)) {
                             return null
@@ -276,6 +282,10 @@ class SourceCopyTask extends DefaultTask {
 
     LibTarget libProject(String projectDir) {
         return add(new LibTarget(projectDir))
+    }
+
+    StaticLibTarget staticLibProject(String projectDir) {
+        return add(new StaticLibTarget(projectDir))
     }
 
     SwiftPmTarget swiftPMProject(String projectDir, String targetName) {
@@ -323,7 +333,18 @@ class SourceCopyTask extends DefaultTask {
          * Visits each src, dest directory pair for this project.
          * @param cl
          */
-        abstract void visitDirs(Closure cl)
+        void visitDirs(Closure cl) {
+            templates.each { template ->
+                visitDirMappings(template) { src, dest, lineFilter ->
+                    cl.call("${template.templateName}/${src}", "${projectDir}/${dest}", lineFilter)
+                }
+            }
+        }
+
+        /**
+         * Visits each candidate src, dest directory pair for this project and the given template.
+         */
+        abstract void visitDirMappings(Template template, Closure cl)
     }
 
     static abstract class GradleTarget extends TemplateTarget {
@@ -335,21 +356,6 @@ class SourceCopyTask extends DefaultTask {
         String getKey() {
             return projectDir
         }
-
-        @Override
-        void visitDirs(Closure cl) {
-            templates.each { template ->
-                visitDirMappings { src, dest ->
-                    cl.call("${template.templateName}/${src}", "${projectDir}/${dest}")
-                }
-            }
-        }
-
-        /**
-         * Visits each candidate src, dest directory pair for this project.
-         * @param cl
-         */
-        abstract void visitDirMappings(Closure cl)
     }
 
     static class AppTarget extends GradleTarget {
@@ -363,12 +369,12 @@ class SourceCopyTask extends DefaultTask {
         }
 
         @Override
-        void visitDirMappings(Closure cl) {
-            cl.call("src/main/cpp", "src/main/cpp")
-            cl.call("src/main/headers", "src/main/headers")
-            cl.call("src/main/public", "src/main/headers")
-            cl.call("src/main/swift", "src/main/swift")
-            cl.call("src/test/swift", "src/test/swift")
+        void visitDirMappings(Template template, Closure cl) {
+            cl.call("src/main/cpp", "src/main/cpp", null)
+            cl.call("src/main/headers", "src/main/headers", null)
+            cl.call("src/main/public", "src/main/headers", null)
+            cl.call("src/main/swift", "src/main/swift", null)
+            cl.call("src/test/swift", "src/test/swift", null)
         }
     }
 
@@ -378,12 +384,53 @@ class SourceCopyTask extends DefaultTask {
         }
 
         @Override
-        void visitDirMappings(Closure cl) {
-            cl.call("src/main/cpp", "src/main/cpp")
-            cl.call("src/main/headers", "src/main/headers")
-            cl.call("src/main/public", "src/main/public")
-            cl.call("src/main/swift", "src/main/swift")
-            cl.call("src/test/swift", "src/test/swift")
+        void visitDirMappings(Template template, Closure cl) {
+            cl.call("src/main/cpp", "src/main/cpp", null)
+            cl.call("src/main/headers", "src/main/headers", null)
+            cl.call("src/main/public", "src/main/public", addDllExportToPublicHeader(template))
+            cl.call("src/main/swift", "src/main/swift", null)
+            cl.call("src/test/swift", "src/test/swift", null)
+        }
+
+        Closure addDllExportToPublicHeader(Template template) {
+            if (template instanceof CppLibraryTemplate) {
+                def macroName = template.name.toUpperCase() + "_API"
+                def exportMacroName = template.name.toUpperCase() + "_MODULE_EXPORT"
+                def macroDef = "#define ${macroName}"
+
+                return { line ->
+                    if (line == macroDef) {
+                        return """
+#ifdef _WIN32
+#  ifdef ${exportMacroName}
+#    define ${macroName} __declspec(dllexport)
+#  else
+#    define ${macroName} __declspec(dllimport)
+#  endif
+#else
+#  define ${macroName}
+#endif                        
+""".trim()
+                    }
+                    return line
+                }
+            }
+            return null
+        }
+    }
+
+    static class StaticLibTarget extends GradleTarget {
+        StaticLibTarget(String projectDir) {
+            super(projectDir)
+        }
+
+        @Override
+        void visitDirMappings(Template template, Closure cl) {
+            cl.call("src/main/cpp", "src/main/cpp", null)
+            cl.call("src/main/headers", "src/main/headers", null)
+            cl.call("src/main/public", "src/main/public", null)
+            cl.call("src/main/swift", "src/main/swift", null)
+            cl.call("src/test/swift", "src/test/swift", null)
         }
     }
 
@@ -405,15 +452,13 @@ class SourceCopyTask extends DefaultTask {
             return "$projectDir:$targetName"
         }
 
-        @Override
-        void visitDirs(Closure cl) {
-            templates.each { template ->
-                cl.call("${template.templateName}/src/main/cpp", "${projectDir}/Sources/${targetName}")
-                cl.call("${template.templateName}/src/main/headers", "${projectDir}/Sources/${targetName}/include")
-                cl.call("${template.templateName}/src/main/public", "${projectDir}/Sources/${targetName}/include")
-                cl.call("${template.templateName}/src/main/swift", "${projectDir}/Sources/${targetName}")
-                cl.call("${template.templateName}/src/test/swift", "${projectDir}/Tests/${targetName}Tests")
-            }
+        @java.lang.Override
+        void visitDirMappings(Template template, Closure cl) {
+            cl.call("src/main/cpp", "Sources/${targetName}", null)
+            cl.call("src/main/headers", "Sources/${targetName}/include", null)
+            cl.call("src/main/public", "Sources/${targetName}/include", null)
+            cl.call("src/main/swift", "Sources/${targetName}", null)
+            cl.call("src/test/swift", "Tests/${targetName}Tests", null)
         }
     }
 }
@@ -440,6 +485,19 @@ class SwiftLibraryTemplate extends Template {
 
     static of(String templateName, String module) {
         return new SwiftLibraryTemplate(templateName, module)
+    }
+}
+
+class CppLibraryTemplate extends Template {
+    final String name
+
+    CppLibraryTemplate(String templateName, String name) {
+        super(templateName)
+        this.name = name
+    }
+
+    static of(String templateName, String name) {
+        return new CppLibraryTemplate(templateName, name)
     }
 }
 
