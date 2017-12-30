@@ -8,7 +8,15 @@
 
 #include "linked_list.h"
 
-#define UTILITIES_API
+#ifdef _WIN32
+#  ifdef UTILITIES_MODULE_EXPORT
+#    define UTILITIES_API __declspec(dllexport)
+#  else
+#    define UTILITIES_API __declspec(dllimport)
+#  endif
+#else
+#  define UTILITIES_API
+#endif
 
 /*
  * Splits the given string into a list of tokens. Tokens are separated by one or more whitespace characters.

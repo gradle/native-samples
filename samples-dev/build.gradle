@@ -341,6 +341,32 @@ class SourceCopyTask extends DefaultTask {
             }
         }
 
+        Closure addDllExportToPublicHeader(Template template) {
+            if (template instanceof CppLibraryTemplate) {
+                def macroName = template.name.toUpperCase() + "_API"
+                def exportMacroName = template.name.toUpperCase() + "_MODULE_EXPORT"
+                def macroDef = "#define ${macroName}"
+
+                return { line ->
+                    if (line == macroDef) {
+                        return """
+#ifdef _WIN32
+#  ifdef ${exportMacroName}
+#    define ${macroName} __declspec(dllexport)
+#  else
+#    define ${macroName} __declspec(dllimport)
+#  endif
+#else
+#  define ${macroName}
+#endif                        
+""".trim()
+                    }
+                    return line
+                }
+            }
+            return null
+        }
+
         /**
          * Visits each candidate src, dest directory pair for this project and the given template.
          */
@@ -391,32 +417,6 @@ class SourceCopyTask extends DefaultTask {
             cl.call("src/main/swift", "src/main/swift", null)
             cl.call("src/test/swift", "src/test/swift", null)
         }
-
-        Closure addDllExportToPublicHeader(Template template) {
-            if (template instanceof CppLibraryTemplate) {
-                def macroName = template.name.toUpperCase() + "_API"
-                def exportMacroName = template.name.toUpperCase() + "_MODULE_EXPORT"
-                def macroDef = "#define ${macroName}"
-
-                return { line ->
-                    if (line == macroDef) {
-                        return """
-#ifdef _WIN32
-#  ifdef ${exportMacroName}
-#    define ${macroName} __declspec(dllexport)
-#  else
-#    define ${macroName} __declspec(dllimport)
-#  endif
-#else
-#  define ${macroName}
-#endif                        
-""".trim()
-                    }
-                    return line
-                }
-            }
-            return null
-        }
     }
 
     static class StaticLibTarget extends GradleTarget {
@@ -456,7 +456,7 @@ class SourceCopyTask extends DefaultTask {
         void visitDirMappings(Template template, Closure cl) {
             cl.call("src/main/cpp", "Sources/${targetName}", null)
             cl.call("src/main/headers", "Sources/${targetName}/include", null)
-            cl.call("src/main/public", "Sources/${targetName}/include", null)
+            cl.call("src/main/public", "Sources/${targetName}/include", addDllExportToPublicHeader(template))
             cl.call("src/main/swift", "Sources/${targetName}", null)
             cl.call("src/test/swift", "Tests/${targetName}Tests", null)
         }
