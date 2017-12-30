@@ -1,8 +1,7 @@
 package org.gradle.samples
 
-import groovy.io.FileType
 import org.gradle.internal.os.OperatingSystem
-import org.gradle.samples.fixtures.NativeSample
+import org.gradle.samples.fixtures.Samples
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Assume
 import org.junit.Rule
@@ -37,33 +36,7 @@ class SampleIntegrationTest extends Specification {
             .build()
 
         where:
-        target << getSamples()
-    }
-
-    private List<NativeSample> getSamples() {
-        def result = []
-        ['swift', 'cpp'].collect { new File(rootSampleDir, it) }*.eachFile(FileType.DIRECTORIES) {
-            if (it.name == 'repo') {
-                return
-            }
-
-            def languageName = it.parentFile.name
-            def sampleName = it.name
-            result << sample("$languageName/$sampleName")
-        }
-        return result
-    }
-
-    private NativeSample sample(String name) {
-        return new NativeSample(name: name, rootSampleDir: getRootSampleDir())
-    }
-
-    private File getRootSampleDir() {
-        File result = new File(this.class.getProtectionDomain().getCodeSource().getLocation().getPath())
-        while (!new File(result, 'settings.gradle').exists()) {
-            result = result.parentFile
-        }
-        return result
+        target << Samples.getSamples()
     }
 
     private static File findInPath(String name) {

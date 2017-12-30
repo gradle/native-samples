@@ -4,6 +4,8 @@ import org.gradle.internal.impldep.org.apache.commons.io.FileUtils
 
 class NativeSample {
     String name
+    String sampleName
+    String languageName
     File rootSampleDir
     private List<String> tasks
 
