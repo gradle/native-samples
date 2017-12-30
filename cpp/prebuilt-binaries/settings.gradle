@@ -1,2 +1,2 @@
-// dependsOn cpp/simple-library linkRelease,linkDebug
+// dependsOn cpp/simple-library assembleRelease,assembleDebug
 rootProject.name = 'app'
