@@ -1,0 +1,9 @@
+plugins {
+    id 'cpp-library'
+}
+
+library {
+    linkage = [ Linkage.STATIC ]
+    source.from project(':list').file('src/main/cpp')
+    publicHeaders.from project(':list').file('src/main/public')
+}
