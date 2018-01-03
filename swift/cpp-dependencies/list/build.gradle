@@ -1,3 +1,1 @@
-plugins {
-    id 'cpp-library'
-}
+apply from: 'common.gradle'

@@ -1,6 +1,4 @@
-plugins {
-    id 'cpp-library'
-}
+apply from: project(':list').file('common.gradle')
 
 library {
     linkage = [ Linkage.STATIC ]
