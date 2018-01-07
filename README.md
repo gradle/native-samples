@@ -267,6 +267,18 @@ This build demonstrates building and using static libraries.
 Hello, World!
 ```
 
+## Application with operating system specific library dependencies (operating-system-specific-dependencies)
+
+This build demonstrates an application that has dependencies on different libraries for each operating system. This application uses the 'ansiLogger' library on macOS and Linux and the 'winConsole' library on Windows.
+
+```
+> cd operating-system-specific-dependencies
+> ./gradlew assemble
+
+> ./build/install/main/debug/app
+Hello, World!
+```
+
 ## Swift application with C++ library dependencies (cpp-dependencies)
 
 This build demonstrates using a C++ library from Swift.

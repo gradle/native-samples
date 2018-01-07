@@ -21,7 +21,7 @@ if (!libIncludePath.exists()) {
 }
 
 components.main.binaries.whenElementFinalized { binary ->
-    dependencies {
+    project.dependencies {
         if (binary.optimized) {
             add(binary.includePathConfiguration.name, files(libIncludePath))
             add(binary.linkLibraries.name, files(libReleaseLinkLib))

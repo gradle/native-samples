@@ -17,7 +17,7 @@ if (!libDebugLib.exists() || !libReleaseLib.exists() || !libDebugImportPath.exis
 }
 
 components.withType(SwiftBinary) { binary ->
-    dependencies {
+    project.dependencies {
         if (binary.optimized) {
             add(binary.importPathConfiguration.name, files(libReleaseImportPath))
             add(binary.linkLibraries.name, files(libReleaseLib))
