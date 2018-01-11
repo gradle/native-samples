@@ -269,15 +269,21 @@ Hello, World!
 
 ## Application with operating system specific library dependencies (operating-system-specific-dependencies)
 
-This build demonstrates an application that has dependencies on different libraries for each operating system. This application uses the 'ansiLogger' library on macOS and Linux and the 'winConsole' library on Windows.
+This build demonstrates an application that has dependencies on different libraries for each operating system. 
 
 ```
 > cd operating-system-specific-dependencies
 > ./gradlew assemble
 
-> ./build/install/main/debug/app
+> app/build/install/main/debug/app
 Hello, World!
 ```
+
+### Swift
+The application selects a library that prints the output in green when building on Mac OS.  On Linux, it selects a library that prints the output in blue.
+
+### C++
+The application selects the 'ansiLogger' library on macOS and Linux and the 'winConsole' library when built on Windows.
 
 ## Swift application with C++ library dependencies (cpp-dependencies)
 

@@ -1,0 +1,15 @@
+plugins {
+    id 'swift-application'
+}
+
+application {
+    binaries.configureEach { 
+        dependencies { 
+            if (targetPlatform.operatingSystem.macOsX) {
+                implementation project(':green-logger')
+            } else {
+                implementation project(':blue-logger')
+            }
+        }
+    }
+}

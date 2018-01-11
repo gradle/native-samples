@@ -175,6 +175,18 @@ task swiftApplication(type: SourceCopyTask) {
     appProject(".").fromTemplate(swiftListLib)
 }
 
+task swiftApplicationOSDependencies(type: SourceCopyTask) {
+    sampleDir = file("../swift/operating-system-specific-dependencies")
+
+    appProject("app").fromTemplate("swift-app-uses-logger")
+    appProject("app").fromTemplate(swiftUtilsLib)
+    appProject("app").fromTemplate(swiftListLib)
+
+    libProject("blue-logger").fromTemplate(CppLibraryTemplate.of("swift-blue-logger-lib", "blue-logger"))
+    libProject("green-logger").fromTemplate(CppLibraryTemplate.of("swift-green-logger-lib", "green-logger"))
+}
+
+
 task swiftSimpleLibrary(type: SourceCopyTask) {
     sampleDir = file("../swift/simple-library")
 
