@@ -1,4 +1,3 @@
-import org.gradle.internal.os.OperatingSystem
 
 subprojects {
     apply plugin: 'swift-application'
@@ -9,7 +8,7 @@ subprojects {
         module = 'App'
     }
 
-    if (!OperatingSystem.current().linux) {
+    if (!System.properties['os.name'].equals("Linux")) {
         xctest {
             source.from fileTree(dir: 'src/test/swift', include: '**/*.swift', exclude: 'main.swift')
         }

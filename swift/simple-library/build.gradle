@@ -6,8 +6,7 @@ plugins {
 
 group = 'org.gradle.swift-samples'
 
-import org.gradle.internal.os.OperatingSystem
-if (!OperatingSystem.current().linux) {
+if (!System.properties['os.name'].equals("Linux")) {
     xctest {
         source.from fileTree(dir: 'src/test/swift', include: '**/*.swift', exclude: 'main.swift')
     }

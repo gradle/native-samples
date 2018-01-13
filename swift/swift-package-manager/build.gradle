@@ -1,11 +1,3 @@
-import org.gradle.internal.os.OperatingSystem
-def maybeExcludeLinuxMain(FileTree files) {
-  if (OperatingSystem.current().macOsX) {
-    return files.matching { exclude 'main.swift' }
-  }
-  return files
-}
-
 allprojects {
     apply plugin: 'xcode'
 }
@@ -19,8 +11,13 @@ project(':app') {
         source.from rootProject.file('Sources/App')
     }
     
+    
     xctest {
-        source.from maybeExcludeLinuxMain(rootProject.fileTree(dir: 'Tests/AppTests', include: '**/*.swift'))
+        if (!System.properties['os.name'].equals("Linux")) {
+            source.from rootProject.fileTree(dir: 'Tests/AppTests', include: '**/*.swift', exclude: 'main.swift')
+        } else {
+            source.from rootProject.fileTree(dir: 'Tests/AppTests', include: '**/*.swift')
+        }
     }
 
     // Configure the dependencies of the executable
@@ -43,7 +40,11 @@ project(':utilities') {
     }
 
     xctest {
-        source.from maybeExcludeLinuxMain(rootProject.fileTree(dir: 'Tests/UtilitiesTests', include: '**/*.swift'))
+        if (!System.properties['os.name'].equals("Linux")) {
+            source.from rootProject.fileTree(dir: 'Tests/UtilitiesTests', include: '**/*.swift', exclude: 'main.swift')
+        } else {
+            source.from rootProject.fileTree(dir: 'Tests/UtilitiesTests', include: '**/*.swift')
+        }
     }
 }
 
@@ -57,7 +58,11 @@ project(':list') {
     }
 
     xctest {
-        source.from maybeExcludeLinuxMain(rootProject.fileTree(dir: 'Tests/ListTests', include: '**/*.swift'))
+        if (!System.properties['os.name'].equals("Linux")) {
+            source.from rootProject.fileTree(dir: 'Tests/ListTests', include: '**/*.swift', exclude: 'main.swift')
+        } else {
+            source.from rootProject.fileTree(dir: 'Tests/ListTests', include: '**/*.swift')
+        }
     }
 }
 
