@@ -1,1 +1,6 @@
-include ':swift3-app', ':swift4-app'
+// TODO: Workaround until we install Swift4 on Linux CI agents
+if (!System.properties['os.name'].equals("Linux")) {
+    include ':swift3-app', ':swift4-app'
+} else {
+    include ':swift3-app'
+}
