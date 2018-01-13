@@ -5,6 +5,10 @@ subprojects {
     apply plugin: 'xcode'
     apply plugin: 'xctest'
 
+    application {
+        module = 'App'
+    }
+
     if (!OperatingSystem.current().linux) {
         xctest {
             source.from fileTree(dir: 'src/test/swift', include: '**/*.swift', exclude: 'main.swift')
