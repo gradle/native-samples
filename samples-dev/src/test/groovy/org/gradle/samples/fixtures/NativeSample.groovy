@@ -45,10 +45,6 @@ class NativeSample {
         return new NativeSample(name: name, rootSampleDir: destination, tasks: tasks)
     }
 
-    boolean isIgnored() {
-        return null != new File(sampleDir, 'settings.gradle').readLines().find { it.startsWith('// ignored') }
-    }
-
     List<NativeSample> getDependencies() {
         new File(sampleDir, 'settings.gradle').readLines().findAll { it.startsWith('// dependsOn') }.collect {
             def tokens = it.split(' ')

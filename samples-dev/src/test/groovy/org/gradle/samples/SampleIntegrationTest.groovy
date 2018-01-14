@@ -10,14 +10,13 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 class SampleIntegrationTest extends Specification {
-    @Rule TemporaryFolder tmpDir = new TemporaryFolder();
+    @Rule TemporaryFolder tmpDir = new TemporaryFolder()
 
     @Unroll
     def "can run '#target.name'"() {
         if (target.name.startsWith('swift')) {
             Assume.assumeTrue(null != findInPath('swiftc'))
         }
-        Assume.assumeFalse("The sample has been ignored", target.ignored)
 
         given:
         target = target.copyToTemp(tmpDir.root)

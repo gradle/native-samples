@@ -25,7 +25,6 @@ When creating a sample, make sure you work within these constraints:
 * Be explicit. A sample can depend on the existence of another one, and its current built status. These states are specified as annotation in the `settings.gradle` file in the form of specially formatted comments.
   * `// dependsOn {sample-name} {comma-separated-task-list}`: Ensure the specified tasks are up-to-date on the specified sample.
   * `// copy {sample-name}`: Ensure the specified sample is copied over in during testing.
-  * `// ignored`: Ignore this sample during testing, useful when developing a sample.
 * Reuse the existing template, where possible.
 * Symmetry. Strive to keep symmetry between Swift and C++ by creating the equivalent sample for both ecosystems.
 * Test. Before opening a pull request, execute `./gradlew test`.
