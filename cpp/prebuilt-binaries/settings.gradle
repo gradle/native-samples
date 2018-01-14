@@ -1,2 +1,1 @@
-// dependsOn cpp/simple-library assembleRelease,assembleDebug
 rootProject.name = 'app'

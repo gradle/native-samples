@@ -1,2 +1,1 @@
-// dependsOn swift/simple-library assembleRelease,assembleDebug
 rootProject.name = 'app'

@@ -1,12 +1,7 @@
-// dependsOn . generateSwiftRepos
 rootProject.name = 'app'
 
 sourceControl {
     vcsMappings {
-        def repos = [ file('repos/utilities-repo'), file('repos/list-repo') ]
-        if (repos.any { !it.exists() }) {
-            throw new GradleException("Regenerate remote git repositories with './gradlew -p ../.. generateSwiftRepos'")
-        }
         withModule('org.gradle.swift-samples:utilities') {
             from vcs(GitVersionControlSpec) {
                 url = file('repos/utilities-repo').toURI()

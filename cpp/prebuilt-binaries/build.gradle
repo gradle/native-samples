@@ -13,11 +13,15 @@ def libReleaseLib = file(OperatingSystem.current().getSharedLibraryName('../simp
 def libDebugLinkLib = file(OperatingSystem.current().getLinkLibraryName('../simple-library/build/lib/main/debug/list'))
 def libReleaseLinkLib = file(OperatingSystem.current().getLinkLibraryName('../simple-library/build/lib/main/release/list'))
 
-if (!libDebugLib.exists() || !libReleaseLib.exists()) {
-    throw new GradleException("Please build project at ${file('../simple-library')} with: './gradlew -p ../simple-library assembleRelease assembleDebug'")
-}
-if (!libIncludePath.exists()) {
-    throw new GradleException("Please ensure in include path: ${libIncludePath} exists")
+gradle.taskGraph.whenReady { taskGraph ->
+    if (!taskGraph.hasTask(":help")) {
+        if (!libDebugLib.exists() || !libReleaseLib.exists()) {
+            throw new GradleException("Please build project at ${file('../simple-library')} with: './gradlew -p ../simple-library assembleRelease assembleDebug'")
+        }
+        if (!libIncludePath.exists()) {
+            throw new GradleException("Please ensure in include path: ${libIncludePath} exists")
+        }
+    }
 }
 
 components.main.binaries.whenElementFinalized { binary ->

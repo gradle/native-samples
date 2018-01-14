@@ -12,8 +12,12 @@ def libReleaseImportPath = file('../simple-library/build/modules/main/release/Li
 def libDebugLib = file(OperatingSystem.current().getSharedLibraryName('../simple-library/build/lib/main/debug/List'))
 def libReleaseLib = file(OperatingSystem.current().getSharedLibraryName('../simple-library/build/lib/main/release/List'))
 
-if (!libDebugLib.exists() || !libReleaseLib.exists() || !libDebugImportPath.exists() || !libReleaseImportPath.exists()) {
-    throw new GradleException("Please build project at ${file('../simple-library')} using './gradlew -p ../simple-library assembleRelease assembleDebug'")
+gradle.taskGraph.whenReady { taskGraph ->
+    if (!taskGraph.hasTask(":help")) {
+        if (!libDebugLib.exists() || !libReleaseLib.exists() || !libDebugImportPath.exists() || !libReleaseImportPath.exists()) {
+            throw new GradleException("Please build project at ${file('../simple-library')} using './gradlew -p ../simple-library assembleRelease assembleDebug'")
+        }
+    }
 }
 
 components.withType(SwiftBinary) { binary ->
@@ -30,8 +34,7 @@ components.withType(SwiftBinary) { binary ->
     }
 }
 
-import org.gradle.internal.os.OperatingSystem
-if (!OperatingSystem.current().linux) {
+if (!System.properties['os.name'].equals("Linux")) {
     xctest {
         source.from fileTree(dir: 'src/test/swift', include: '**/*.swift', exclude: 'main.swift')
     }
