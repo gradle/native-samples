@@ -9,5 +9,12 @@ class App {
     }
 }
 
-let result = App.normalize("  Hello,      World!  ")
-print(result)
+#if swift(>=4.0)
+print("Built for Swift 4")
+#elseif swift(>=3.0)
+print("Built for Swift 3")
+#else
+print("Built for unsupported Swift version")
+#endif
+
+print(App.normalize("  Hello,      World!  "))

@@ -13,6 +13,7 @@ void win_logger::info(const std::string & message) {
     if (console == INVALID_HANDLE_VALUE) {
         std::cout << message << std::endl;
     } else {
+        // Bold green text
         CONSOLE_SCREEN_BUFFER_INFO screen_info;
         GetConsoleScreenBufferInfo(console, &screen_info);
         SetConsoleTextAttribute(console, (screen_info.wAttributes | FOREGROUND_INTENSITY | FOREGROUND_GREEN ) & ~FOREGROUND_RED & ~FOREGROUND_BLUE);
