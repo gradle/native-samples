@@ -307,5 +307,9 @@ This build demonstrates using multiple versions of Swift in a single build.
 
 ```
 > cd swift/swift-versions
-> ./gradlew check
+> ./gradlew assemble
 ```
+
+There are two projects that build identical applications. One is written in Swift3 compatible code (`swift3-app`) and one is written with Swift4 compatible code (`swift4-app`). When running the application, it will print a message about which version of Swift was used.
+
+By default, the tests for a given Swift production component will be compiled for the same version of Swift. In `swift3-app`, the production and test code will be built with Swift3 source compatibility.
