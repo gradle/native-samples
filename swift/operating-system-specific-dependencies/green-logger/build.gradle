@@ -3,5 +3,5 @@ plugins {
 }
 
 library {
-    module.set("Logger")
+    module = "MacOsLogger"
 }
