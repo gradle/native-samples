@@ -2,19 +2,4 @@ allprojects {
     apply plugin: "xcode"
     
     group = 'org.gradle.swift-samples'
-
-    task assembleDebuggable {
-        group = "Build"
-        description = "Assemble all debuggable Swift binaries."
-        components.withType(SwiftExecutable) { binary ->
-            if (binary.isDebuggable()) {
-               dependsOn binary.executableFile
-            }
-        }
-        components.withType(SwiftSharedLibrary) { binary ->
-            if (binary.isDebuggable()) {
-               dependsOn binary.runtimeFile
-            }
-        }
-    }
 }

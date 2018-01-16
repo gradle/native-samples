@@ -8,9 +8,3 @@ application {
         implementation project(':utilities')
     }
 }
-
-configurations {
-    all {
-        attributes { attribute(CppBinary.LINKAGE_ATTRIBUTE, Linkage.STATIC) }
-    }
-}
