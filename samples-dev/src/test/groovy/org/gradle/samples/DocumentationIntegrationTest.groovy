@@ -9,7 +9,9 @@ class DocumentationIntegrationTest extends Specification {
     @Unroll
     def "sample has documentation '#target.name'"() {
         expect:
-        Documentation.headings.find { it.endsWith("($target.sampleName)")}
+        def sample = Documentation.getSample(target.sampleName)
+        sample != null
+        sample.hasInstructions()
 
         where:
         target << Samples.getSamples()
