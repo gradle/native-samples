@@ -1,7 +1,9 @@
+allprojects {
+    apply plugin: 'xcode'
+}
 
 subprojects {
     apply plugin: 'swift-application'
-    apply plugin: 'xcode'
     apply plugin: 'xctest'
 
     application {

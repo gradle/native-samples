@@ -71,6 +71,11 @@ allprojects { p ->
     buildDir = rootProject.file("build/${p.name}")
 
     // Work around for https://github.com/gradle/gradle-native/issues/376
+    tasks.withType(UnexportMainSymbol) {
+        doFirst {
+            p.projectDir.mkdirs()
+        }
+    }
     tasks.withType(AbstractLinkTask) {
         doFirst {
             p.projectDir.mkdirs()

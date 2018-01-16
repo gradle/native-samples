@@ -11,9 +11,9 @@ class WellBehavedSampleIntegrationTest extends Specification {
     @Rule TemporaryFolder tmpDir = new TemporaryFolder()
 
     @Unroll
-    def "can run help for '#target.name'"() {
+    def "can run help for '#sample.name'"() {
         given:
-        target = target.copyToTemp(tmpDir.root)
+        def target = Samples.useSampleIn(sample.name, tmpDir.root)
 
         expect:
         GradleRunner.create()
@@ -22,6 +22,6 @@ class WellBehavedSampleIntegrationTest extends Specification {
             .build()
 
         where:
-        target << Samples.getSamples()
+        sample << Samples.getAllSamples()
     }
 }

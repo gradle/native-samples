@@ -8,7 +8,9 @@ class App {
         return Util.join(tokens)
     }
 }
-
+print("""
+asdfa
+""")
 #if swift(>=4.0)
 print("Built for Swift 4")
 #elseif swift(>=3.0)

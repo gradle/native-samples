@@ -13,7 +13,7 @@ Each C++ sample works on macOS, Linux and Windows with GCC, Clang and Visual C++
 
 Each Swift sample works on macOS and Linux, with Swift 3 and later.
 
-### Contribution
+### Contributing to these samples
 
 If you want to contribute an improvement to the samples, please refer to the [`samples-dev` subproject](samples-dev/README.md).
 
@@ -36,7 +36,7 @@ All Swift samples demonstrate XCTest support in Gradle. As a user, you can eithe
 > ./gradlew test
 ```
 
-### Google test support
+### Google Test support
 
 The C++ sample `simple-library` demonstrates some basic Google test support in Gradle. This is currently not as refined as the XCTest support. 
 
@@ -303,13 +303,12 @@ By default, when building the application, only the shared library will be built
 
 ## Supporting multiple Swift versions (swift-versions)
 
-This build demonstrates using multiple versions of Swift in a single build.
+This build demonstrates using multiple versions of Swift in a single build. There are two projects that build identical applications. One is written in Swift 3 compatible code (`swift3-app`) and one is written with Swift 4 compatible code (`swift4-app`). When running the application, it will print a message about which version of Swift was used.
 
 ```
+NOTE: Needs Swift tool chain
 > cd swift/swift-versions
 > ./gradlew assemble
 ```
 
-There are two projects that build identical applications. One is written in Swift3 compatible code (`swift3-app`) and one is written with Swift4 compatible code (`swift4-app`). When running the application, it will print a message about which version of Swift was used.
-
-By default, the tests for a given Swift production component will be compiled for the same version of Swift. In `swift3-app`, the production and test code will be built with Swift3 source compatibility.
+By default, the tests for a given Swift production component will be compiled for the same version of Swift. For instance, in `swift3-app`, the production and test code will be built with Swift 3 source compatibility.
