@@ -1,1 +1,1 @@
-include ':app', ':blue-logger', ':green-logger'
+include ':app', ':linux-logger', ':macos-logger'

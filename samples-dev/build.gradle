@@ -182,8 +182,8 @@ task swiftApplicationOSDependencies(type: SourceCopyTask) {
     appProject("app").fromTemplate(swiftUtilsLib)
     appProject("app").fromTemplate(swiftListLib)
 
-    libProject("blue-logger").fromTemplate(CppLibraryTemplate.of("swift-blue-logger-lib", "blue-logger"))
-    libProject("green-logger").fromTemplate(CppLibraryTemplate.of("swift-green-logger-lib", "green-logger"))
+    libProject("linux-logger").fromTemplate(SwiftLibraryTemplate.of("swift-blue-logger-lib", "LinuxLogger"))
+    libProject("macos-logger").fromTemplate(SwiftLibraryTemplate.of("swift-green-logger-lib", "MacOsLogger"))
 }
 
 task swiftVersions(type: SourceCopyTask) {
