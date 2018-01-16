@@ -5,8 +5,8 @@ plugins {
 
 library {
     linkage = [Linkage.SHARED, Linkage.STATIC]
-}
 
-dependencies {
-    api project(':list')
+    dependencies {
+        api project(':list')
+    }
 }

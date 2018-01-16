@@ -6,6 +6,8 @@ plugins {
 
 group = 'org.gradle.swift-samples'
 
-dependencies {
-    implementation 'org.gradle.swift-samples:utilities:2.0'
+application {
+    dependencies {
+        implementation 'org.gradle.swift-samples:utilities:2.0'
+    }
 }

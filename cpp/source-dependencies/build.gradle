@@ -4,6 +4,8 @@ plugins {
 
 group = 'org.gradle.cpp-samples'
 
-dependencies {
-    implementation 'org.gradle.cpp-samples:utilities:latest.integration'
+application {
+    dependencies {
+        implementation 'org.gradle.cpp-samples:utilities:latest.integration'
+    }
 }

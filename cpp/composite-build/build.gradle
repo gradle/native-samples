@@ -3,6 +3,8 @@ plugins {
     id 'xcode'
 }
 
-dependencies {
-    implementation 'org.gradle.cpp-samples:utilities:1.2'
+application {
+    dependencies {
+        implementation 'org.gradle.cpp-samples:utilities:1.2'
+    }
 }

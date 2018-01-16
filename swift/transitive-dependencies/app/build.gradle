@@ -3,6 +3,8 @@ plugins {
     id 'xctest'
 }
 
-dependencies {
-    implementation project(':utilities')
+application {
+    dependencies {
+        implementation project(':utilities')
+    }
 }

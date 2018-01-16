@@ -14,12 +14,12 @@ repositories {
     }
 }
 
-dependencies {
-    // Currently, the operating system and architecture are not considered by dependency management
-    // Encode the operating system and architecture in the module name instead
-    // Also, as the Gradle publishing format for C++ is not yet stable, encode the Gradle version in the module as well
-    // None of this will be necessarily in later releases and Gradle will take care of these things instead
-    library.binaries.whenElementFinalized {
+// Currently, the operating system and architecture are not considered by dependency management
+// Encode the operating system and architecture in the module name instead
+// Also, as the Gradle publishing format for C++ is not yet stable, encode the Gradle version in the module as well
+// None of this will be necessarily in later releases and Gradle will take care of these things instead
+unitTest {
+    binaries.whenElementFinalized {
         def osName = targetPlatform.operatingSystem.name.replace(' ', '').toLowerCase()
         if (osName.startsWith('windows')) {
             // Windows 10 binaries are backward compatible with Windows 7
@@ -28,7 +28,9 @@ dependencies {
         def archName = targetPlatform.architecture.name.replace(' ', '').toLowerCase()
         def gradleVersion = '4.5'
 
-        testImplementation "org.gradle.cpp-samples:googletest_${osName}_${archName}_${gradleVersion}:latest.integration"
+        dependencies {
+            implementation "org.gradle.cpp-samples:googletest_${osName}_${archName}_${gradleVersion}:latest.integration"
+        }
     }
 }
 

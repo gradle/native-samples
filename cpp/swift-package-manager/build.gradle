@@ -8,10 +8,10 @@ project(':app') {
     // Configure the source files of the executable
     application {
         source.from rootProject.file('Sources/App')
-    }
 
-    dependencies {
-        implementation project(':utilities')
+        dependencies {
+            implementation project(':utilities')
+        }
     }
 }
 
@@ -22,10 +22,10 @@ project(':utilities') {
     library {
         source.from rootProject.file('Sources/Utilities')
         publicHeaders.from rootProject.file('Sources/Utilities/include')
-    }
 
-    dependencies {
-        api project(':list')
+        dependencies {
+            api project(':list')
+        }
     }
 }
 

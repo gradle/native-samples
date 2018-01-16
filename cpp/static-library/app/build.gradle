@@ -2,6 +2,8 @@ plugins {
     id 'cpp-application'
 }
 
-dependencies {
-    implementation project(':utilities')
+application {
+    dependencies {
+        implementation project(':utilities')
+    }
 }

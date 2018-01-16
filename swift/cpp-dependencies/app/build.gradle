@@ -4,8 +4,10 @@ plugins {
     id 'xctest'
 }
 
-dependencies {
-    implementation project(':list')
+application {
+    dependencies {
+        implementation project(':list')
+    }
 }
 
 if (!System.properties['os.name'].equals("Linux")) {

@@ -9,6 +9,8 @@ repositories {
     }
 }
 
-dependencies {
-    implementation 'org.gradle.cpp-samples:list:1.5'
+application {
+    dependencies {
+        implementation 'org.gradle.cpp-samples:list:1.5'
+    }
 }

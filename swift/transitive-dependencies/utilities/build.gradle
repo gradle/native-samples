@@ -3,6 +3,8 @@ plugins {
     id 'xctest'
 }
 
-dependencies {
-    api project(':list')
+library {
+    dependencies {
+        api project(':list')
+    }
 }
