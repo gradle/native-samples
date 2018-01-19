@@ -8,6 +8,6 @@ group = 'org.gradle.swift-samples'
 
 library {
     dependencies {
-        api 'org.gradle.swift-samples:list:2.0'
+        api 'org.gradle.swift-samples:list:1.0'
     }
 }

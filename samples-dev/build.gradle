@@ -260,12 +260,43 @@ task swiftSwiftPackageManager(type: SourceCopyTask) {
     swiftPMProject(".", "List").fromTemplate(swiftListLib)
 }
 
+void changeContent(File srcFile, String pattern, String replacement) {
+    def original = srcFile.text
+    srcFile.text = original.replace(pattern, replacement)
+}
+
 task generateCppRepos(type: GitRepoTask) {
     sampleDir = file("../cpp/source-dependencies/repos")
+    listChanges["1.0"] = { destDir ->
+        changeContent(new File(destDir, "src/main/cpp/get.cpp"), "index > 0", "index > 1")
+        "introduce bug in get.cpp"
+    }
+    listChanges["2.0"] = { destDir ->
+        changeContent(new File(destDir, "src/main/cpp/get.cpp"), "index > 1", "index > 0")
+        "fix bug in get.cpp"
+    }
+    utilitiesChanges["1.0"] = { "" }
+    utilitiesChanges["2.0"] = { destDir ->
+        changeContent(new File(destDir, "build.gradle"), "list:1.0", "list:2.0")
+        "use list:2.0 as a dependency"
+    }
 }
 
 task generateSwiftRepos(type: GitRepoTask) {
     sampleDir = file("../swift/source-dependencies/repos")
+    listChanges["1.0"] = { destDir ->
+        changeContent(new File(destDir, "src/main/swift/LinkedList.swift"), "c > 0", "c > 1")
+        "introduce bug in LinkedList"
+    }
+    listChanges["2.0"] = { destDir ->
+        changeContent(new File(destDir, "src/main/swift/LinkedList.swift"), "c > 1", "c > 0")
+        "fix bug in LinkedList"
+    }
+    utilitiesChanges["1.0"] = { "" }
+    utilitiesChanges["2.0"] = { destDir ->
+        changeContent(new File(destDir, "build.gradle"), "list:1.0", "list:2.0")
+        "use list:2.0 as a dependency"
+    }
 }
 
 class SourceCopyTask extends DefaultTask {
@@ -538,13 +569,16 @@ class CppLibraryTemplate extends Template {
 class GitRepoTask extends DefaultTask {
     final DirectoryProperty sampleDir = project.layout.directoryProperty()
 
+    Map<String, Closure> utilitiesChanges = [:]
+    Map<String, Closure> listChanges = [:]
+
     @TaskAction
     def go() {
-        createRepo("utilities")
-        createRepo("list")
+        createRepo("utilities", utilitiesChanges)
+        createRepo("list", listChanges)
     }
 
-    private void createRepo(String sourceRepo) {
+    private void createRepo(String sourceRepo, Map<String, Closure> changes) {
         def srcDir = sampleDir.dir(sourceRepo).get().asFile
         def destDir = sampleDir.dir(sourceRepo + "-repo").get().asFile
         project.delete(destDir)
@@ -563,10 +597,15 @@ class GitRepoTask extends DefaultTask {
             }
             add.call()
             git.commit().setMessage("Initial version").call()
-            git.tag().setName("1.0").call()
+            changes.each { tag, change ->
+                def message = change(destDir)
+                git.commit().setAll(true).setMessage(message).call()
+                git.tag().setName(tag).call()
+            }
+            
+            // Uninteresting change just to have another commit
             new File(destDir, "build.gradle") << "\n"
-            git.commit().setAll(true).setMessage("Initial version").call()
-            git.tag().setName("2.0").call()
+            git.commit().setAll(true).setMessage("last commit").call()
         } finally {
             git.close()
         }

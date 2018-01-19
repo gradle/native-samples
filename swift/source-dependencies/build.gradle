@@ -8,6 +8,6 @@ group = 'org.gradle.swift-samples'
 
 application {
     dependencies {
-        implementation 'org.gradle.swift-samples:utilities:2.0'
+        implementation 'org.gradle.swift-samples:utilities:latest.integration'
     }
 }
