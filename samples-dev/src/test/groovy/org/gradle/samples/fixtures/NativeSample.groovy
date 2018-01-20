@@ -13,7 +13,7 @@ class NativeSample {
 
     NativeSample copyToTemp(File destination) {
         def projectDir = new File(destination, name)
-        
+
         DirectoryScanner.removeDefaultExclude("**/.git")
         DirectoryScanner.removeDefaultExclude("**/.git/**")
         new AntBuilder().copy(todir: projectDir) {

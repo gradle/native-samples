@@ -27,6 +27,7 @@ dependencies {
 }
 
 test {
+    dependsOn "generateCppRepos", "generateSwiftRepos"
     inputs.files files("../swift", '../cpp').asFileTree.matching { PatternFilterable pattern ->
         pattern.exclude "**/build", "**/.gradle", "**/*.xcworkspace", "**/*.xcodeproj", "**/repo"
     }
