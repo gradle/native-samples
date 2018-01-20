@@ -13,20 +13,16 @@ class NativeSample {
 
     NativeSample copyToTemp(File destination) {
         def projectDir = new File(destination, name)
-
-        try {
-            DirectoryScanner.removeDefaultExclude("**/.git")
-            DirectoryScanner.removeDefaultExclude("**/.git/**")
-            new AntBuilder().copy(todir: projectDir) {
-                fileset(dir: sampleDir) {
-                    exclude(name: "**/build/**")
-                    exclude(name: "**/.gradle/**")
-                    exclude(name: "**/.xcworkspace/**")
-                    exclude(name: "**/.xcodeproj/**")
-                }
+        
+        DirectoryScanner.removeDefaultExclude("**/.git")
+        DirectoryScanner.removeDefaultExclude("**/.git/**")
+        new AntBuilder().copy(todir: projectDir) {
+            fileset(dir: sampleDir) {
+                exclude(name: "**/build/**")
+                exclude(name: "**/.gradle/**")
+                exclude(name: "**/.xcworkspace/**")
+                exclude(name: "**/.xcodeproj/**")
             }
-        } finally {
-            DirectoryScanner.resetDefaultExcludes()
         }
 
         assert !new File(projectDir, '/build').exists()
