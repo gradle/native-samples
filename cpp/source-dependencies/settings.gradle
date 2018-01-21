@@ -3,12 +3,12 @@ rootProject.name = 'app'
 sourceControl {
     vcsMappings {
         withModule('org.gradle.cpp-samples:utilities') {
-            from vcs(GitVersionControlSpec) {
+            from(GitVersionControlSpec) {
                 url = file('repos/utilities-repo').toURI()
             }
         }
         withModule('org.gradle.cpp-samples:list') {
-            from vcs(GitVersionControlSpec) {
+            from(GitVersionControlSpec) {
                 url = file('repos/list-repo').toURI()
             }
         }
