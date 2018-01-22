@@ -290,6 +290,7 @@ task generateCppListRepo(type: GitRepoTask) {
         "major release"
     }
     changes["SNAPSHOT"] = { destDir ->
+        changeContent("build.gradle", "version = '2.0'", "version = '2.0-SNAPSHOT'")
         "work in progress"
     }
 }
@@ -306,6 +307,7 @@ task generateCppUtilitiesRepo(type: GitRepoTask) {
         "require list 2.0"
     }
     changes["SNAPSHOT"] = { destDir ->
+        changeContent("build.gradle", "version = '2.0'", "version = '2.0-SNAPSHOT'")
         "work in progress"
     }
 }
@@ -321,19 +323,35 @@ task generateSwiftListRepo(type: GitRepoTask) {
         changeContent("src/main/swift/LinkedList.swift", "c > 0", "c > 1")
         "introduce bug in LinkedList"
     }
-    changes["2.0"] = { destDir ->
+    changes["1.1"] = { destDir ->
+        changeContent("build.gradle", "version = '1.0'", "version = '1.1'")
         changeContent("src/main/swift/LinkedList.swift", "c > 1", "c > 0")
         "fix bug in LinkedList"
+    }
+    changes["2.0"] = { destDir ->
+        changeContent("build.gradle", "version = '1.1'", "version = '2.0'")
+        "major release"
+    }
+    changes["SNAPSHOT"] = { destDir ->
+        changeContent("build.gradle", "version = '2.0'", "version = '2.0-SNAPSHOT'")
+        "work in progress"
     }
 }
 
 task generateSwiftUtilitiesRepo(type: GitRepoTask) {
     dependsOn swiftSourceDependencies
     sampleDir = file("../swift/source-dependencies/repos/utilities-library")
-    changes["1.0"] = { "" }
+    changes["1.0"] = {
+        "initial version"
+    }
     changes["2.0"] = { destDir ->
+        changeContent("build.gradle", "version = '1.0'", "version = '2.0'")
         changeContent("build.gradle", "list:1.0", "list:2.0")
-        "use list:2.0 as a dependency"
+        "require list 2.0"
+    }
+    changes["SNAPSHOT"] = { destDir ->
+        changeContent("build.gradle", "version = '2.0'", "version = '2.0-SNAPSHOT'")
+        "work in progress"
     }
 }
 
@@ -358,7 +376,6 @@ class SourceCopyTask extends DefaultTask {
                     return
                 }
                 def destDir = sampleDir.dir(dest).get().asFile
-                println "copy $srcDir to $destDir"
                 if (recursive && cleaned.add(destDir)) {
                     // TODO - generate the test main.swift
                     project.delete project.fileTree(destDir, { exclude '**/main.swift' })
