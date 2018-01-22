@@ -281,7 +281,7 @@ BUILD SUCCESSFUL in 1s
 Hello, Hello,
 ```
 
-Change to version 1.1 to use a fixed version. Dynamic dependencies are also supported, so you could also use `1.+`, `[1.1,2.0]` or `latest.integration`.
+Change to version 1.1 to use a fixed version. Dynamic dependencies are also supported, so you could also use `1.+`, `[1.1,2.0]` or `latest.integration`. Gradle matches the tags of the Git repository. Branches are not yet supported.
 
 ### C++
 
