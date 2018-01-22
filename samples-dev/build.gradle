@@ -278,40 +278,58 @@ void changeContent(File srcFile, String pattern, String replacement) {
     srcFile.text = original.replace(pattern, replacement)
 }
 
-task generateCppRepos(type: GitRepoTask) {
+task generateCppListRepo(type: GitRepoTask) {
     dependsOn cppSourceDependencies
-    sampleDir = file("../cpp/source-dependencies/repos")
-    listChanges["1.0"] = { destDir ->
+    sampleDir = file("../cpp/source-dependencies/repos/list-library")
+    changes["1.0"] = { destDir ->
         changeContent(new File(destDir, "src/main/cpp/get.cpp"), "index > 0", "index > 1")
         "introduce bug in get.cpp"
     }
-    listChanges["2.0"] = { destDir ->
+    changes["2.0"] = { destDir ->
         changeContent(new File(destDir, "src/main/cpp/get.cpp"), "index > 1", "index > 0")
         "fix bug in get.cpp"
     }
-    utilitiesChanges["1.0"] = { "" }
-    utilitiesChanges["2.0"] = { destDir ->
+}
+
+task generateCppUtilitiesRepo(type: GitRepoTask) {
+    dependsOn cppSourceDependencies
+    sampleDir = file("../cpp/source-dependencies/repos/utilities-library")
+    changes["1.0"] = { "" }
+    changes["2.0"] = { destDir ->
         changeContent(new File(destDir, "build.gradle"), "list:1.0", "list:2.0")
         "use list:2.0 as a dependency"
     }
 }
 
-task generateSwiftRepos(type: GitRepoTask) {
+task generateCppRepos {
+    dependsOn generateCppListRepo, generateCppUtilitiesRepo
+}
+
+task generateSwiftListRepo(type: GitRepoTask) {
     dependsOn swiftSourceDependencies
-    sampleDir = file("../swift/source-dependencies/repos")
-    listChanges["1.0"] = { destDir ->
+    sampleDir = file("../swift/source-dependencies/repos/list-library")
+    changes["1.0"] = { destDir ->
         changeContent(new File(destDir, "src/main/swift/LinkedList.swift"), "c > 0", "c > 1")
         "introduce bug in LinkedList"
     }
-    listChanges["2.0"] = { destDir ->
+    changes["2.0"] = { destDir ->
         changeContent(new File(destDir, "src/main/swift/LinkedList.swift"), "c > 1", "c > 0")
         "fix bug in LinkedList"
     }
-    utilitiesChanges["1.0"] = { "" }
-    utilitiesChanges["2.0"] = { destDir ->
+}
+
+task generateSwiftUtilitiesRepo(type: GitRepoTask) {
+    dependsOn swiftSourceDependencies
+    sampleDir = file("../swift/source-dependencies/repos/utilities-library")
+    changes["1.0"] = { "" }
+    changes["2.0"] = { destDir ->
         changeContent(new File(destDir, "build.gradle"), "list:1.0", "list:2.0")
         "use list:2.0 as a dependency"
     }
+}
+
+task generateSwiftRepos {
+    dependsOn generateSwiftListRepo, generateSwiftUtilitiesRepo
 }
 
 class SourceCopyTask extends DefaultTask {
@@ -588,17 +606,11 @@ class CppLibraryTemplate extends Template {
 class GitRepoTask extends DefaultTask {
     final DirectoryProperty sampleDir = project.layout.directoryProperty()
 
-    Map<String, Closure> utilitiesChanges = [:]
-    Map<String, Closure> listChanges = [:]
+    Map<String, Closure> changes = [:]
 
     @TaskAction
     def go() {
-        createRepo("utilities-library", utilitiesChanges)
-        createRepo("list-library", listChanges)
-    }
-
-    private void createRepo(String sourceRepo, Map<String, Closure> changes) {
-        def destDir = sampleDir.dir(sourceRepo).get().asFile
+        def destDir = sampleDir.get().asFile
         project.delete(new File(destDir, ".git"))
         InitCommand init = Git.init();
         Git git = init.setDirectory(destDir).call()
