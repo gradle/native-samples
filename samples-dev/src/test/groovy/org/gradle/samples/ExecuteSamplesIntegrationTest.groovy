@@ -16,7 +16,7 @@ class ExecuteSamplesIntegrationTest extends Specification {
                 .withProjectDir(prebuilt.sampleDir)
                 .withArguments("publish")
                 .build()
-        def target = Samples.useSampleIn('cpp/prebuilt-binaries')
+        def target = Samples.useSampleIn('cpp/binary-dependencies')
 
         expect:
         GradleRunner.create()
