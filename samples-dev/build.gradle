@@ -149,7 +149,9 @@ task cppSourceDependencies(type: SourceCopyTask) {
 
     appProject(".").fromTemplate("cpp-app")
     libProject("repos/utilities").fromTemplate(cppUtilsLib)
+    libProject("repos/utilities").fromTemplate("cpp-utilities-lib-build")
     libProject("repos/list").fromTemplate(cppListLib)
+    libProject("repos/list").fromTemplate("cpp-list-lib-build")
 }
 
 task cppOSDependencies(type: SourceCopyTask) {
@@ -243,7 +245,9 @@ task swiftSourceDependencies(type: SourceCopyTask) {
 
     appProject(".").fromTemplate("swift-app")
     libProject("repos/utilities").fromTemplate(swiftUtilsLib)
+    libProject("repos/utilities").fromTemplate("swift-utilities-lib-build")
     libProject("repos/list").fromTemplate(swiftListLib)
+    libProject("repos/list").fromTemplate("swift-list-lib-build")
 }
 
 task swiftStaticLibrary(type: SourceCopyTask) {
@@ -321,20 +325,23 @@ class SourceCopyTask extends DefaultTask {
         projects.values().each { p ->
             def modules = p.includedModules.collect { "import $it" as String }
             def testModules = p.includedModules.collect { "@testable import $it" as String }
-            p.visitDirs { src, dest, lineFilter ->
+            p.visitDirs { src, dest, lineFilter, recursive ->
                 def srcDir = templatesDir.dir(src).get().asFile
                 if (!srcDir.directory) {
                     return
                 }
                 def destDir = sampleDir.dir(dest).get().asFile
                 println "copy $srcDir to $destDir"
-                if (cleaned.add(destDir)) {
+                if (recursive && cleaned.add(destDir)) {
                     // TODO - generate the test main.swift
                     project.delete project.fileTree(destDir, { exclude '**/main.swift' })
                 }
                 project.copy {
                     from srcDir
                     into destDir
+                    if (!recursive) {
+                        include '*'
+                    }
                     if (lineFilter) {
                         filter(lineFilter)
                     }
@@ -411,8 +418,9 @@ class SourceCopyTask extends DefaultTask {
          */
         void visitDirs(Closure cl) {
             templates.each { template ->
+                cl.call(template.templateName, projectDir, null, false)
                 visitDirMappings(template) { src, dest, lineFilter ->
-                    cl.call("${template.templateName}/${src}", "${projectDir}/${dest}", lineFilter)
+                    cl.call("${template.templateName}/${src}", "${projectDir}/${dest}", lineFilter, true)
                 }
             }
         }
@@ -518,17 +526,17 @@ class SourceCopyTask extends DefaultTask {
             this.targetName = targetName
         }
 
-        @java.lang.Override
+        @Override
         String getModule() {
             return targetName
         }
 
-        @java.lang.Override
+        @Override
         String getKey() {
             return "$projectDir:$targetName"
         }
 
-        @java.lang.Override
+        @Override
         void visitDirMappings(Template template, Closure cl) {
             cl.call("src/main/cpp", "Sources/${targetName}", null)
             cl.call("src/main/headers", "Sources/${targetName}/include", null)
