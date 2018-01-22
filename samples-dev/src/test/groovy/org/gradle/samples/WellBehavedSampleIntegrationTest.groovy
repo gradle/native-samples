@@ -7,13 +7,13 @@ import spock.lang.Unroll
 
 class WellBehavedSampleIntegrationTest extends Specification {
     @Unroll
-    def "can run help for '#sample.name'"() {
+    def "can run help for '#sample.name' without running any setup steps"() {
         given:
-        def target = Samples.useSampleIn(sample.name)
+        sample.clean()
 
         expect:
         GradleRunner.create()
-            .withProjectDir(target.sampleDir)
+            .withProjectDir(sample.sampleDir)
             .withArguments("help")
             .build()
 

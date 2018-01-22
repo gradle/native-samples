@@ -5,7 +5,6 @@ import org.gradle.samples.fixtures.Documentation
 import org.gradle.samples.fixtures.NativeSample
 import org.gradle.samples.fixtures.Samples
 import org.gradle.testkit.runner.GradleRunner
-import org.junit.Assume
 import spock.lang.Requires
 import spock.lang.Shared
 import spock.lang.Specification
@@ -18,13 +17,23 @@ class ExecuteSamplesIntegrationTest extends Specification {
     @Unroll
     def "can build C++ '#sample.name'"() {
         given:
-        def target = Samples.useSampleIn(sample.name)
-        runSetupFor(target)
+        sample.clean()
+        runSetupFor(sample)
 
         expect:
         GradleRunner.create()
-                .withProjectDir(target.sampleDir)
+                .withProjectDir(sample.sampleDir)
                 .withArguments("build")
+                .build()
+
+        GradleRunner.create()
+                .withProjectDir(sample.sampleDir)
+                .withArguments("xcode")
+                .build()
+
+        GradleRunner.create()
+                .withProjectDir(sample.sampleDir)
+                .withArguments("assembleRelease")
                 .build()
 
         where:
@@ -35,13 +44,23 @@ class ExecuteSamplesIntegrationTest extends Specification {
     @Unroll
     def "can build Swift '#sample.name'"() {
         given:
-        def target = Samples.useSampleIn(sample.name)
-        runSetupFor(target)
+        sample.clean()
+        runSetupFor(sample)
 
         expect:
         GradleRunner.create()
-                .withProjectDir(target.sampleDir)
+                .withProjectDir(sample.sampleDir)
                 .withArguments("build")
+                .build()
+
+        GradleRunner.create()
+                .withProjectDir(sample.sampleDir)
+                .withArguments("xcode")
+                .build()
+
+        GradleRunner.create()
+                .withProjectDir(sample.sampleDir)
+                .withArguments("assembleRelease")
                 .build()
 
         where:

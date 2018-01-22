@@ -1,5 +1,6 @@
 plugins {
     id 'cpp-application'
+    id 'xcode'
 }
 
 group = 'org.gradle.cpp-samples'

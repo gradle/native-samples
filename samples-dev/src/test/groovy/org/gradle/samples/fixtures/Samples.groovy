@@ -25,7 +25,6 @@ class Samples {
         def sampleDir = new File(rootSampleDir, sample)
         assert sampleDir.exists()
         def sourceSample = new NativeSample(name: sample, sampleName: sampleDir.getName(), rootSampleDir: getRootSampleDir())
-        sourceSample.clean()
         return sourceSample
     }
 
