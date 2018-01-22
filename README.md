@@ -322,11 +322,11 @@ Hello, World!
 
 ### Swift
 
-The application selects the 'MacOsConsole' library that prints the output in green when building on macOS.  On Linux, it selects the 'LinuxConsole' library that prints the output in blue.
+The application selects the 'MacOsConsole' library that prints the output in blue when building on macOS.  On Linux, it selects the 'LinuxConsole' library that prints the output in green.
 
 ### C++
 
-The application selects the 'ansiLogger' library on macOS and Linux and the 'winConsole' library when built on Windows. Both libraries print the output in green.
+The application selects the 'ansiConsole' library on macOS and Linux and the 'winConsole' library when built on Windows. The output is blue on macOS and green on Linux and Windows.
 
 ## Swift application with C++ library dependencies (cpp-dependencies)
 

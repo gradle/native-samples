@@ -196,7 +196,7 @@ task swiftApplicationOSDependencies(type: SourceCopyTask) {
     appProject("app").fromTemplate(swiftListLib)
 
     libProject("linux-console").fromTemplate(SwiftLibraryTemplate.of("swift-linux-console-lib", "LinuxLogger"))
-    libProject("macos-console").fromTemplate(SwiftLibraryTemplate.of("swift-mac-console-lib", "MacOsLogger"))
+    libProject("macos-console").fromTemplate(SwiftLibraryTemplate.of("swift-macos-console-lib", "MacOsLogger"))
 }
 
 task swiftVersions(type: SourceCopyTask) {
