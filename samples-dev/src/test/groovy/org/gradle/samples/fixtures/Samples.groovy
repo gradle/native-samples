@@ -21,11 +21,12 @@ class Samples {
         return result
     }
 
-    static NativeSample useSampleIn(String sample, File temporaryDir) {
+    static NativeSample useSampleIn(String sample) {
         def sampleDir = new File(rootSampleDir, sample)
         assert sampleDir.exists()
         def sourceSample = new NativeSample(name: sample, sampleName: sampleDir.getName(), rootSampleDir: getRootSampleDir())
-        return sourceSample.copyToTemp(temporaryDir)
+        sourceSample.clean()
+        return sourceSample
     }
 
     static File getRootSampleDir() {

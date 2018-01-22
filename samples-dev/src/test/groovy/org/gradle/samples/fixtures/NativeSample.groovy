@@ -1,7 +1,5 @@
 package org.gradle.samples.fixtures
 
-import org.apache.tools.ant.DirectoryScanner
-
 class NativeSample {
     String name
     String sampleName
@@ -11,25 +9,18 @@ class NativeSample {
         return new File(rootSampleDir, name)
     }
 
-    NativeSample copyToTemp(File destination) {
-        def projectDir = new File(destination, name)
+    void clean() {
+        def projectDir = sampleDir
 
-        DirectoryScanner.removeDefaultExclude("**/.git")
-        DirectoryScanner.removeDefaultExclude("**/.git/**")
-        new AntBuilder().copy(todir: projectDir) {
-            fileset(dir: sampleDir) {
-                exclude(name: "**/build/**")
-                exclude(name: "**/.gradle/**")
-                exclude(name: "**/.xcworkspace/**")
-                exclude(name: "**/.xcodeproj/**")
+        def toDelete = []
+        projectDir.eachDirRecurse { d ->
+            if (d.name == 'build' || d.name == '.gradle' || d.name.endsWith('.xcworkspace') || d.name.endsWith('.xcodeproj')) {
+                toDelete.add(d)
             }
         }
-
-        assert !new File(projectDir, '/build').exists()
-        assert !new File(projectDir, '/.gradle').exists()
-        assert new File(projectDir, "build.gradle").exists()
-        assert new File(projectDir, "settings.gradle").exists()
-
-        return new NativeSample(name: name, rootSampleDir: destination)
+        toDelete.each { d ->
+            println "DELETE " + d
+            d.deleteDir()
+        }
     }
 }
