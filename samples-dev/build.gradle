@@ -156,10 +156,11 @@ task cppOSDependencies(type: SourceCopyTask) {
     sampleDir = file("../cpp/operating-system-specific-dependencies")
 
     appProject("app").fromTemplate("cpp-app-uses-logger")
+    appProject("app").fromTemplate("cpp-logger-uses-console")
     appProject("app").fromTemplate(cppUtilsLib)
     appProject("app").fromTemplate(cppListLib)
-    libProject("ansiLogger").fromTemplate(CppLibraryTemplate.of("cpp-ansi-logger-lib", "ansi_logger"))
-    libProject("winConsoleLogger").fromTemplate(CppLibraryTemplate.of("cpp-windows-logger-lib", "win_logger"))
+    libProject("ansiConsole").fromTemplate(CppLibraryTemplate.of("cpp-ansi-console-lib", "ansi_console"))
+    libProject("winConsole").fromTemplate(CppLibraryTemplate.of("cpp-windows-console-lib", "win_console"))
 }
 
 task cppStaticLibrary(type: SourceCopyTask) {

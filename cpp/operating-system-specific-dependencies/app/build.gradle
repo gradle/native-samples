@@ -6,9 +6,9 @@ application {
     binaries.configureEach {
         dependencies {
             if (targetPlatform.operatingSystem.windows) {
-                implementation project(':winConsoleLogger')
+                implementation project(':winConsole')
             } else {
-                implementation project(':ansiLogger')
+                implementation project(':ansiConsole')
             }
         }
     }

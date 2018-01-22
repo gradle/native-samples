@@ -1,1 +1,1 @@
-include 'app', 'ansiLogger', 'winConsoleLogger'
+include 'app', 'ansiConsole', 'winConsole'
