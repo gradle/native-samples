@@ -15,7 +15,7 @@ class DocumentationIntegrationTest extends Specification {
         expect:
         def sample = documentation.getSample(target.sampleName)
         sample != null
-        sample.hasInstructions()
+        !sample.instructions.empty
 
         where:
         target << Samples.getAllSamples()

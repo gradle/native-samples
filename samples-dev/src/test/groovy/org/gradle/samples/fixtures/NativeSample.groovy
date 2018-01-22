@@ -19,7 +19,6 @@ class NativeSample {
             }
         }
         toDelete.each { d ->
-            println "DELETE " + d
             d.deleteDir()
         }
     }

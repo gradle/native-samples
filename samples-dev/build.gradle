@@ -27,7 +27,6 @@ dependencies {
 }
 
 test {
-    dependsOn "generateCppRepos", "generateSwiftRepos"
     inputs.files files("../swift", '../cpp').asFileTree.matching { PatternFilterable pattern ->
         pattern.exclude "**/build", "**/.gradle", "**/*.xcworkspace", "**/*.xcodeproj", "**/repo"
     }
@@ -87,6 +86,12 @@ task generateSource {
     dependsOn tasks.withType(SourceCopyTask)
     group = "source generation"
     description = "generate the source files for all samples"
+}
+
+task generateRepos {
+    dependsOn tasks.withType(GitRepoTask)
+    group = "sample setup"
+    description = "generate the Git repositories for all samples"
 }
 
 def cppUtilsLib = CppLibraryTemplate.of("cpp-lib-with-api-dep", "utilities")

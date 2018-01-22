@@ -181,7 +181,7 @@ To use the sample, first create the binaries using the `simple-library` build:
 
 ```
 > cd prebuilt-binaries
-> ./gradlew -p ../simple-library assemble
+> ./gradlew -p ../simple-library assembleDebug assembleRelease
 
 BUILD SUCCESSFUL in 0s
 ```
@@ -234,7 +234,7 @@ This build demonstrates using external source dependencies to build Swift and C+
 ### Swift
 ```
 > cd swift/source-dependencies
-> ./gradlew -p ../.. generateSwiftRepos
+> ./gradlew -p ../.. generateRepos
 > ./gradlew assemble
 
 BUILD SUCCESSFUL in 3s
@@ -246,7 +246,7 @@ Hello, World!
 ### C++
 ```
 > cd cpp/source-dependencies
-> ./gradlew -p ../.. generateCppRepos
+> ./gradlew -p ../.. generateRepos
 > ./gradlew assemble
 
 BUILD SUCCESSFUL in 3s

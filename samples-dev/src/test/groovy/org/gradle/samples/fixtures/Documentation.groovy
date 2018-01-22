@@ -12,6 +12,7 @@ import java.util.regex.Pattern
  * - A level 2 heading with '(<sample-name>)' at the end of the heading text
  * - Includes all content up to the next level 2 heading.
  * - Must contain at least one fenced code block containing the instructions for the sample.
+ * - All lines in the instructions that start with '>' are considered user input
  */
 class Documentation {
     private final Map<String, SampleDocumentation> samples
@@ -72,18 +73,18 @@ class Documentation {
         }
 
         /**
-         * Asserts that this sample has instructions.
+         * Returns the instructions for this sample.
          */
-        void hasInstructions() {
-            assert !getInstructions().isEmpty() : "Could not find any instructions in README.md for sample '${name}'"
-        }
-
-        List<FencedCodeBlock> getInstructions() {
+        List<String> getInstructions() {
             def instructions = []
             Node node = heading.next
             while (node != null) {
                 if (node instanceof FencedCodeBlock) {
-                    instructions.add(node)
+                    node.literal.readLines().each { str ->
+                        if (str.startsWith(">")) {
+                            instructions.add(str.substring(1).trim())
+                        }
+                    }
                 }
                 if (node instanceof Heading && node.level <= 2) {
                     break
@@ -91,6 +92,15 @@ class Documentation {
                 node = node.next
             }
             return instructions
+        }
+
+        List<String> getSetupSteps() {
+            def instructions = getInstructions()
+            int assemble = instructions.indexOf("./gradlew assemble")
+            if (assemble < 0) {
+                throw new AssertionError("Could not find assemble step in instructions for sample $name:\n${instructions.join("\n")}")
+            }
+            return instructions.subList(0, assemble).findAll { it.startsWith("./gradlew") }
         }
     }
 }
