@@ -4,6 +4,10 @@ build
 
 # Local repository
 cpp/repo
+cpp/source-dependencies/repos/list-library
+cpp/source-dependencies/repos/utilities-library
+swift/source-dependencies/repos/list-library
+swift/source-dependencies/repos/utilities-library
 
 # Swift Package Manager Files
 .build
@@ -20,5 +24,4 @@ out/
 
 # Mac OS Junk
 .DS_Store
-**/repos/*-repo
 

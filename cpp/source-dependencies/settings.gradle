@@ -4,12 +4,12 @@ sourceControl {
     vcsMappings {
         withModule('org.gradle.cpp-samples:utilities') {
             from(GitVersionControlSpec) {
-                url = file('repos/utilities-repo').toURI()
+                url = file('repos/utilities-library').toURI()
             }
         }
         withModule('org.gradle.cpp-samples:list') {
             from(GitVersionControlSpec) {
-                url = file('repos/list-repo').toURI()
+                url = file('repos/list-library').toURI()
             }
         }
     }

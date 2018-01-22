@@ -1,6 +1,0 @@
-plugins {
-    id 'cpp-library'
-}
-
-group = 'org.gradle.cpp-samples'
-version = '1.0'

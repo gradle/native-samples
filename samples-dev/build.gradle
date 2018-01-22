@@ -40,10 +40,8 @@ task cleanSamples {
     dependsOn cleanRepo
     doLast {
         def toDelete = [
-            file('../cpp/source-dependencies/repos/list-repo'),
-            file('../cpp/source-dependencies/repos/utilities-repo'),
-            file('../swift/source-dependencies/repos/list-repo'),
-            file('../swift/source-dependencies/repos/utilities-repo')
+            file('../cpp/source-dependencies/repos'),
+            file('../swift/source-dependencies/repos')
         ]
         [file("../swift"), file("../cpp")]*.eachFileRecurse(FileType.DIRECTORIES) { def dir ->
             if ([/repo/, /build/, /\.gradle/, /\.build/, /.+\.xcworkspace/, /.+\.xcodeproj/].any { dir.name ==~ it }) {
@@ -148,10 +146,10 @@ task cppSourceDependencies(type: SourceCopyTask) {
     sampleDir = file("../cpp/source-dependencies")
 
     appProject(".").fromTemplate("cpp-app")
-    libProject("repos/utilities").fromTemplate(cppUtilsLib)
-    libProject("repos/utilities").fromTemplate("cpp-utilities-lib-build")
-    libProject("repos/list").fromTemplate(cppListLib)
-    libProject("repos/list").fromTemplate("cpp-list-lib-build")
+    libProject("repos/utilities-library").fromTemplate(cppUtilsLib)
+    libProject("repos/utilities-library").fromTemplate("cpp-utilities-lib-build")
+    libProject("repos/list-library").fromTemplate(cppListLib)
+    libProject("repos/list-library").fromTemplate("cpp-list-lib-build")
 }
 
 task cppOSDependencies(type: SourceCopyTask) {
@@ -244,10 +242,10 @@ task swiftSourceDependencies(type: SourceCopyTask) {
     sampleDir = file("../swift/source-dependencies")
 
     appProject(".").fromTemplate("swift-app")
-    libProject("repos/utilities").fromTemplate(swiftUtilsLib)
-    libProject("repos/utilities").fromTemplate("swift-utilities-lib-build")
-    libProject("repos/list").fromTemplate(swiftListLib)
-    libProject("repos/list").fromTemplate("swift-list-lib-build")
+    libProject("repos/utilities-library").fromTemplate(swiftUtilsLib)
+    libProject("repos/utilities-library").fromTemplate("swift-utilities-lib-build")
+    libProject("repos/list-library").fromTemplate(swiftListLib)
+    libProject("repos/list-library").fromTemplate("swift-list-lib-build")
 }
 
 task swiftStaticLibrary(type: SourceCopyTask) {
@@ -281,6 +279,7 @@ void changeContent(File srcFile, String pattern, String replacement) {
 }
 
 task generateCppRepos(type: GitRepoTask) {
+    dependsOn cppSourceDependencies
     sampleDir = file("../cpp/source-dependencies/repos")
     listChanges["1.0"] = { destDir ->
         changeContent(new File(destDir, "src/main/cpp/get.cpp"), "index > 0", "index > 1")
@@ -298,6 +297,7 @@ task generateCppRepos(type: GitRepoTask) {
 }
 
 task generateSwiftRepos(type: GitRepoTask) {
+    dependsOn swiftSourceDependencies
     sampleDir = file("../swift/source-dependencies/repos")
     listChanges["1.0"] = { destDir ->
         changeContent(new File(destDir, "src/main/swift/LinkedList.swift"), "c > 0", "c > 1")
@@ -593,22 +593,21 @@ class GitRepoTask extends DefaultTask {
 
     @TaskAction
     def go() {
-        createRepo("utilities", utilitiesChanges)
-        createRepo("list", listChanges)
+        createRepo("utilities-library", utilitiesChanges)
+        createRepo("list-library", listChanges)
     }
 
     private void createRepo(String sourceRepo, Map<String, Closure> changes) {
-        def srcDir = sampleDir.dir(sourceRepo).get().asFile
-        def destDir = sampleDir.dir(sourceRepo + "-repo").get().asFile
-        project.delete(destDir)
+        def destDir = sampleDir.dir(sourceRepo).get().asFile
+        project.delete(new File(destDir, ".git"))
         InitCommand init = Git.init();
         Git git = init.setDirectory(destDir).call()
         try {
             def files = []
-            project.copy {
-                from srcDir
-                into destDir
-                eachFile { d -> files.add(d.relativePath) }
+            project.fileTree(destDir).visit { f ->
+                if (f.file.file) {
+                    files.add(f.relativePath)
+                }
             }
             def add = git.add()
             files.each {

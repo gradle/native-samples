@@ -1,8 +1,0 @@
-plugins {
-    id 'swift-library'
-    id 'xcode'
-    id 'xctest'
-}
-
-group = 'org.gradle.swift-samples'
-version = '1.0'
