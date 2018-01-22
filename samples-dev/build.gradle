@@ -301,9 +301,14 @@ task generateCppUtilitiesRepo(type: GitRepoTask) {
     changes["1.0"] = {
         "initial version"
     }
+    changes["1.1"] = { destDir ->
+        changeContent("build.gradle", "version = '1.0'", "version = '1.1'")
+        changeContent("build.gradle", "list:1.0", "list:1.+")
+        "use latest list 1.x library"
+    }
     changes["2.0"] = { destDir ->
-        changeContent("build.gradle", "version = '1.0'", "version = '2.0'")
-        changeContent("build.gradle", "list:1.0", "list:2.0")
+        changeContent("build.gradle", "version = '1.1'", "version = '2.0'")
+        changeContent("build.gradle", "list:1.+", "list:2.+")
         "require list 2.0"
     }
     changes["SNAPSHOT"] = { destDir ->
@@ -344,9 +349,14 @@ task generateSwiftUtilitiesRepo(type: GitRepoTask) {
     changes["1.0"] = {
         "initial version"
     }
+    changes["1.1"] = { destDir ->
+        changeContent("build.gradle", "version = '1.0'", "version = '1.1'")
+        changeContent("build.gradle", "list:1.0", "list:1.+")
+        "use latest list 1.x library"
+    }
     changes["2.0"] = { destDir ->
-        changeContent("build.gradle", "version = '1.0'", "version = '2.0'")
-        changeContent("build.gradle", "list:1.0", "list:2.0")
+        changeContent("build.gradle", "version = '1.1'", "version = '2.0'")
+        changeContent("build.gradle", "list:1.+", "list:2.+")
         "require list 2.0"
     }
     changes["SNAPSHOT"] = { destDir ->

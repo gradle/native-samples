@@ -111,7 +111,7 @@ Hello, World!
 ## Application with library dependencies in a multi-project build (transitive-dependencies)
 
 This builds shows how an application and several Swift/C++ libraries can be built with Gradle and linked together. The
-dependencies are added transitively from the dependencies between modules.
+dependencies are added transitively using project dependencies between libraries.
 
 To build and run the application:
 
@@ -229,11 +229,11 @@ Generated sources will be under `build/generated`.
 
 ## Application with source library dependencies (source-dependencies)
 
-This build demonstrates using external source dependencies to build Swift and C++ applications that require two external libraries.
+This build demonstrates using external source dependencies to build Swift and C++ applications that require two libraries. The source for the libraries are hosted in separate Git repositories and declared as 'source dependencies' of the application. When Gradle builds the application, it first checks out a revision of the library source and uses this to build the binaries for the library.
 
 ### Swift
 
-Before using this sample, create the Git repositories that contain the library sources:
+To use this sample, first create the Git repositories for the libraries:
 
 ```
 > cd swift/source-dependencies
@@ -242,7 +242,7 @@ Before using this sample, create the Git repositories that contain the library s
 
 The repositories are created be found in the `repos` directory.
 
-Now you can build and run the sample:
+Next, build and run the sample:
 
 ```
 > ./gradlew assemble
@@ -253,11 +253,11 @@ BUILD SUCCESSFUL in 3s
 Hello, World!
 ```
 
-The build is configured to use the most recent revision from the source repository. To see this in action, you can edit a library source file and commit the change:
+The build is configured to use the most recent revision from the 'utilities-library' Git repository. To see this in action, you can edit a library source file and commit the change:
 
 ```
 > cd repos/utilities-library
-> edit src/main/swift/Util.swift # add to split() function: print("split: " + s);
+> edit src/main/swift/Util.swift # add to split() function: print("split: " + s)
 > git commit -a -m 'added some logging'
 > cd ../..
 > ./gradlew assemble
@@ -269,7 +269,7 @@ split:   Hello,      World!
 Hello, World!
 ```
 
-You can also depend on specific versions of the libraries. Version 1.0 of the utilities library contains a bug:
+You can also depend on specific versions of the libraries. For example, version 1.0 of the utilities library contains a bug.
 
 ```
 > edit build.gradle # change dependency on utilities:latest.integration to utilities:1.0
@@ -281,7 +281,7 @@ BUILD SUCCESSFUL in 1s
 Hello, Hello,
 ```
 
-Change to version '2.0' to use a fixed version.
+Change to version 1.1 to use a fixed version. Dynamic dependencies are also supported, so you could also use `1.+`, `[1.1,2.0]` or `latest.integration`.
 
 ### C++
 
