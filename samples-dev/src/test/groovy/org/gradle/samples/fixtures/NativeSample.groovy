@@ -14,7 +14,7 @@ class NativeSample {
 
         def toDelete = []
         projectDir.eachDirRecurse { d ->
-            if (d.name == 'build' || d.name == '.gradle' || d.name.endsWith('.xcworkspace') || d.name.endsWith('.xcodeproj')) {
+            if (d.name == 'build' || d.name == '.gradle' || d.name.endsWith('.xcworkspace') || d.name.endsWith('.xcodeproj') || d.name == 'repos') {
                 toDelete.add(d)
             }
         }
