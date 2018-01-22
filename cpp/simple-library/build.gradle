@@ -35,16 +35,21 @@ unitTest {
 }
 
 tasks.withType(CppCompile) {
-    if (toolChain instanceof Gcc) {
-        // Use C++03 with the old ABIs, as this is what the googletest binaries were built with
-        // Later, Gradle's dependency management will understand ABI
-        compilerArgs.add('-std=c++03')
-        compilerArgs.add('-D_GLIBCXX_USE_CXX11_ABI=0')
+    compilerArgs.addAll provider {
+        if (toolChain instanceof Gcc) {
+            // Use C++03 with the old ABIs, as this is what the googletest binaries were built with
+            // Later, Gradle's dependency management will understand ABI
+            return ['-std=c++03', '-D_GLIBCXX_USE_CXX11_ABI=0']
+        }
+        return []
     }
 }
 tasks.withType(LinkSharedLibrary) {
-    if (toolChain instanceof Gcc) {
-        linkerArgs.add('-std=c++03')
+    linkerArgs.addAll provider {
+        if (toolChain instanceof Gcc) {
+            return ['-std=c++03']
+        }
+        return []
     }
 }
 
