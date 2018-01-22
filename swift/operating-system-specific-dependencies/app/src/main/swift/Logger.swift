@@ -12,6 +12,6 @@ class Logger {
 
     // Writes an info message and trailing new-line
     func info(_ s: String) {
-        console.color(result)
+        console.color(s)
     }
 }

@@ -9,6 +9,6 @@ class App {
     }
 }
 
-let result = App.normalize("  Hello,      World!  ")
 let logger = Logger()
+let result = App.normalize("  Hello,      World!  ")
 logger.info(result)

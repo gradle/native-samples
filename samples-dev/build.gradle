@@ -190,6 +190,7 @@ task swiftApplication(type: SourceCopyTask) {
 task swiftApplicationOSDependencies(type: SourceCopyTask) {
     sampleDir = file("../swift/operating-system-specific-dependencies")
 
+    appProject("app").fromTemplate("swift-app")
     appProject("app").fromTemplate("swift-app-uses-logger")
     appProject("app").fromTemplate("swift-logger-uses-console")
     appProject("app").fromTemplate(swiftUtilsLib)
@@ -203,10 +204,14 @@ task swiftVersions(type: SourceCopyTask) {
     sampleDir = file("../swift/swift-versions")
 
     appProject("swift3-app").fromTemplate("swift-app")
+    appProject("swift3-app").fromTemplate("swift-app-uses-logger")
+    appProject("swift3-app").fromTemplate(SwiftLibraryTemplate.of("swift-logger-reports-swift-version", "Logger"))
     appProject("swift3-app").fromTemplate(SwiftLibraryTemplate.of("swift3-lib-with-api-dep", "Utilities"))
     appProject("swift3-app").fromTemplate(swiftListLib)
 
     appProject("swift4-app").fromTemplate("swift-app")
+    appProject("swift4-app").fromTemplate("swift-app-uses-logger")
+    appProject("swift4-app").fromTemplate(SwiftLibraryTemplate.of("swift-logger-reports-swift-version", "Logger"))
     appProject("swift4-app").fromTemplate(SwiftLibraryTemplate.of("swift4-lib-with-api-dep", "Utilities"))
     appProject("swift4-app").fromTemplate(swiftListLib)
 }
