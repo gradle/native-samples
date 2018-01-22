@@ -16,7 +16,7 @@ const std::string & linked_list::get(std::size_t index) const {
         index--;
     }
 
-    if (index != 0 || NULL == it) {
+    if (NULL == it) {
         throw std::out_of_range(std::string("Index is out of range"));
     }
 
