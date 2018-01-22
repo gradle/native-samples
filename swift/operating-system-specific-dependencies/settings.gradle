@@ -1,1 +1,1 @@
-include ':app', ':linux-logger', ':macos-logger'
+include ':app', ':linux-console', ':macos-console'

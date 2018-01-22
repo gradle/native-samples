@@ -1,11 +1,6 @@
 /*
  * A simple hello world application. Uses a library to tokenize and join a string and prints the result.
  */
-#if os(Linux)
-    import LinuxLogger
-#else
-    import MacOsLogger
-#endif
 
 class App {
     class func normalize(_ s: String) -> String {
@@ -15,4 +10,5 @@ class App {
 }
 
 let result = App.normalize("  Hello,      World!  ")
-Logger.info(result)
+let logger = Logger()
+logger.info(result)

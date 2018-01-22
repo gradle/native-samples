@@ -6,9 +6,9 @@ application {
     binaries.configureEach { 
         dependencies { 
             if (targetPlatform.operatingSystem.macOsX) {
-                implementation project(':macos-logger')
+                implementation project(':macos-console')
             } else {
-                implementation project(':linux-logger')
+                implementation project(':linux-console')
             }
         }
     }

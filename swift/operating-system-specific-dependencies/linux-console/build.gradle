@@ -3,5 +3,5 @@ plugins {
 }
 
 library {
-    module = "MacOsLogger"
+    module = "LinuxConsole"
 }

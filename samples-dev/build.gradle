@@ -191,11 +191,12 @@ task swiftApplicationOSDependencies(type: SourceCopyTask) {
     sampleDir = file("../swift/operating-system-specific-dependencies")
 
     appProject("app").fromTemplate("swift-app-uses-logger")
+    appProject("app").fromTemplate("swift-logger-uses-console")
     appProject("app").fromTemplate(swiftUtilsLib)
     appProject("app").fromTemplate(swiftListLib)
 
-    libProject("linux-logger").fromTemplate(SwiftLibraryTemplate.of("swift-blue-logger-lib", "LinuxLogger"))
-    libProject("macos-logger").fromTemplate(SwiftLibraryTemplate.of("swift-green-logger-lib", "MacOsLogger"))
+    libProject("linux-console").fromTemplate(SwiftLibraryTemplate.of("swift-linux-console-lib", "LinuxLogger"))
+    libProject("macos-console").fromTemplate(SwiftLibraryTemplate.of("swift-mac-console-lib", "MacOsLogger"))
 }
 
 task swiftVersions(type: SourceCopyTask) {
