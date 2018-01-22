@@ -40,7 +40,12 @@ task cleanRepo(type: Delete) {
 task cleanSamples {
     dependsOn cleanRepo
     doLast {
-        def toDelete = []
+        def toDelete = [
+            file('../cpp/source-dependencies/repos/list-repo'),
+            file('../cpp/source-dependencies/repos/utilities-repo'),
+            file('../swift/source-dependencies/repos/list-repo'),
+            file('../swift/source-dependencies/repos/utilities-repo')
+        ]
         [file("../swift"), file("../cpp")]*.eachFileRecurse(FileType.DIRECTORIES) { def dir ->
             if ([/repo/, /build/, /\.gradle/, /\.build/, /.+\.xcworkspace/, /.+\.xcodeproj/].any { dir.name ==~ it }) {
                 toDelete << dir
