@@ -245,6 +245,14 @@ task swiftCompositeBuild(type: SourceCopyTask) {
     libProject("list-library").fromTemplate(swiftListLib)
 }
 
+task swiftInjectedPlugins(type: SourceCopyTask) {
+    sampleDir = file("../swift/injected-plugins")
+
+    appProject(".").fromTemplate("swift-app")
+    libProject("repos/utilities-library").fromTemplate(swiftUtilsLib)
+    libProject("repos/list-library").fromTemplate(swiftListLib)
+}
+
 task swiftSourceDependencies(type: SourceCopyTask) {
     sampleDir = file("../swift/source-dependencies")
 
@@ -374,6 +382,26 @@ task generateSwiftUtilitiesRepo(type: GitRepoTask) {
 
 task generateSwiftRepos {
     dependsOn generateSwiftListRepo, generateSwiftUtilitiesRepo
+}
+
+task generateMinimalSwiftListRepo(type: GitRepoTask) {
+    dependsOn swiftInjectedPlugins
+    sampleDir = file("../swift/injected-plugins/repos/list-library")
+    changes["1.0"] = { destDir ->
+        "initial version"
+    }
+}
+
+task generateMinimalSwiftUtilitiesRepo(type: GitRepoTask) {
+    dependsOn swiftInjectedPlugins
+    sampleDir = file("../swift/injected-plugins/repos/utilities-library")
+    changes["1.0"] = {
+        "initial version"
+    }
+}
+
+task generateMinimalSwiftRepos {
+    dependsOn generateMinimalSwiftListRepo, generateMinimalSwiftUtilitiesRepo
 }
 
 class SourceCopyTask extends DefaultTask {

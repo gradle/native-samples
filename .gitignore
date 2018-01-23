@@ -8,6 +8,7 @@ cpp/source-dependencies/repos/list-library
 cpp/source-dependencies/repos/utilities-library
 swift/source-dependencies/repos/list-library
 swift/source-dependencies/repos/utilities-library
+swift/injected-plugins/repos
 
 # Swift Package Manager Files
 .build

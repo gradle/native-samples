@@ -349,9 +349,20 @@ By default, when building the application, only the shared library will be built
 This build demonstrates using multiple versions of Swift in a single build. There are two projects that build identical applications. One is written in Swift 3 compatible code (`swift3-app`) and one is written with Swift 4 compatible code (`swift4-app`). When running the application, it will print a message about which version of Swift was used.
 
 ```
-NOTE: Needs Swift tool chain
 > cd swift/swift-versions
 > ./gradlew assemble
 ```
 
 By default, the tests for a given Swift production component will be compiled for the same version of Swift. For instance, in `swift3-app`, the production and test code will be built with Swift 3 source compatibility.
+
+## Configuring non-Gradle source dependency builds (injected-plugins)
+
+Gradle can also consume source dependencies that come from repositories without Gradle builds. When declaring a source dependency's repository information, you can instruct Gradle to inject plugins into the source dependency. These plugins can configure a Gradle build from scratch.
+
+```
+> cd swift/injected-plugins
+> ./gradlew -p ../.. generateRepos
+> ./gradlew assemble
+```
+
+In the "repos" directory, you can find the source code without any Gradle configuration. The `utilities` and `list` builds are configured with the `utilities-build` and `list-build` plugins.
