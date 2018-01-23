@@ -1,0 +1,22 @@
+rootProject.name = 'app'
+
+sourceControl {
+    vcsMappings {
+        withModule('org.gradle.swift-samples:utilities') {
+            from(GitVersionControlSpec) {
+                url = file('repos/utilities-library').toURI()
+                plugins {
+                    id "utilities-build"
+                }
+            }
+        }
+        withModule('org.gradle.swift-samples:list') {
+            from(GitVersionControlSpec) {
+                url = file('repos/list-library').toURI()
+                plugins {
+                    id "list-build"
+                }
+            }
+        }
+    }
+}

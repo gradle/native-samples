@@ -1,0 +1,13 @@
+plugins {
+    id 'swift-application'
+    id 'xcode'
+    id 'xctest'
+}
+
+group = 'org.gradle.swift-samples'
+
+application {
+    dependencies {
+        implementation 'org.gradle.swift-samples:utilities:latest.integration'
+    }
+}

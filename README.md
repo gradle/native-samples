@@ -370,3 +370,15 @@ If you have the Swift 3 compiler installed, you can only build the Swift 3 appli
 ```
 
 Currently, Gradle does not offer a convenience to ignore projects that are not buildable due to missing or incompatible tool chains.
+
+## Configuring non-Gradle source dependency builds (injected-plugins)
+
+Gradle can also consume source dependencies that come from repositories without Gradle builds. When declaring a source dependency's repository information, you can instruct Gradle to inject plugins into the source dependency. These plugins can configure a Gradle build from scratch.
+
+```
+> cd swift/injected-plugins
+> ./gradlew -p ../.. generateRepos
+> ./gradlew assemble
+```
+
+In the "repos" directory, you can find the source code without any Gradle configuration. The `utilities` and `list` builds are configured with the `utilities-build` and `list-build` plugins.
