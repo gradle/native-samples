@@ -5,6 +5,7 @@ import org.gradle.samples.fixtures.Documentation
 import org.gradle.samples.fixtures.NativeSample
 import org.gradle.samples.fixtures.Samples
 import org.gradle.testkit.runner.GradleRunner
+import org.junit.Assume
 import spock.lang.Requires
 import spock.lang.Shared
 import spock.lang.Specification
@@ -40,9 +41,12 @@ class ExecuteSamplesIntegrationTest extends Specification {
         sample << Samples.getSamples("cpp")
     }
 
-    @Requires({ !OperatingSystem.current().isWindows() })
+    @Requires({ !OperatingSystem.current().windows })
     @Unroll
     def "can build Swift '#sample.name'"() {
+        // TODO - remove this once Swift 4 tools installed on Linux CI machines
+        Assume.assumeTrue(!OperatingSystem.current().linux || sample.sampleName != 'swift-versions')
+
         given:
         sample.clean()
         runSetupFor(sample)
@@ -65,6 +69,21 @@ class ExecuteSamplesIntegrationTest extends Specification {
 
         where:
         sample << Samples.getSamples("swift")
+    }
+
+    // TODO - replace this once Swift 4 tools installed on Linux CI machines
+    @Requires({ OperatingSystem.current().linux })
+    def "can build Swift 'swift-versions' with Swift 3 toolchain"() {
+        given:
+        def sample = Samples.useSampleIn("swift/swift-versions")
+        sample.clean()
+        runSetupFor(sample)
+
+        expect:
+        GradleRunner.create()
+                .withProjectDir(sample.sampleDir)
+                .withArguments("swift3-app:build")
+                .build()
     }
 
     def runSetupFor(NativeSample sample) {
