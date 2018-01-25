@@ -250,7 +250,7 @@ task swiftInjectedPlugins(type: SourceCopyTask) {
 
     appProject(".").fromTemplate("swift-app")
     libProject("repos/utilities-library").fromTemplate(swiftUtilsLib)
-    libProject("repos/list-library").fromTemplate(swiftListLib)
+    libProject("repos/list-library").fromTemplate(SwiftLibraryTemplate.of("swift-lib-unusable", "List"))
 }
 
 task swiftSourceDependencies(type: SourceCopyTask) {

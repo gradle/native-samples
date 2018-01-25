@@ -1,10 +1,10 @@
-import org.gradle.api.initialization.*
+package org.gradle.swift.samples
+
 import org.gradle.api.*
 
-class ListBuildPlugin implements Plugin<Settings> {
-    void apply(Settings settings) {
-        settings.rootProject.name = 'list'
-        settings.gradle.allprojects {
+class CommonPlugin implements Plugin<Project> {
+    void apply(Project project) {
+        project.allprojects {
             apply plugin: 'swift-library'
             apply plugin: 'xcode'
             apply plugin: 'xctest'

@@ -7,11 +7,11 @@ gradlePlugin {
     plugins {
         "utilities-build" {
             id = "utilities-build"
-            implementationClass = "UtilitiesBuildPlugin"
+            implementationClass = "org.gradle.swift.samples.UtilitiesBuildPlugin"
         }
         "list-build" {
             id = "list-build"
-            implementationClass = "ListBuildPlugin"
+            implementationClass = "org.gradle.swift.samples.ListBuildPlugin"
         }
     }
 }
