@@ -240,7 +240,7 @@ To use this sample, first create the Git repositories for the libraries:
 > ./gradlew -p ../.. generateRepos
 ```
 
-The repositories are created be found in the `repos` directory.
+The repositories are created in the `repos` directory. Each repository is set up to contain some source file and several commits and tags.
 
 Next, build and run the sample:
 
@@ -373,7 +373,7 @@ Currently, Gradle does not offer a convenience to ignore projects that are not b
 
 ## Configuring non-Gradle source dependency builds (injected-plugins)
 
-Gradle can also consume source dependencies that come from repositories without Gradle builds. When declaring a source dependency's repository information, you can instruct Gradle to inject plugins into the source dependency. These plugins can configure a Gradle build from scratch.
+Gradle can also consume source dependencies that come from repositories without Gradle builds. When declaring a source dependency's repository information, you can instruct Gradle to inject plugins into the source dependency. These plugins can configure a Gradle build based on the contents of the repository.
 
 ```
 > cd swift/injected-plugins

@@ -101,6 +101,7 @@ def swiftListLib = SwiftLibraryTemplate.of("swift-lib", "List")
 task cppTransitiveDependencies(type: SourceCopyTask) {
     sampleDir = file("../cpp/transitive-dependencies")
 
+    project(".").buildRoot()
     appProject("app").fromTemplate("cpp-app")
     libProject("utilities").fromTemplate(cppUtilsLib)
     libProject("list").fromTemplate(cppListLib)
@@ -109,6 +110,7 @@ task cppTransitiveDependencies(type: SourceCopyTask) {
 task cppApplication(type: SourceCopyTask) {
     sampleDir = file("../cpp/application")
 
+    appProject(".").buildRoot()
     appProject(".").fromTemplate("cpp-app")
     appProject(".").fromTemplate(cppUtilsLib)
     appProject(".").fromTemplate(cppListLib)
@@ -117,12 +119,14 @@ task cppApplication(type: SourceCopyTask) {
 task cppLibrary(type: SourceCopyTask) {
     sampleDir = file("../cpp/simple-library")
 
+    libProject(".").buildRoot()
     libProject(".").fromTemplate(cppListLib)
 }
 
 task cppBinaryDependencies(type: SourceCopyTask) {
     sampleDir = file("../cpp/binary-dependencies")
 
+    appProject(".").buildRoot()
     appProject(".").fromTemplate("cpp-app")
     appProject(".").fromTemplate(cppUtilsLib)
 }
@@ -130,6 +134,7 @@ task cppBinaryDependencies(type: SourceCopyTask) {
 task cppPrebuiltBinaries(type: SourceCopyTask) {
     sampleDir = file("../cpp/prebuilt-binaries")
 
+    appProject(".").buildRoot()
     appProject(".").fromTemplate("cpp-app")
     appProject(".").fromTemplate(cppUtilsLib)
 }
@@ -137,6 +142,7 @@ task cppPrebuiltBinaries(type: SourceCopyTask) {
 task cppCompositeBuild(type: SourceCopyTask) {
     sampleDir = file("../cpp/composite-build")
 
+    appProject(".").buildRoot()
     appProject(".").fromTemplate("cpp-app")
     libProject("utilities-library").fromTemplate(cppUtilsLib)
     libProject("list-library").fromTemplate(cppListLib)
@@ -145,6 +151,7 @@ task cppCompositeBuild(type: SourceCopyTask) {
 task cppSourceDependencies(type: SourceCopyTask) {
     sampleDir = file("../cpp/source-dependencies")
 
+    appProject(".").buildRoot()
     appProject(".").fromTemplate("cpp-app")
     libProject("repos/utilities-library").fromTemplate(cppUtilsLib)
     libProject("repos/utilities-library").fromTemplate("cpp-utilities-lib-build")
@@ -155,6 +162,7 @@ task cppSourceDependencies(type: SourceCopyTask) {
 task cppOSDependencies(type: SourceCopyTask) {
     sampleDir = file("../cpp/operating-system-specific-dependencies")
 
+    project(".").buildRoot()
     appProject("app").fromTemplate("cpp-app-uses-logger")
     appProject("app").fromTemplate("cpp-logger-uses-console")
     appProject("app").fromTemplate(cppUtilsLib)
@@ -166,6 +174,7 @@ task cppOSDependencies(type: SourceCopyTask) {
 task cppStaticLibrary(type: SourceCopyTask) {
     sampleDir = file("../cpp/static-library")
 
+    project(".").buildRoot()
     appProject("app").fromTemplate("cpp-app")
     staticLibProject("utilities").fromTemplate(cppUtilsLib)
     libProject("list").fromTemplate(cppListLib)
@@ -174,6 +183,7 @@ task cppStaticLibrary(type: SourceCopyTask) {
 task cppSwiftPackageManager(type: SourceCopyTask) {
     sampleDir = file("../cpp/swift-package-manager")
 
+    project(".").buildRoot()
     swiftPMProject(".", "App").fromTemplate("cpp-app")
     swiftPMProject(".", "Utilities").fromTemplate(cppUtilsLib)
     swiftPMProject(".", "List").fromTemplate(cppListLib)
@@ -182,6 +192,7 @@ task cppSwiftPackageManager(type: SourceCopyTask) {
 task swiftApplication(type: SourceCopyTask) {
     sampleDir = file("../swift/application")
 
+    appProject(".").buildRoot()
     appProject(".").fromTemplate("swift-app")
     appProject(".").fromTemplate(swiftUtilsLib)
     appProject(".").fromTemplate(swiftListLib)
@@ -190,6 +201,7 @@ task swiftApplication(type: SourceCopyTask) {
 task swiftApplicationOSDependencies(type: SourceCopyTask) {
     sampleDir = file("../swift/operating-system-specific-dependencies")
 
+    project(".").buildRoot()
     appProject("app").fromTemplate("swift-app")
     appProject("app").fromTemplate("swift-app-uses-logger")
     appProject("app").fromTemplate("swift-logger-uses-console")
@@ -202,6 +214,8 @@ task swiftApplicationOSDependencies(type: SourceCopyTask) {
 
 task swiftVersions(type: SourceCopyTask) {
     sampleDir = file("../swift/swift-versions")
+
+    project(".").buildRoot()
 
     appProject("swift3-app").fromTemplate("swift-app")
     appProject("swift3-app").fromTemplate("swift-app-uses-logger")
@@ -219,12 +233,14 @@ task swiftVersions(type: SourceCopyTask) {
 task swiftSimpleLibrary(type: SourceCopyTask) {
     sampleDir = file("../swift/simple-library")
 
+    libProject(".").buildRoot()
     libProject(".").fromTemplate(swiftListLib)
 }
 
 task swiftPrebuiltBinaries(type: SourceCopyTask) {
     sampleDir = file("../swift/prebuilt-binaries")
 
+    appProject(".").buildRoot()
     appProject(".").fromTemplate("swift-app")
     appProject(".").fromTemplate(swiftUtilsLib)
 }
@@ -232,6 +248,7 @@ task swiftPrebuiltBinaries(type: SourceCopyTask) {
 task swiftTransitiveDependencies(type: SourceCopyTask) {
     sampleDir = file("../swift/transitive-dependencies")
 
+    project(".").buildRoot()
     appProject("app").fromTemplate("swift-app")
     libProject("utilities").fromTemplate(swiftUtilsLib)
     libProject("list").fromTemplate(swiftListLib)
@@ -240,6 +257,7 @@ task swiftTransitiveDependencies(type: SourceCopyTask) {
 task swiftCompositeBuild(type: SourceCopyTask) {
     sampleDir = file("../swift/composite-build")
 
+    appProject(".").buildRoot()
     appProject(".").fromTemplate("swift-app")
     libProject("utilities-library").fromTemplate(swiftUtilsLib)
     libProject("list-library").fromTemplate(swiftListLib)
@@ -248,6 +266,7 @@ task swiftCompositeBuild(type: SourceCopyTask) {
 task swiftInjectedPlugins(type: SourceCopyTask) {
     sampleDir = file("../swift/injected-plugins")
 
+    appProject(".").buildRoot()
     appProject(".").fromTemplate("swift-app")
     libProject("repos/utilities-library").fromTemplate(swiftUtilsLib)
     libProject("repos/list-library").fromTemplate(SwiftLibraryTemplate.of("swift-lib-unusable", "List"))
@@ -256,6 +275,7 @@ task swiftInjectedPlugins(type: SourceCopyTask) {
 task swiftSourceDependencies(type: SourceCopyTask) {
     sampleDir = file("../swift/source-dependencies")
 
+    appProject(".").buildRoot()
     appProject(".").fromTemplate("swift-app")
     libProject("repos/utilities-library").fromTemplate(swiftUtilsLib)
     libProject("repos/utilities-library").fromTemplate("swift-utilities-lib-build")
@@ -266,6 +286,7 @@ task swiftSourceDependencies(type: SourceCopyTask) {
 task swiftStaticLibrary(type: SourceCopyTask) {
     sampleDir = file("../swift/static-library")
 
+    project(".").buildRoot()
     appProject("app").fromTemplate("swift-app")
     libProject("utilities").fromTemplate(swiftUtilsLib)
     libProject("list").fromTemplate(swiftListLib)
@@ -274,6 +295,7 @@ task swiftStaticLibrary(type: SourceCopyTask) {
 task swiftCppDependencies(type: SourceCopyTask) {
     sampleDir = file("../swift/cpp-dependencies")
 
+    project(".").buildRoot()
     staticLibProject("list").fromTemplate("cpp-lib-with-c-api")
     appProject("app").fromTemplate(SwiftLibraryTemplate.of("swift-lib-uses-c-api", "List"))
     appProject("app").fromTemplate(swiftUtilsLib)
@@ -283,6 +305,7 @@ task swiftCppDependencies(type: SourceCopyTask) {
 task swiftSwiftPackageManager(type: SourceCopyTask) {
     sampleDir = file("../swift/swift-package-manager")
 
+    project(".").buildRoot()
     swiftPMProject(".", "App").fromTemplate("swift-app")
     swiftPMProject(".", "Utilities").fromTemplate(swiftUtilsLib)
     swiftPMProject(".", "List").fromTemplate(swiftListLib)
@@ -415,37 +438,13 @@ class SourceCopyTask extends DefaultTask {
         projects.values().each { p ->
             def modules = p.includedModules.collect { "import $it" as String }
             def testModules = p.includedModules.collect { "@testable import $it" as String }
-            p.visitDirs { src, dest, lineFilter, recursive ->
-                def srcDir = templatesDir.dir(src).get().asFile
-                if (!srcDir.directory) {
-                    return
-                }
-                def destDir = sampleDir.dir(dest).get().asFile
-                if (recursive && cleaned.add(destDir)) {
-                    // TODO - generate the test main.swift
-                    project.delete project.fileTree(destDir, { exclude '**/main.swift' })
-                }
-                project.copy {
-                    from srcDir
-                    into destDir
-                    if (!recursive) {
-                        include '*'
-                    }
-                    if (lineFilter) {
-                        filter(lineFilter)
-                    }
-                    filter { line ->
-                        if (modules.contains(line)) {
-                            return null
-                        }
-                        if (testModules.contains(line)) {
-                            return "@testable import " + p.module
-                        }
-                        line
-                    }
-                }
-            }
+            def sourceBuilder = new SourceBuilder(p.module, modules, testModules, cleaned)
+            p.visitDirs(sourceBuilder)
         }
+    }
+
+    GradleTarget project(String projectDir) {
+        return add(new GradleTarget(projectDir))
     }
 
     AppTarget appProject(String projectDir) {
@@ -491,7 +490,7 @@ class SourceCopyTask extends DefaultTask {
 
         String getModule() {
             def libs = templates.findAll { it instanceof SwiftLibraryTemplate }
-            return libs.first().module
+            return libs.empty ? null : libs.first().module
         }
 
         List<String> getIncludedModules() {
@@ -505,11 +504,11 @@ class SourceCopyTask extends DefaultTask {
          * Visits each src, dest directory pair for this project.
          * @param cl
          */
-        void visitDirs(Closure cl) {
+        void visitDirs(SourceBuilder builder) {
             templates.each { template ->
-                cl.call(template.templateName, projectDir, null, false)
+                builder.copyDir(template.templateName, projectDir)
                 visitDirMappings(template) { src, dest, lineFilter ->
-                    cl.call("${template.templateName}/${src}", "${projectDir}/${dest}", lineFilter, true)
+                    builder.copyDirTree("${template.templateName}/${src}", "${projectDir}/${dest}", lineFilter)
                 }
             }
         }
@@ -546,14 +545,111 @@ class SourceCopyTask extends DefaultTask {
         abstract void visitDirMappings(Template template, Closure cl)
     }
 
-    static abstract class GradleTarget extends TemplateTarget {
+    class SourceBuilder {
+        final Set<File> cleaned
+        final String module
+        final Collection<String> modules
+        final Collection<String> testModules
+
+        SourceBuilder(String module, Collection<String> modules, Collection<String> testModules, Set<File> cleaned) {
+            this.module = module
+            this.cleaned = cleaned
+            this.modules = modules
+            this.testModules = testModules
+        }
+
+        /**
+         * Returns the relative path from the sample dir to the root of the samples source tree.
+         */
+        String relativePathTo(String targetDirName) {
+            return sampleDir.dir(targetDirName).get().asFile.toPath().relativize(project.projectDir.parentFile.toPath()).toString()
+        }
+
+        File getTemplateFile(String templateFileName) {
+            return templatesDir.file(templateFileName).get().asFile
+        }
+
+        File writeTargetFile(String targetFileName, String content) {
+            def file = sampleDir.file(targetFileName).get().asFile
+            file.parentFile.mkdirs()
+            file.text = content
+            return file
+        }
+
+        void copyDir(String templateDirName, String targetDirName) {
+            copy(templateDirName, targetDirName, null, false)
+        }
+
+        void copyDirTree(String templateDirName, String targetDirName, Closure lineFilter) {
+            copy(templateDirName, targetDirName, lineFilter, true)
+        }
+
+        private void copy(String templateDirName, String targetDirName, Closure lineFilter, boolean recursive) {
+            def srcDir = templatesDir.dir(templateDirName).get().asFile
+            if (!srcDir.directory) {
+                return
+            }
+            def destDir = sampleDir.dir(targetDirName).get().asFile
+            if (recursive && cleaned.add(destDir)) {
+                // TODO - generate the test main.swift
+                project.delete project.fileTree(destDir, { exclude '**/main.swift' })
+            }
+            project.copy {
+                from srcDir
+                into destDir
+                if (!recursive) {
+                    include '*'
+                }
+                if (lineFilter) {
+                    filter(lineFilter)
+                }
+                filter { line ->
+                    if (modules.contains(line)) {
+                        return null
+                    }
+                    if (testModules.contains(line)) {
+                        return "@testable import " + module
+                    }
+                    line
+                }
+            }
+        }
+    }
+
+    static class GradleTarget extends TemplateTarget {
+        boolean rootDir
+
         GradleTarget(String projectDir) {
             super(projectDir)
+        }
+
+        GradleTarget buildRoot() {
+            rootDir = true
+            return this
+        }
+
+        @Override
+        void visitDirs(SourceBuilder sourceBuilder) {
+            if (rootDir) {
+                def relPath = sourceBuilder.relativePathTo(projectDir)
+                def bashContent = sourceBuilder.getTemplateFile("build-root/gradlew").text
+                bashContent = bashContent.replace("REL_PATH", relPath)
+                def bashFile = sourceBuilder.writeTargetFile("${projectDir}/gradlew", bashContent)
+                bashFile.setExecutable(true)
+                def batContent = sourceBuilder.getTemplateFile("build-root/gradlew.bat").text
+                batContent = batContent.replace("REL_PATH", relPath.replace("/", "\\"))
+                sourceBuilder.writeTargetFile("${projectDir}/gradlew.bat", batContent)
+            }
+            super.visitDirs(sourceBuilder)
         }
 
         @Override
         String getKey() {
             return projectDir
+        }
+
+        @Override
+        void visitDirMappings(Template template, Closure cl) {
         }
     }
 
