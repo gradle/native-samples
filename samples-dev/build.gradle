@@ -171,6 +171,12 @@ task cppOSDependencies(type: SourceCopyTask) {
     libProject("winConsole").fromTemplate(CppLibraryTemplate.of("cpp-windows-console-lib", "win_console"))
 }
 
+task cppSourceGeneration(type: SourceCopyTask) {
+    sampleDir = file("../cpp/source-generation")
+
+    project(".").buildRoot()
+}
+
 task cppStaticLibrary(type: SourceCopyTask) {
     sampleDir = file("../cpp/static-library")
 
@@ -281,6 +287,12 @@ task swiftSourceDependencies(type: SourceCopyTask) {
     libProject("repos/utilities-library").fromTemplate("swift-utilities-lib-build")
     libProject("repos/list-library").fromTemplate(swiftListLib)
     libProject("repos/list-library").fromTemplate("swift-list-lib-build")
+}
+
+task swiftSourceGeneration(type: SourceCopyTask) {
+    sampleDir = file("../swift/source-generation")
+
+    project(".").buildRoot()
 }
 
 task swiftStaticLibrary(type: SourceCopyTask) {
