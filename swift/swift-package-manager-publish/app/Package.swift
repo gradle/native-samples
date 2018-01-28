@@ -14,6 +14,6 @@ let package = Package(
                 .product(name: "utilities")
             ]
         ),
-        .testTarget(name: "AppTests")
+//        .testTarget(name: "AppTests")
     ]
 )
