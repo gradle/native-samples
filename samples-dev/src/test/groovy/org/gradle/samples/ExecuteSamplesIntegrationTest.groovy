@@ -4,6 +4,7 @@ import org.gradle.internal.os.OperatingSystem
 import org.gradle.samples.fixtures.Documentation
 import org.gradle.samples.fixtures.NativeSample
 import org.gradle.samples.fixtures.Samples
+import org.gradle.samples.fixtures.SwiftPmRunner
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Assume
 import spock.lang.Requires
@@ -102,20 +103,28 @@ class ExecuteSamplesIntegrationTest extends Specification {
 
         GradleRunner.create()
                 .withProjectDir(new File(sample.sampleDir, "list-library"))
-                .withArguments("release")
+                .withArguments("test", "release")
                 .build()
 
-        GradleRunner.create()
-                .withProjectDir(new File(sample.sampleDir, "utilities-library"))
+        SwiftPmRunner.create()
+                .withProjectDir(new File(sample.sampleDir, "list-library"))
                 .withArguments("build")
                 .build()
 
         GradleRunner.create()
                 .withProjectDir(new File(sample.sampleDir, "utilities-library"))
-                .withArguments("release")
+                .withArguments("test", "release")
                 .build()
 
-        // TODO - use swift build to verify
+        SwiftPmRunner.create()
+                .withProjectDir(new File(sample.sampleDir, "utilities-library"))
+                .withArguments("build")
+                .build()
+
+        SwiftPmRunner.create()
+                .withProjectDir(new File(sample.sampleDir, "app"))
+                .withArguments("build")
+                .build()
     }
 
     def runSetupFor(NativeSample sample) {
