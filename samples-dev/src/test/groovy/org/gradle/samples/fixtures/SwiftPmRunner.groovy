@@ -24,7 +24,7 @@ class SwiftPmRunner {
         builder.command(["swift"] + args)
         println "Running " + builder.command()
         builder.directory(projectDir)
-        builder.redirectErrorStream()
+        builder.redirectErrorStream(true)
         def process = builder.start()
         process.outputStream.close()
         def output = process.inputStream.text
