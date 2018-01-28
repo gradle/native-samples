@@ -41,7 +41,9 @@ task cleanSamples {
     doLast {
         def toDelete = [
             file('../cpp/source-dependencies/repos'),
-            file('../swift/source-dependencies/repos')
+            file('../swift/source-dependencies/repos'),
+            file('../swift/swift-package-manager-publish/list-library'),
+            file('../swift/swift-package-manager-publish/utilities-library')
         ]
         [file("../swift"), file("../cpp")]*.eachFileRecurse(FileType.DIRECTORIES) { def dir ->
             if ([/repo/, /build/, /\.gradle/, /\.build/, /.+\.xcworkspace/, /.+\.xcodeproj/].any { dir.name ==~ it }) {
@@ -323,6 +325,20 @@ task swiftSwiftPackageManager(type: SourceCopyTask) {
     swiftPMProject(".", "List").fromTemplate(swiftListLib)
 }
 
+task swiftSwiftPackageManagerPublish(type: SourceCopyTask) {
+    sampleDir = file("../swift/swift-package-manager-publish")
+
+    swiftPMProject("app", "App").fromTemplate("swift-app")
+
+    libProject("list-library").buildRoot()
+    libProject("list-library").fromTemplate("swift-list-lib-build-with-release")
+    libProject("list-library").fromTemplate(swiftListLib)
+
+    libProject("utilities-library").buildRoot()
+    libProject("utilities-library").fromTemplate("swift-utilities-lib-build-with-release")
+    libProject("utilities-library").fromTemplate(swiftUtilsLib)
+}
+
 task generateCppListRepo(type: GitRepoTask) {
     dependsOn cppSourceDependencies
     sampleDir = file("../cpp/source-dependencies/repos/list-library")
@@ -437,6 +453,16 @@ task generateMinimalSwiftUtilitiesRepo(type: GitRepoTask) {
 
 task generateMinimalSwiftRepos {
     dependsOn generateMinimalSwiftListRepo, generateMinimalSwiftUtilitiesRepo
+}
+
+task generatePublishSwiftListRepo(type: GitRepoTask) {
+    dependsOn swiftSwiftPackageManagerPublish
+    sampleDir = file("../swift/swift-package-manager-publish/list-library")
+}
+
+task generatePublishSwiftUtilitiesRepo(type: GitRepoTask) {
+    dependsOn swiftSwiftPackageManagerPublish
+    sampleDir = file("../swift/swift-package-manager-publish/utilities-library")
 }
 
 class SourceCopyTask extends DefaultTask {
@@ -803,6 +829,11 @@ class GitRepoTask extends DefaultTask {
         InitCommand init = Git.init();
         Git git = init.setDirectory(destDir).call()
         try {
+            new File(destDir, ".gitignore") << """
+/.gradle
+build
+/.build
+"""
             def files = []
             project.fileTree(destDir).visit { f ->
                 if (f.file.file) {
@@ -810,6 +841,7 @@ class GitRepoTask extends DefaultTask {
                 }
             }
             def add = git.add()
+            add.addFilepattern(".gitignore")
             files.each {
                 add.addFilepattern(it.pathString)
             }
@@ -821,6 +853,9 @@ class GitRepoTask extends DefaultTask {
                 if (tag != 'SNAPSHOT') {
                     git.tag().setName(tag).call()
                 }
+            }
+            if (changes.isEmpty()) {
+                git.commit().setAll(true).setMessage("initial version").call()
             }
         } finally {
             git.close()

@@ -1,0 +1,30 @@
+plugins {
+    id 'swift-library'
+    id 'xcode'
+    id 'xctest'
+    id 'swiftpm-export'
+}
+
+group = 'org.gradle.swift-samples'
+version = '1.0.0'
+
+library {
+    dependencies {
+        api 'org.gradle.swift-samples:list:1.0.0'
+    }
+}
+
+task release {
+    dependsOn generateSwiftPmManifest
+    doLast {
+        exec {
+            commandLine = ["git", "add", "Package.swift"]
+        }
+        exec {
+            commandLine = ["git", "commit", "-a", "-m", "version ${version}"]
+        }
+        exec {
+            commandLine = ["git", "tag", version]
+        }
+    }
+}

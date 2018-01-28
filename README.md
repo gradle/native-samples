@@ -382,3 +382,14 @@ Gradle can also consume source dependencies that come from repositories without 
 ```
 
 In the "repos" directory, you can find the source code without any Gradle configuration. The `utilities` and `list` builds are configured with the `utilities-build` and `list-build` plugins.
+
+## Using Gradle builds from Swift package manager (swift-package-manager-publish)
+
+```
+> ./gradlew generateRepos
+> cd swift/swift-package-manager-publish/utilities
+> ./gradlew release
+> cd ../app
+> swift build
+> swift test
+```

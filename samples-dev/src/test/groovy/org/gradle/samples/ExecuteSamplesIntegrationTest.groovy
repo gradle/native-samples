@@ -46,6 +46,8 @@ class ExecuteSamplesIntegrationTest extends Specification {
     def "can build Swift '#sample.name'"() {
         // TODO - remove this once Swift 4 tools installed on Linux CI machines
         Assume.assumeTrue(!OperatingSystem.current().linux || sample.sampleName != 'swift-versions')
+        // TODO - remove this once documentation parsing can better understand the setup
+        Assume.assumeTrue(sample.sampleName != 'swift-package-manager-publish')
 
         given:
         sample.clean()
@@ -84,6 +86,36 @@ class ExecuteSamplesIntegrationTest extends Specification {
                 .withProjectDir(sample.sampleDir)
                 .withArguments("swift3-app:build")
                 .build()
+    }
+
+    @Requires({ !OperatingSystem.current().windows })
+    def "can build Swift 'swift-package-manager-publish'"() {
+        given:
+        def sample = Samples.useSampleIn("swift/swift-package-manager-publish")
+        sample.clean()
+
+        expect:
+        GradleRunner.create()
+                .withProjectDir(sample.sampleDir.parentFile.parentFile)
+                .withArguments("generateRepos")
+                .build()
+
+        GradleRunner.create()
+                .withProjectDir(new File(sample.sampleDir, "list-library"))
+                .withArguments("release")
+                .build()
+
+        GradleRunner.create()
+                .withProjectDir(new File(sample.sampleDir, "utilities-library"))
+                .withArguments("build")
+                .build()
+
+        GradleRunner.create()
+                .withProjectDir(new File(sample.sampleDir, "utilities-library"))
+                .withArguments("release")
+                .build()
+
+        // TODO - use swift build to verify
     }
 
     def runSetupFor(NativeSample sample) {

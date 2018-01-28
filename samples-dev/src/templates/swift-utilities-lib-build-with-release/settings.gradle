@@ -1,0 +1,11 @@
+rootProject.name = 'utilities'
+
+sourceControl {
+    vcsMappings {
+        withModule('org.gradle.swift-samples:list') {
+            from(GitVersionControlSpec) {
+                url = uri('../list-library')
+            }
+        }
+    }
+}
