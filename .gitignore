@@ -12,6 +12,9 @@ swift/injected-plugins/repos
 swift/swift-package-manager-publish/release-plugin
 swift/swift-package-manager-publish/list-library
 swift/swift-package-manager-publish/utilities-library
+cpp/swift-package-manager-publish/release-plugin
+cpp/swift-package-manager-publish/list-library
+cpp/swift-package-manager-publish/utilities-library
 
 # Swift Package Manager Files
 .build

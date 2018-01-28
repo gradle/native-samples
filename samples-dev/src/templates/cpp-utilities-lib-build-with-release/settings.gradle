@@ -1,0 +1,16 @@
+rootProject.name = 'utilities'
+
+sourceControl {
+    vcsMappings {
+        withModule('org.gradle.cpp-samples:list') {
+            from(GitVersionControlSpec) {
+                url = uri('../list-library')
+            }
+        }
+        withModule('org.gradle.samples:release') {
+            from(GitVersionControlSpec) {
+                url = uri('../release-plugin')
+            }
+        }
+    }
+}

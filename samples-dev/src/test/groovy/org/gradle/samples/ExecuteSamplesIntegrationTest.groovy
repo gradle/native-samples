@@ -18,6 +18,9 @@ class ExecuteSamplesIntegrationTest extends Specification {
 
     @Unroll
     def "can build C++ '#sample.name'"() {
+        // TODO - remove this once documentation parsing can better understand the setup
+        Assume.assumeTrue(sample.sampleName != 'swift-package-manager-publish')
+
         given:
         sample.clean()
         runSetupFor(sample)
@@ -90,9 +93,10 @@ class ExecuteSamplesIntegrationTest extends Specification {
     }
 
     @Requires({ !OperatingSystem.current().windows })
-    def "can build Swift 'swift-package-manager-publish'"() {
+    @Unroll
+    def "can build #language 'swift-package-manager-publish'"() {
         given:
-        def sample = Samples.useSampleIn("swift/swift-package-manager-publish")
+        def sample = Samples.useSampleIn("${language}/swift-package-manager-publish")
         sample.clean()
 
         expect:
@@ -103,7 +107,7 @@ class ExecuteSamplesIntegrationTest extends Specification {
 
         GradleRunner.create()
                 .withProjectDir(new File(sample.sampleDir, "list-library"))
-                .withArguments("test", "release")
+                .withArguments("build", "release")
                 .build()
 
         SwiftPmRunner.create()
@@ -113,7 +117,7 @@ class ExecuteSamplesIntegrationTest extends Specification {
 
         GradleRunner.create()
                 .withProjectDir(new File(sample.sampleDir, "utilities-library"))
-                .withArguments("test", "release")
+                .withArguments("build", "release")
                 .build()
 
         SwiftPmRunner.create()
@@ -125,6 +129,9 @@ class ExecuteSamplesIntegrationTest extends Specification {
                 .withProjectDir(new File(sample.sampleDir, "app"))
                 .withArguments("build")
                 .build()
+
+        where:
+        language << ["swift", "cpp"]
     }
 
     def runSetupFor(NativeSample sample) {

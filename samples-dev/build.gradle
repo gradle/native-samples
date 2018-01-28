@@ -44,7 +44,10 @@ task cleanSamples {
             file('../swift/source-dependencies/repos'),
             file('../swift/swift-package-manager-publish/release-plugin'),
             file('../swift/swift-package-manager-publish/list-library'),
-            file('../swift/swift-package-manager-publish/utilities-library')
+            file('../swift/swift-package-manager-publish/utilities-library'),
+            file('../cpp/swift-package-manager-publish/release-plugin'),
+            file('../cpp/swift-package-manager-publish/list-library'),
+            file('../cpp/swift-package-manager-publish/utilities-library')
         ]
         [file("../swift"), file("../cpp")]*.eachFileRecurse(FileType.DIRECTORIES) { def dir ->
             if ([/repo/, /build/, /\.gradle/, /\.build/, /.+\.xcworkspace/, /.+\.xcodeproj/].any { dir.name ==~ it }) {
@@ -196,6 +199,25 @@ task cppSwiftPackageManager(type: SourceCopyTask) {
     swiftPMProject(".", "App").fromTemplate("cpp-app")
     swiftPMProject(".", "Utilities").fromTemplate(cppUtilsLib)
     swiftPMProject(".", "List").fromTemplate(cppListLib)
+}
+
+task cppSwiftPackageManagerPublish(type: SourceCopyTask) {
+    sampleDir = file("../cpp/swift-package-manager-publish")
+
+    swiftPMProject("app", "App").fromTemplate("cpp-app")
+
+    project("release-plugin").buildRoot()
+    project("release-plugin").fromTemplate("release-plugin")
+
+    libProject("list-library").buildRoot()
+    libProject("list-library").noPrivateHeaderDir()
+    libProject("list-library").fromTemplate("cpp-list-lib-build-with-release")
+    libProject("list-library").fromTemplate(cppListLib)
+
+    libProject("utilities-library").buildRoot()
+    libProject("utilities-library").noPrivateHeaderDir()
+    libProject("utilities-library").fromTemplate("cpp-utilities-lib-build-with-release")
+    libProject("utilities-library").fromTemplate(cppUtilsLib)
 }
 
 task swiftApplication(type: SourceCopyTask) {
@@ -457,6 +479,24 @@ task generateMinimalSwiftUtilitiesRepo(type: GitRepoTask) {
 
 task generateMinimalSwiftRepos {
     dependsOn generateMinimalSwiftListRepo, generateMinimalSwiftUtilitiesRepo
+}
+
+task generatePublishCppReleasePluginRepo(type: GitRepoTask) {
+    dependsOn cppSwiftPackageManagerPublish
+    sampleDir = file("../cpp/swift-package-manager-publish/release-plugin")
+    changes["1.0"] = {
+        "initial version"
+    }
+}
+
+task generatePublishCppListRepo(type: GitRepoTask) {
+    dependsOn cppSwiftPackageManagerPublish
+    sampleDir = file("../cpp/swift-package-manager-publish/list-library")
+}
+
+task generatePublishCppUtilitiesRepo(type: GitRepoTask) {
+    dependsOn cppSwiftPackageManagerPublish
+    sampleDir = file("../cpp/swift-package-manager-publish/utilities-library")
 }
 
 task generatePublishSwiftReleasePluginRepo(type: GitRepoTask) {
@@ -727,14 +767,25 @@ class SourceCopyTask extends DefaultTask {
     }
 
     static class LibTarget extends GradleTarget {
+        boolean privateHeaderDir = true
+
         LibTarget(String projectDir) {
             super(projectDir)
+        }
+
+        LibTarget noPrivateHeaderDir() {
+            privateHeaderDir = false
+            return this
         }
 
         @Override
         void visitDirMappings(Template template, Closure cl) {
             cl.call("src/main/cpp", "src/main/cpp", null)
-            cl.call("src/main/headers", "src/main/headers", null)
+            if (privateHeaderDir) {
+                cl.call("src/main/headers", "src/main/headers", null)
+            } else {
+                cl.call("src/main/headers", "src/main/cpp", null)
+            }
             cl.call("src/main/public", "src/main/public", addDllExportToPublicHeader(template))
             cl.call("src/main/swift", "src/main/swift", null)
             cl.call("src/test/swift", "src/test/swift", null)
