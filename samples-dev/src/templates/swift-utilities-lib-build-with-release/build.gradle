@@ -1,9 +1,18 @@
+// Currently cannot use the plugins { } block to reference plugins in included builds
+// Use the buildscript { } block instead
+buildscript {
+    dependencies {
+        classpath "org.gradle.samples:release:1.0"
+    }
+}
 plugins {
     id 'swift-library'
     id 'xcode'
     id 'xctest'
-    id 'swiftpm-export'
 }
+
+// Apply the release plugin explicitly as we can't use the plugins { } block
+apply plugin: 'org.gradle.samples.release'
 
 group = 'org.gradle.swift-samples'
 version = '1.0.0'
@@ -11,20 +20,5 @@ version = '1.0.0'
 library {
     dependencies {
         api 'org.gradle.swift-samples:list:1.0.0'
-    }
-}
-
-task release {
-    dependsOn generateSwiftPmManifest
-    doLast {
-        exec {
-            commandLine = ["git", "add", "Package.swift"]
-        }
-        exec {
-            commandLine = ["git", "commit", "-a", "-m", "version ${version}"]
-        }
-        exec {
-            commandLine = ["git", "tag", version]
-        }
     }
 }

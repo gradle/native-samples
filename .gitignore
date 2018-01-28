@@ -9,6 +9,7 @@ cpp/source-dependencies/repos/utilities-library
 swift/source-dependencies/repos/list-library
 swift/source-dependencies/repos/utilities-library
 swift/injected-plugins/repos
+swift/swift-package-manager-publish/release-plugin
 swift/swift-package-manager-publish/list-library
 swift/swift-package-manager-publish/utilities-library
 

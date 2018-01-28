@@ -7,5 +7,10 @@ sourceControl {
                 url = uri('../list-library')
             }
         }
+        withModule('org.gradle.samples:release') {
+            from(GitVersionControlSpec) {
+                url = uri('../release-plugin')
+            }
+        }
     }
 }

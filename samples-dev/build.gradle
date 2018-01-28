@@ -42,6 +42,7 @@ task cleanSamples {
         def toDelete = [
             file('../cpp/source-dependencies/repos'),
             file('../swift/source-dependencies/repos'),
+            file('../swift/swift-package-manager-publish/release-plugin'),
             file('../swift/swift-package-manager-publish/list-library'),
             file('../swift/swift-package-manager-publish/utilities-library')
         ]
@@ -330,6 +331,9 @@ task swiftSwiftPackageManagerPublish(type: SourceCopyTask) {
 
     swiftPMProject("app", "App").fromTemplate("swift-app")
 
+    project("release-plugin").buildRoot()
+    project("release-plugin").fromTemplate("release-plugin")
+
     libProject("list-library").buildRoot()
     libProject("list-library").fromTemplate("swift-list-lib-build-with-release")
     libProject("list-library").fromTemplate(swiftListLib)
@@ -453,6 +457,14 @@ task generateMinimalSwiftUtilitiesRepo(type: GitRepoTask) {
 
 task generateMinimalSwiftRepos {
     dependsOn generateMinimalSwiftListRepo, generateMinimalSwiftUtilitiesRepo
+}
+
+task generatePublishSwiftReleasePluginRepo(type: GitRepoTask) {
+    dependsOn swiftSwiftPackageManagerPublish
+    sampleDir = file("../swift/swift-package-manager-publish/release-plugin")
+    changes["1.0"] = {
+        "initial version"
+    }
 }
 
 task generatePublishSwiftListRepo(type: GitRepoTask) {
@@ -624,7 +636,7 @@ class SourceCopyTask extends DefaultTask {
 
         private void copy(String templateDirName, String targetDirName, Closure lineFilter, boolean recursive) {
             def srcDir = templatesDir.dir(templateDirName).get().asFile
-            if (!srcDir.directory) {
+            if (!srcDir.directory || srcDir.list().length == 0) {
                 return
             }
             def destDir = sampleDir.dir(targetDirName).get().asFile
@@ -635,6 +647,7 @@ class SourceCopyTask extends DefaultTask {
             project.copy {
                 from srcDir
                 into destDir
+                includeEmptyDirs = false
                 if (!recursive) {
                     include '*'
                 }
@@ -688,6 +701,8 @@ class SourceCopyTask extends DefaultTask {
 
         @Override
         void visitDirMappings(Template template, Closure cl) {
+            cl.call("src/main/java", "src/main/java", null)
+            cl.call("src/main/groovy", "src/main/groovy", null)
         }
     }
 

@@ -1,1 +1,11 @@
 rootProject.name = 'list'
+
+sourceControl {
+    vcsMappings {
+        withModule('org.gradle.samples:release') {
+            from(GitVersionControlSpec) {
+                url = uri('../release-plugin')
+            }
+        }
+    }
+}
