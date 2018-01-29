@@ -2,11 +2,10 @@
 # Swift and C++ Sample Projects
 
 This repository holds several sample Gradle builds which demonstrate how to
-use Gradle to build Swift/C++ libraries and applications including dependencies on
-native libraries written in other native languages like C, C++, and Objective-C.
+use Gradle to build Swift/C++ libraries and applications.
 
 Each sample build is listed below with a bit of information related to the
-features of Gradle that are demonstrated in that build. Each samples are functionally
+features of Gradle that are demonstrated in that build. Each sample is functionally
 the same for both Swift and C++ languages.
 
 Each C++ sample works on macOS, Linux and Windows with GCC, Clang and Visual C++.
@@ -216,7 +215,7 @@ Hello, World!
 
 ## Source generation (source-generation) 
 
-This build demonstrate using a task to generate source code before building a Swift or C++ application.
+This build demonstrates using a task to generate source code before building a Swift or C++ application.
 
 ```
 > cd source-generation
@@ -240,7 +239,7 @@ To use this sample, first create the Git repositories for the libraries:
 > ./gradlew -p ../.. generateRepos
 ```
 
-The repositories are created in the `repos` directory. Each repository is set up to contain some source file and several commits and tags.
+The repositories are created in the `repos` directory. Each repository is set up to contain some source files and includes several commits and tags.
 
 Next, build and run the sample:
 
@@ -371,7 +370,7 @@ If you have the Swift 3 compiler installed, you can only build the Swift 3 appli
 
 Currently, Gradle does not offer a convenience to ignore projects that are not buildable due to missing or incompatible tool chains.
 
-## Configuring non-Gradle source dependency builds (injected-plugins)
+## Using non-Gradle source dependency builds (injected-plugins)
 
 Gradle can also consume source dependencies that come from repositories without Gradle builds. When declaring a source dependency's repository information, you can instruct Gradle to inject plugins into the source dependency. These plugins can configure a Gradle build based on the contents of the repository.
 
@@ -383,7 +382,7 @@ Gradle can also consume source dependencies that come from repositories without 
 
 In the "repos" directory, you can find the source code without any Gradle configuration. The `utilities` and `list` builds are configured with the `utilities-build` and `list-build` plugins.
 
-## Using Gradle builds from Swift package manager (swift-package-manager-publish)
+## Using Gradle builds from Swift Package Manager (swift-package-manager-publish)
 
 This sample shows how libraries built with Gradle can be used by projects that are built with Swift Package Manager, without having to maintain separate Gradle and Swift PM build for the library.
 
