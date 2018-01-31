@@ -48,7 +48,7 @@ To run the tests from the command line:
 
 ### Debug and release variants
 
-The Swift/C++ plugins add a 'debug' and 'release' variant for each library or application. By default, the `assemble` will task will build the debug variant only.
+The Swift/C++ plugins add a 'debug' and 'release' variant for each library or application. By default, the `assemble` task will build the debug variant only.
 
 You can also use the `assembleDebug` and `assembleRelease` tasks to build a specific variant, or both variants.
 
@@ -131,7 +131,7 @@ The build script also demonstrates how to configure convenience tasks like `asse
 
 This build shows that several otherwise independent Swift/C++ libraries can be built together with Gradle. The
 dependencies are added transitively from the dependencies between modules
-and the build take part in a composite build.
+and the builds taking part in the composite build.
 
 To build and run the application:
 
