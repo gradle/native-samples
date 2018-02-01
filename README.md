@@ -414,3 +414,9 @@ Now build the application using Swift PM:
 > cd ../app
 > swift build
 ```
+
+## Incremental Swift compilation
+
+The `swiftc` has a built-in incremental compilation feature that tries to reduce the number of `.swift` files that need to be recompiled on each build by analyzing the dependencies between all files.
+
+Gradle enables Swift incremental compilation by default, so no extra configuration is required to take advantage of this feature with your Swift projects.
