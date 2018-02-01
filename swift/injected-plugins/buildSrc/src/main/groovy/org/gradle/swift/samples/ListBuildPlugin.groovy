@@ -33,8 +33,11 @@ class Node {
                     from tasks.generateSources
                     into layout.buildDirectory.dir("generated/main/swift")
 
+                    def replaceableTokens = [ REPLACEME: "Hello, from Gradle build" ]
+                    inputs.properties replaceableTokens
+
                     exclude "**/DoNotCompile.swift"
-                    filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [ REPLACEME: "Hello, from Gradle build" ])
+                    filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: replaceableTokens)
                 }
 
                 library.source {
