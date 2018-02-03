@@ -1,0 +1,9 @@
+plugins {
+    id 'swift-application'
+}
+
+application {
+    dependencies {
+        implementation project(":curl")
+    }
+}

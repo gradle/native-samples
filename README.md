@@ -701,6 +701,10 @@ BUILD SUCCESSFUL in 1s
 > swift build
 ```
 
+## Using a module for a system library with Swift (system-library-as-module)
+
+TBD
+
 ## Incremental Swift compilation
 
 The `swiftc` has a built-in incremental compilation feature that tries to reduce the number of `.swift` files that need to be recompiled on each build by analyzing the dependencies between all files.
