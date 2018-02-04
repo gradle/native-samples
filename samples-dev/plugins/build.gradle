@@ -1,0 +1,16 @@
+plugins {
+    id 'java-library'
+    id 'groovy'
+}
+
+group = 'org.gradle.samples.plugins'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    implementation gradleApi()
+    implementation localGroovy()
+    implementation "org.eclipse.jgit:org.eclipse.jgit:4.9.1.201712030800-r"
+}

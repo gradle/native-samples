@@ -4,7 +4,7 @@ import org.eclipse.jgit.api.InitCommand
 
 buildscript {
     dependencies {
-        classpath "org.eclipse.jgit:org.eclipse.jgit:4.9.1.201712030800-r"
+        classpath "org.gradle.samples.plugins:generators"
     }
 }
 
