@@ -280,7 +280,7 @@ BUILD SUCCESSFUL in 1s
 Hello, Hello,
 ```
 
-Change to version 1.1 to use a fixed version. Dynamic dependencies are also supported, so you could also use `1.+`, `[1.1,2.0]` or `latest.integration`. Gradle matches the tags of the Git repository. Branches are not yet supported.
+Change to version 1.1 to use a fixed version. Dynamic dependencies are also supported, so you could also use `1.+`, `[1.1,2.0]` or `latest.integration`. Gradle matches the tags of the Git repository. Branches are also supported (see the following sample).
 
 ### C++
 
@@ -292,6 +292,21 @@ Change to version 1.1 to use a fixed version. Dynamic dependencies are also supp
 BUILD SUCCESSFUL in 3s
 
 > ./build/exe/main/debug/app
+Hello, World!
+```
+
+## Application with dependency on upstream branch (dependency-on-upstream-branch)
+
+### C++
+
+```
+> cd cpp/dependency-on-upstream-branch/app
+> ./gradlew -p ../../.. generateRepos
+> ./gradlew assemble
+
+BUILD SUCCESSFUL in 3s
+
+> ./build/install/main/debug/app
 Hello, World!
 ```
 

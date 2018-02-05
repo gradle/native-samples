@@ -166,6 +166,19 @@ task cppSourceDependencies(type: SourceCopyTask) {
     libProject("repos/list-library").fromTemplate("cpp-list-lib-build")
 }
 
+task cppBranchDependencies(type: SourceCopyTask) {
+    sampleDir = file("../cpp/dependency-on-upstream-branch")
+
+    appProject("app").buildRoot()
+    appProject("app").fromTemplate("cpp-app")
+    libProject("utilities-library").buildRoot()
+    libProject("utilities-library").fromTemplate(cppUtilsLib)
+    libProject("utilities-library").fromTemplate("cpp-utilities-lib-build")
+    libProject("list-library").buildRoot()
+    libProject("list-library").fromTemplate(cppListLib)
+    libProject("list-library").fromTemplate("cpp-list-lib-build")
+}
+
 task cppOSDependencies(type: SourceCopyTask) {
     sampleDir = file("../cpp/operating-system-specific-dependencies")
 
@@ -516,4 +529,20 @@ task generatePublishSwiftListRepo(type: GitRepoTask) {
 task generatePublishSwiftUtilitiesRepo(type: GitRepoTask) {
     dependsOn swiftSwiftPackageManagerPublish
     sampleDir = file("../swift/swift-package-manager-publish/utilities-library")
+}
+
+task generateBranchCppListRepo(type: GitRepoTask) {
+    dependsOn cppBranchDependencies
+    sampleDir = file("../cpp/dependency-on-upstream-branch/list-library")
+    changes["1.0"] = {
+        "initial version"
+    }
+}
+
+task generateBranchCppUtilitiesRepo(type: GitRepoTask) {
+    dependsOn cppBranchDependencies
+    sampleDir = file("../cpp/dependency-on-upstream-branch/utilities-library")
+    changes["1.0"] = {
+        "initial version"
+    }
 }

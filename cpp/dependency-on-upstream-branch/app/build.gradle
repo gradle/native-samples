@@ -1,0 +1,15 @@
+plugins {
+    id 'cpp-application'
+    id 'xcode'
+}
+
+group = 'org.gradle.cpp-samples'
+
+dependencies {
+    implementation('org.gradle.cpp-samples:utilities') {
+        version {
+//            branch = 'release'
+            branch = 'master'
+        }
+    }
+}

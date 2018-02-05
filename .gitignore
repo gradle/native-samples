@@ -4,17 +4,19 @@ build
 
 # Local repository
 cpp/repo
+cpp/dependency-on-upstream-branch/list-library
+cpp/dependency-on-upstream-branch/utilities-library
 cpp/source-dependencies/repos/list-library
 cpp/source-dependencies/repos/utilities-library
+cpp/swift-package-manager-publish/release-plugin
+cpp/swift-package-manager-publish/list-library
+cpp/swift-package-manager-publish/utilities-library
 swift/source-dependencies/repos/list-library
 swift/source-dependencies/repos/utilities-library
 swift/injected-plugins/repos
 swift/swift-package-manager-publish/release-plugin
 swift/swift-package-manager-publish/list-library
 swift/swift-package-manager-publish/utilities-library
-cpp/swift-package-manager-publish/release-plugin
-cpp/swift-package-manager-publish/list-library
-cpp/swift-package-manager-publish/utilities-library
 
 # Swift Package Manager Files
 .build

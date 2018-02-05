@@ -18,8 +18,9 @@ class ExecuteSamplesIntegrationTest extends Specification {
 
     @Unroll
     def "can build C++ '#sample.name'"() {
-        // TODO - remove this once documentation parsing can better understand the setup
+        // TODO - remove these once documentation parsing can better understand the setup
         Assume.assumeTrue(sample.sampleName != 'swift-package-manager-publish')
+        Assume.assumeTrue(sample.sampleName != 'dependency-on-upstream-branch')
 
         given:
         sample.clean()
