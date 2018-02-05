@@ -426,11 +426,20 @@ Hello, World!
 
 ## Application with dependency on upstream branch (dependency-on-upstream-branch)
 
-### C++
+This sample shows how a source dependency on a particular branch can be used.
+
+### Swift
+
+To use this sample, create the Git repositories containing the libraries:
 
 ```
-> cd cpp/dependency-on-upstream-branch/app
+> cd swift/dependency-on-upstream-branch/app
 > ./gradlew -p ../../.. generateRepos
+```
+
+Now you can build the application:
+
+```
 > ./gradlew assemble
 
 BUILD SUCCESSFUL in 3s
@@ -439,10 +448,27 @@ BUILD SUCCESSFUL in 3s
 Hello, World!
 ```
 
-### Swift
+The build is configured to use the most recent changes from the 'release' branch of the utilities library. Try changing the source of the library:
 
 ```
-> cd swift/dependency-on-upstream-branch/app
+> cd repos/utilities-library
+> git checkout release
+> edit src/main/swift/Util.swift # add to split() function: print("split: " + s)
+> git commit -a -m 'added some logging'
+> cd ../..
+> ./gradlew assemble
+
+BUILD SUCCESSFUL in 1s
+
+> ./build/exe/main/debug/App
+split:   Hello,      World!
+Hello, World!
+```
+
+### C++
+
+```
+> cd cpp/dependency-on-upstream-branch/app
 > ./gradlew -p ../../.. generateRepos
 > ./gradlew assemble
 
