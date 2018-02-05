@@ -136,7 +136,9 @@ class ExecuteSamplesIntegrationTest extends Specification {
     }
 
     def runSetupFor(NativeSample sample) {
-        documentation.getSample(sample.sampleName).setupSteps.each { command ->
+        def docs = documentation.getSample(sample)
+        assert docs.workingDir == sample.name
+        docs.setupSteps.each { command ->
             println "Running setup step " + command
             GradleRunner.create()
             .withProjectDir(sample.sampleDir)

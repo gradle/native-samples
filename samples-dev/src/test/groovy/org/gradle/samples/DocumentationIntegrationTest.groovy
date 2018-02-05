@@ -11,13 +11,19 @@ class DocumentationIntegrationTest extends Specification {
     def documentation = new Documentation()
 
     @Unroll
-    def "sample has documentation '#target.name'"() {
+    def "sample has documentation '#sample.name'"() {
         expect:
-        def sample = documentation.getSample(target.sampleName)
-        sample != null
-        !sample.instructions.empty
+        def docs = documentation.getSample(sample)
+        docs != null
+
+        println "work dir: " + docs.workingDir
+        println "instructions: " + docs.instructions
+        println "setup: " + docs.setupSteps
+
+        !docs.instructions.empty
+        docs.workingDir.startsWith(sample.name)
 
         where:
-        target << Samples.getAllSamples()
+        sample << Samples.getAllSamples()
     }
 }
