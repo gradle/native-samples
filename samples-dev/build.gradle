@@ -382,20 +382,23 @@ task swiftSwiftPackageManagerPublish(type: SourceCopyTask) {
 task generateCppListRepo(type: GitRepoTask) {
     dependsOn cppSourceDependencies
     sampleDir = file("../cpp/source-dependencies/repos/list-library")
-    changes["1.0"] = { destDir ->
+    change { ch ->
         changeContent("src/main/cpp/get.cpp", "index > 0", "index > 1")
+        tag("1.0")
         "introduce bug in get.cpp"
     }
-    changes["1.1"] = { destDir ->
+    change { ch ->
         changeContent("build.gradle", "version = '1.0'", "version = '1.1'")
         changeContent("src/main/cpp/get.cpp", "index > 1", "index > 0")
+        tag("1.1")
         "fix bug in get.cpp"
     }
-    changes["2.0"] = { destDir ->
+    change { ch ->
         changeContent("build.gradle", "version = '1.1'", "version = '2.0'")
+        tag("2.0")
         "major release"
     }
-    changes["SNAPSHOT"] = { destDir ->
+    change { ch ->
         changeContent("build.gradle", "version = '2.0'", "version = '2.0-SNAPSHOT'")
         "work in progress"
     }
@@ -404,20 +407,23 @@ task generateCppListRepo(type: GitRepoTask) {
 task generateCppUtilitiesRepo(type: GitRepoTask) {
     dependsOn cppSourceDependencies
     sampleDir = file("../cpp/source-dependencies/repos/utilities-library")
-    changes["1.0"] = {
+    change { ch ->
+        tag("1.0")
         "initial version"
     }
-    changes["1.1"] = { destDir ->
+    change { ch ->
         changeContent("build.gradle", "version = '1.0'", "version = '1.1'")
         changeContent("build.gradle", "list:1.0", "list:1.+")
+        tag("1.1")
         "use latest list 1.x library"
     }
-    changes["2.0"] = { destDir ->
+    change { ch ->
         changeContent("build.gradle", "version = '1.1'", "version = '2.0'")
         changeContent("build.gradle", "list:1.+", "list:2.+")
+        tag("2.0")
         "require list 2.0"
     }
-    changes["SNAPSHOT"] = { destDir ->
+    change { ch ->
         changeContent("build.gradle", "version = '2.0'", "version = '2.0-SNAPSHOT'")
         "work in progress"
     }
@@ -430,20 +436,23 @@ task generateCppRepos {
 task generateSwiftListRepo(type: GitRepoTask) {
     dependsOn swiftSourceDependencies
     sampleDir = file("../swift/source-dependencies/repos/list-library")
-    changes["1.0"] = { destDir ->
+    change { ch ->
         changeContent("src/main/swift/LinkedList.swift", "c > 0", "c > 1")
+        tag("1.0")
         "introduce bug in LinkedList"
     }
-    changes["1.1"] = { destDir ->
+    change { ch ->
         changeContent("build.gradle", "version = '1.0'", "version = '1.1'")
         changeContent("src/main/swift/LinkedList.swift", "c > 1", "c > 0")
+        tag("1.1")
         "fix bug in LinkedList"
     }
-    changes["2.0"] = { destDir ->
+    change { ch ->
         changeContent("build.gradle", "version = '1.1'", "version = '2.0'")
+        tag("2.0")
         "major release"
     }
-    changes["SNAPSHOT"] = { destDir ->
+    change { ch ->
         changeContent("build.gradle", "version = '2.0'", "version = '2.0-SNAPSHOT'")
         "work in progress"
     }
@@ -452,20 +461,23 @@ task generateSwiftListRepo(type: GitRepoTask) {
 task generateSwiftUtilitiesRepo(type: GitRepoTask) {
     dependsOn swiftSourceDependencies
     sampleDir = file("../swift/source-dependencies/repos/utilities-library")
-    changes["1.0"] = {
+    change { ch ->
+        tag("1.0")
         "initial version"
     }
-    changes["1.1"] = { destDir ->
+    change { ch ->
         changeContent("build.gradle", "version = '1.0'", "version = '1.1'")
         changeContent("build.gradle", "list:1.0", "list:1.+")
+        tag("1.1")
         "use latest list 1.x library"
     }
-    changes["2.0"] = { destDir ->
+    change { ch ->
         changeContent("build.gradle", "version = '1.1'", "version = '2.0'")
         changeContent("build.gradle", "list:1.+", "list:2.+")
+        tag("2.0")
         "require list 2.0"
     }
-    changes["SNAPSHOT"] = { destDir ->
+    change { ch ->
         changeContent("build.gradle", "version = '2.0'", "version = '2.0-SNAPSHOT'")
         "work in progress"
     }
@@ -478,7 +490,8 @@ task generateSwiftRepos {
 task generateMinimalSwiftListRepo(type: GitRepoTask) {
     dependsOn swiftInjectedPlugins
     sampleDir = file("../swift/injected-plugins/repos/list-library")
-    changes["1.0"] = { destDir ->
+    change { ch ->
+        tag("1.0")
         "initial version"
     }
 }
@@ -486,7 +499,8 @@ task generateMinimalSwiftListRepo(type: GitRepoTask) {
 task generateMinimalSwiftUtilitiesRepo(type: GitRepoTask) {
     dependsOn swiftInjectedPlugins
     sampleDir = file("../swift/injected-plugins/repos/utilities-library")
-    changes["1.0"] = {
+    change { ch ->
+        tag("1.0")
         "initial version"
     }
 }
@@ -498,7 +512,8 @@ task generateMinimalSwiftRepos {
 task generatePublishCppReleasePluginRepo(type: GitRepoTask) {
     dependsOn cppSwiftPackageManagerPublish
     sampleDir = file("../cpp/swift-package-manager-publish/release-plugin")
-    changes["1.0"] = {
+    change { ch ->
+        tag("1.0")
         "initial version"
     }
 }
@@ -516,7 +531,8 @@ task generatePublishCppUtilitiesRepo(type: GitRepoTask) {
 task generatePublishSwiftReleasePluginRepo(type: GitRepoTask) {
     dependsOn swiftSwiftPackageManagerPublish
     sampleDir = file("../swift/swift-package-manager-publish/release-plugin")
-    changes["1.0"] = {
+    change { ch ->
+        tag("1.0")
         "initial version"
     }
 }
@@ -534,7 +550,8 @@ task generatePublishSwiftUtilitiesRepo(type: GitRepoTask) {
 task generateBranchCppListRepo(type: GitRepoTask) {
     dependsOn cppBranchDependencies
     sampleDir = file("../cpp/dependency-on-upstream-branch/list-library")
-    changes["1.0"] = {
+    change { ch ->
+        tag("1.0")
         "initial version"
     }
 }
@@ -542,7 +559,18 @@ task generateBranchCppListRepo(type: GitRepoTask) {
 task generateBranchCppUtilitiesRepo(type: GitRepoTask) {
     dependsOn cppBranchDependencies
     sampleDir = file("../cpp/dependency-on-upstream-branch/utilities-library")
-    changes["1.0"] = {
+    change { ch ->
+        tag("1.0")
         "initial version"
+    }
+    change { ch ->
+        branch("release")
+        changeContent("build.gradle", "version = '1.0'", "version = '1.1'")
+        "branch for release"
+    }
+    change { ch ->
+        checkout("master")
+        changeContent("build.gradle", "version = '1.0'", "version = '2.0'")
+        "prepare next version"
     }
 }
