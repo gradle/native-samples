@@ -31,7 +31,9 @@ class Documentation {
     }
 
     SampleDocumentation getSample(String name) {
-        assert samples.keySet().contains(name)
+        if (!samples.keySet().contains(name)) {
+            throw new AssertionError("Could not find documentation for sample '${name}'")
+        }
         return samples.get(name)
     }
 

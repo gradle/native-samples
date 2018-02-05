@@ -11,6 +11,8 @@ cpp/source-dependencies/repos/utilities-library
 cpp/swift-package-manager-publish/release-plugin
 cpp/swift-package-manager-publish/list-library
 cpp/swift-package-manager-publish/utilities-library
+swift/dependency-on-upstream-branch/list-library
+swift/dependency-on-upstream-branch/utilities-library
 swift/source-dependencies/repos/list-library
 swift/source-dependencies/repos/utilities-library
 swift/injected-plugins/repos

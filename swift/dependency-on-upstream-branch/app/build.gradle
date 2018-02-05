@@ -1,0 +1,15 @@
+plugins {
+    id 'swift-application'
+    id 'xcode'
+    id 'xctest'
+}
+
+group = 'org.gradle.swift-samples'
+
+dependencies {
+    implementation('org.gradle.swift-samples:utilities') {
+        version {
+            branch = 'release'
+        }
+    }
+}

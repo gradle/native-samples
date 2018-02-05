@@ -328,6 +328,19 @@ task swiftSourceDependencies(type: SourceCopyTask) {
     libProject("repos/list-library").fromTemplate("swift-list-lib-build")
 }
 
+task swiftBranchDependencies(type: SourceCopyTask) {
+    sampleDir = file("../swift/dependency-on-upstream-branch")
+
+    appProject("app").buildRoot()
+    appProject("app").fromTemplate("swift-app")
+    libProject("utilities-library").buildRoot()
+    libProject("utilities-library").fromTemplate(swiftUtilsLib)
+    libProject("utilities-library").fromTemplate("swift-utilities-lib-build")
+    libProject("list-library").buildRoot()
+    libProject("list-library").fromTemplate(swiftListLib)
+    libProject("list-library").fromTemplate("swift-list-lib-build")
+}
+
 task swiftSourceGeneration(type: SourceCopyTask) {
     sampleDir = file("../swift/source-generation")
 
@@ -559,6 +572,34 @@ task generateBranchCppListRepo(type: GitRepoTask) {
 task generateBranchCppUtilitiesRepo(type: GitRepoTask) {
     dependsOn cppBranchDependencies
     sampleDir = file("../cpp/dependency-on-upstream-branch/utilities-library")
+    change { ch ->
+        tag("1.0")
+        "initial version"
+    }
+    change { ch ->
+        branch("release")
+        changeContent("build.gradle", "version = '1.0'", "version = '1.1'")
+        "branch for release"
+    }
+    change { ch ->
+        checkout("master")
+        changeContent("build.gradle", "version = '1.0'", "version = '2.0'")
+        "prepare next version"
+    }
+}
+
+task generateBranchSwiftListRepo(type: GitRepoTask) {
+    dependsOn swiftBranchDependencies
+    sampleDir = file("../swift/dependency-on-upstream-branch/list-library")
+    change { ch ->
+        tag("1.0")
+        "initial version"
+    }
+}
+
+task generateBranchSwiftUtilitiesRepo(type: GitRepoTask) {
+    dependsOn swiftBranchDependencies
+    sampleDir = file("../swift/dependency-on-upstream-branch/utilities-library")
     change { ch ->
         tag("1.0")
         "initial version"

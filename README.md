@@ -439,6 +439,19 @@ BUILD SUCCESSFUL in 3s
 Hello, World!
 ```
 
+### Swift
+
+```
+> cd swift/dependency-on-upstream-branch/app
+> ./gradlew -p ../../.. generateRepos
+> ./gradlew assemble
+
+BUILD SUCCESSFUL in 3s
+
+> ./build/install/main/debug/app
+Hello, World!
+```
+
 ## Application with static library dependencies (static-library)
 
 This build demonstrates building and using static libraries.
