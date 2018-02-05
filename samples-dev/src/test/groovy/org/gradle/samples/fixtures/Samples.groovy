@@ -3,6 +3,8 @@ package org.gradle.samples.fixtures
 import groovy.io.FileType
 
 class Samples {
+    private static final Documentation documentation = new Documentation()
+
     static List<NativeSample> getAllSamples() {
         getSamples("cpp", "swift")
     }
@@ -16,7 +18,8 @@ class Samples {
 
             def languageName = it.parentFile.name
             def sampleName = it.name
-            result << new NativeSample(name: "$languageName/$sampleName", sampleName: sampleName, rootSampleDir: getRootSampleDir())
+            def name = "$languageName/$sampleName"
+            result << new NativeSample(name, sampleName, rootSampleDir, documentation.getSample(name))
         }
         return result
     }
@@ -24,7 +27,7 @@ class Samples {
     static NativeSample useSampleIn(String sample) {
         def sampleDir = new File(rootSampleDir, sample)
         assert sampleDir.exists()
-        def sourceSample = new NativeSample(name: sample, sampleName: sampleDir.getName(), rootSampleDir: getRootSampleDir())
+        def sourceSample = new NativeSample(sample, sampleDir.getName(), rootSampleDir, documentation.getSample(sample))
         return sourceSample
     }
 

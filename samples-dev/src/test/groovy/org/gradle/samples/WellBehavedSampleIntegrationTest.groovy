@@ -12,8 +12,12 @@ class WellBehavedSampleIntegrationTest extends Specification {
         sample.clean()
 
         expect:
+        new File(sample.workingDir, "gradlew").file
+        new File(sample.workingDir, "gradlew.bat").file
+        new File(sample.workingDir, "settings.gradle").file
+
         GradleRunner.create()
-            .withProjectDir(sample.sampleDir)
+            .withProjectDir(sample.workingDir)
             .withArguments("help")
             .build()
 

@@ -1,26 +1,20 @@
 package org.gradle.samples
 
 import org.gradle.internal.os.OperatingSystem
-import org.gradle.samples.fixtures.Documentation
 import org.gradle.samples.fixtures.NativeSample
 import org.gradle.samples.fixtures.Samples
 import org.gradle.samples.fixtures.SwiftPmRunner
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Assume
 import spock.lang.Requires
-import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
 
 class ExecuteSamplesIntegrationTest extends Specification {
-    @Shared
-    Documentation documentation = new Documentation()
-
     @Unroll
     def "can build C++ '#sample.name'"() {
         // TODO - remove these once documentation parsing can better understand the setup
         Assume.assumeTrue(sample.sampleName != 'swift-package-manager-publish')
-        Assume.assumeTrue(sample.sampleName != 'dependency-on-upstream-branch')
 
         given:
         sample.clean()
@@ -28,17 +22,17 @@ class ExecuteSamplesIntegrationTest extends Specification {
 
         expect:
         GradleRunner.create()
-                .withProjectDir(sample.sampleDir)
+                .withProjectDir(sample.workingDir)
                 .withArguments("build")
                 .build()
 
         GradleRunner.create()
-                .withProjectDir(sample.sampleDir)
+                .withProjectDir(sample.workingDir)
                 .withArguments("xcode")
                 .build()
 
         GradleRunner.create()
-                .withProjectDir(sample.sampleDir)
+                .withProjectDir(sample.workingDir)
                 .withArguments("assembleRelease")
                 .build()
 
@@ -60,17 +54,17 @@ class ExecuteSamplesIntegrationTest extends Specification {
 
         expect:
         GradleRunner.create()
-                .withProjectDir(sample.sampleDir)
+                .withProjectDir(sample.workingDir)
                 .withArguments("build")
                 .build()
 
         GradleRunner.create()
-                .withProjectDir(sample.sampleDir)
+                .withProjectDir(sample.workingDir)
                 .withArguments("xcode")
                 .build()
 
         GradleRunner.create()
-                .withProjectDir(sample.sampleDir)
+                .withProjectDir(sample.workingDir)
                 .withArguments("assembleRelease")
                 .build()
 
@@ -88,7 +82,7 @@ class ExecuteSamplesIntegrationTest extends Specification {
 
         expect:
         GradleRunner.create()
-                .withProjectDir(sample.sampleDir)
+                .withProjectDir(sample.workingDir)
                 .withArguments("swift3-app:build")
                 .build()
     }
@@ -136,12 +130,11 @@ class ExecuteSamplesIntegrationTest extends Specification {
     }
 
     def runSetupFor(NativeSample sample) {
-        def docs = documentation.getSample(sample)
-        assert docs.workingDir == sample.name
+        def docs = sample.documentation
         docs.setupSteps.each { command ->
-            println "Running setup step " + command
+            println "Running setup step " + command + " in " + docs.workingDir
             GradleRunner.create()
-            .withProjectDir(sample.sampleDir)
+            .withProjectDir(sample.workingDir)
             .withArguments(command.split().drop(1))
             .build()
         }

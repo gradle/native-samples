@@ -1,12 +1,26 @@
 package org.gradle.samples.fixtures
 
+import org.gradle.samples.fixtures.Documentation.SampleDocumentation
+
 class NativeSample {
-    String name
-    String sampleName
-    File rootSampleDir
+    final String name
+    final String sampleName
+    final File rootSampleDir
+    final SampleDocumentation documentation
+
+    NativeSample(String name, String sampleName, File rootSampleDir, SampleDocumentation documentation) {
+        this.name = name
+        this.sampleName = sampleName
+        this.rootSampleDir = rootSampleDir
+        this.documentation = documentation
+    }
 
     File getSampleDir() {
         return new File(rootSampleDir, name)
+    }
+
+    File getWorkingDir() {
+        return new File(rootSampleDir, documentation.workingDir)
     }
 
     void clean() {
@@ -18,8 +32,7 @@ class NativeSample {
                 toDelete.add(d)
             }
         }
-        toDelete.each { d ->
-            d.deleteDir()
+        toDelete.each { d -> d.deleteDir()
         }
     }
 }
