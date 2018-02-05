@@ -4,6 +4,7 @@ plugins {
 }
 
 group = 'org.gradle.samples.plugins'
+sourceCompatibility = 1.8
 
 repositories {
     jcenter()
