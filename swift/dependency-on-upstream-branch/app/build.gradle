@@ -6,10 +6,12 @@ plugins {
 
 group = 'org.gradle.swift-samples'
 
-dependencies {
-    implementation('org.gradle.swift-samples:utilities') {
-        version {
-            branch = 'release'
+application {
+    dependencies {
+        implementation('org.gradle.swift-samples:utilities') {
+            version {
+                branch = 'release'
+            }
         }
     }
 }

@@ -5,10 +5,12 @@ plugins {
 
 group = 'org.gradle.cpp-samples'
 
-dependencies {
-    implementation('org.gradle.cpp-samples:utilities') {
-        version {
-            branch = 'release'
+application {
+    dependencies {
+        implementation('org.gradle.cpp-samples:utilities') {
+            version {
+                branch = 'release'
+            }
         }
     }
 }
