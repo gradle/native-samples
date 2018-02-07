@@ -701,6 +701,23 @@ BUILD SUCCESSFUL in 1s
 > swift build
 ```
 
+## Using a module for a system library with Swift (system-library-as-module)
+
+Existing system libraries can be wrapped in user defined `module.modulemap` files.
+
+### Swift
+
+This sample demonstrates a Swift application that uses libcurl to fetch `example.com`.
+
+```
+> cd swift/system-library-as-module
+> ./gradlew assemble
+
+BUILD SUCCESSFUL in 1s
+
+> ./build/install/main/debug/App
+```
+
 ## Incremental Swift compilation
 
 The `swiftc` has a built-in incremental compilation feature that tries to reduce the number of `.swift` files that need to be recompiled on each build by analyzing the dependencies between all files.

@@ -1,0 +1,11 @@
+
+plugins {
+    id 'swift-application'
+    id 'xcode'
+}
+
+components.withType(SwiftBinary) { binary ->
+    project.dependencies {
+        add(binary.importPathConfiguration.name, files("curl"))
+    }
+}
