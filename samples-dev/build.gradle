@@ -108,8 +108,17 @@ task cppTransitiveDependencies(type: SourceCopyTask) {
     libProject("list").fromTemplate(cppListLib)
 }
 
-task cppApplication(type: SourceCopyTask) {
-    sampleDir = file("../cpp/application")
+task cppApplicationGroovyDsl(type: SourceCopyTask) {
+    sampleDir = file("../cpp/application/groovy-dsl")
+
+    appProject(".").buildRoot()
+    appProject(".").fromTemplate("cpp-app")
+    appProject(".").fromTemplate(cppUtilsLib)
+    appProject(".").fromTemplate(cppListLib)
+}
+
+task cppApplicationKotlinDsl(type: SourceCopyTask) {
+    sampleDir = file("../cpp/application/kotlin-dsl")
 
     appProject(".").buildRoot()
     appProject(".").fromTemplate("cpp-app")

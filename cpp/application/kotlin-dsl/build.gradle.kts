@@ -1,0 +1,4 @@
+plugins {
+    `cpp-application`
+    xcode
+}
