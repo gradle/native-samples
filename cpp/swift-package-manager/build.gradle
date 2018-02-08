@@ -1,14 +1,26 @@
-allprojects {
+subprojects { subproject ->
     apply plugin: 'xcode'
+
+    group = 'org.gradle.swift-samples'
+
+    // Move the build directories for all projects into a single top-level directory
+    buildDir = rootProject.file("build/${subproject.name.capitalize()}")
+
+    components.withType(ProductionCppComponent) {
+        // By convention, source files are located in the root directory/Sources/<module>
+        source.from rootProject.file("Sources/${subproject.name.capitalize()}")
+    }
+    components.withType(CppLibrary) {
+        // By convention, public header files are located in the root directory/Sources/<module>/include
+        publicHeaders.from rootProject.file("Sources/${subproject.name.capitalize()}/include")
+    }
 }
 
 project(':app') {
     apply plugin: 'cpp-application'
 
-    // Configure the source files of the executable
     application {
-        source.from rootProject.file('Sources/App')
-
+        // Configure the dependencies of the executable
         dependencies {
             implementation project(':utilities')
         }
@@ -18,11 +30,8 @@ project(':app') {
 project(':utilities') {
     apply plugin: 'cpp-library'
 
-    // Configure the source files of the library
     library {
-        source.from rootProject.file('Sources/Utilities')
-        publicHeaders.from rootProject.file('Sources/Utilities/include')
-
+        // Configure the dependencies of the library
         dependencies {
             api project(':list')
         }
@@ -31,19 +40,12 @@ project(':utilities') {
 
 project(':list') {
     apply plugin: 'cpp-library'
-
-    // Configure the source files of the library
-    library {
-        source.from rootProject.file('Sources/List')
-        publicHeaders.from rootProject.file('Sources/List/include')
-    }
 }
 
 // Move the build directories for all projects into a single top-level directory
 allprojects { p ->
-    buildDir = rootProject.file("build/${p.name}")
-
     // Work around for https://github.com/gradle/gradle-native/issues/376
+    // TODO: Remove this once issue has been fixed.
     tasks.withType(AbstractLinkTask) {
         doFirst {
             p.projectDir.mkdirs()
