@@ -723,3 +723,28 @@ BUILD SUCCESSFUL in 1s
 The `swiftc` has a built-in incremental compilation feature that tries to reduce the number of `.swift` files that need to be recompiled on each build by analyzing the dependencies between all files.
 
 Gradle enables Swift incremental compilation by default, so no extra configuration is required to take advantage of this feature with your Swift projects.
+
+## Consuming a legacy library built and packaged with CMake (cmake-library)
+
+This sample demonstrates integrating a legacy library that is built and packaged with CMake into a Gradle build.
+
+### C++
+
+First, build and package the CMake library (you'll need CMake >= 3.10 installed for this):
+
+```
+> cd cpp/cmake-library/library
+> cmake . && cpack --config CPackConfig.cmake
+```
+
+Now, build and run the Gradle application:
+
+```
+> cd ..
+> ./gradlew assemble
+
+BUILD SUCCESSFUL in 1s
+
+> ./build/install/main/debug/app
+Hello, World!
+```

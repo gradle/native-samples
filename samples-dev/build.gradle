@@ -146,6 +146,15 @@ task cppPrebuiltBinaries(type: SourceCopyTask) {
     appProject(".").fromTemplate(cppUtilsLib)
 }
 
+task cppCmakeLibrary(type: SourceCopyTask) {
+    sampleDir = file("../cpp/cmake-library") 
+
+    appProject(".").buildRoot()
+    appProject(".").fromTemplate("cpp-app")
+    cmakeProject("library", "utilities").fromTemplate(cppUtilsLib)
+    cmakeProject("library", "list").fromTemplate(cppListLib)
+}
+
 task cppCompositeBuild(type: SourceCopyTask) {
     sampleDir = file("../cpp/composite-build")
 
