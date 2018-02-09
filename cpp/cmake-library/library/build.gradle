@@ -2,6 +2,10 @@ plugins {
     id 'base'
 }
 
+/**
+ * Define some configurations to present the outputs of this build
+ * to other Gradle projects.
+ */
 configurations {
     headers {
         attributes.attribute(Usage.USAGE_ATTRIBUTE, 
@@ -17,11 +21,21 @@ configurations {
     }
 }
 
+/**
+ * Create some tasks to drive the CMake build
+ */
 def cmakeExecutable = System.getenv('CMAKE_EXECUTABLE') ?: 'cmake'
 def makeExecutable = System.getenv('MAKE_EXECUTABLE') ?: 'make'
-def cmakeFiles = fileTree(projectDir).include('**/CMakeFiles/**/*').include('**/Makefile').include('**/*.cmake').include('CMakeCache.txt').include('install_manifest.txt')
 
-task cmake(type: Exec) {
+task cmake(type: Exec) { task ->
+    ext.cmakeFiles = fileTree(projectDir)
+        .include('**/CMakeFiles/**/*')
+        .include('**/Makefile')
+        .include('**/*.cmake')
+        .include('CMakeCache.txt')
+        .include('install_manifest.txt')
+        .builtBy(task)
+
     workingDir projectDir
 
     commandLine cmakeExecutable, '.'
@@ -30,8 +44,6 @@ task cmake(type: Exec) {
     outputs.files cmakeFiles
 }
 
-cmakeFiles.builtBy(cmake)
-
 task make(type: Exec) {
     ext.staticLibrary = newOutputFile()
 
@@ -39,18 +51,20 @@ task make(type: Exec) {
 
     commandLine makeExecutable
 
-    //dependsOn cmake
-
     staticLibrary.set(file("src/utilities/libutilities.a"))
 
-    inputs.files cmakeFiles
+    inputs.files cmake.cmakeFiles
     outputs.file staticLibrary
 }
 
 clean {
-    delete cmakeFiles
+    delete cmake.cmakeFiles
     delete make.staticLibrary
 }
 
+/**
+ * Configure the artifacts which should be exposed by this build
+ * to other Gradle projects.
+ */
 configurations.headers.outgoing.artifact file('src/utilities/include')
 configurations.linktimeLibs.outgoing.artifact make.staticLibrary

@@ -726,25 +726,16 @@ Gradle enables Swift incremental compilation by default, so no extra configurati
 
 ## Consuming a legacy library built and packaged with CMake (cmake-library)
 
-This sample demonstrates integrating a legacy library that is built and packaged with CMake into a Gradle build.
+This sample demonstrates integrating a legacy library that is built by CMake into a Gradle build.  There are two projects: 'app' which is a Gradle-built executable that depends on 'library' which is built using CMake.  The 'library' project has a Gradle build that wraps the CMake build and exposes its artifacts in a way that other Gradle builds can consume.
 
 ### C++
 
-First, build and package the CMake library (you'll need CMake >= 3.10 installed for this):
-
 ```
-> cd cpp/cmake-library/library
-> cmake . && cpack --config CPackConfig.cmake
-```
-
-Now, build and run the Gradle application:
-
-```
-> cd ..
+> cd cpp/cmake-library
 > ./gradlew assemble
 
 BUILD SUCCESSFUL in 1s
 
-> ./build/install/main/debug/app
+> ./app/build/install/main/debug/app
 Hello, World!
 ```

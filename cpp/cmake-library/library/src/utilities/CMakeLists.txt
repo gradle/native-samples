@@ -13,10 +13,3 @@ add_library(utilities
 
 target_include_directories(utilities PUBLIC
     include)
-
-install(TARGETS utilities EXPORT utilities
-    ARCHIVE  DESTINATION "lib"
-    LIBRARY  DESTINATION "lib"
-    RUNTIME  DESTINATION "bin")
-
-install(DIRECTORY include/ DESTINATION "include")
