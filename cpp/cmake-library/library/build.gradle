@@ -66,12 +66,12 @@ task cmakeRelease(type: CMake) {
 
 task makeDebug(type: Make) {
     generatedBy cmakeDebug
-    binary.set(new File(variantDir, "src/utilities/libutilities.a"))
+    binary "src/utilities/libutilities.a"
 }
 
 task makeRelease(type: Make) {
     generatedBy cmakeRelease
-    binary.set(new File(variantDir, "src/utilities/libutilities.a"))
+    binary "src/utilities/libutilities.a"
 }
 
 /**
@@ -83,7 +83,7 @@ configurations.linktimeLibsDebug.outgoing.artifact makeDebug.binary
 configurations.linktimeLibsRelease.outgoing.artifact makeRelease.binary
 
 /**
- * Tasks to execute CMake and Make
+ * Task types to execute CMake and Make
  */
 class CMake extends DefaultTask {
     @Input String buildType
@@ -117,11 +117,12 @@ class CMake extends DefaultTask {
 }
 
 class Make extends DefaultTask {
-    @Internal File variantDir
+    @Internal DirectoryProperty variantDir
     @InputFiles FileCollection cmakeFiles
     Provider<File> binary
 
     Make() {
+        variantDir = newInputDirectory()
         binary = newOutputFile()
     }
 
@@ -136,7 +137,11 @@ class Make extends DefaultTask {
     }
 
     void generatedBy(CMake cmake) {
-        variantDir = cmake.variantDir
+        variantDir.set(cmake.variantDir)
         cmakeFiles = cmake.cmakeFiles
+    }
+
+    void binary(String path) {
+        binary.set(variantDir.file(path))
     }
 }
