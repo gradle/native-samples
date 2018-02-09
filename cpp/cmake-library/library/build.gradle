@@ -11,55 +11,57 @@ configurations {
         attributes.attribute(Usage.USAGE_ATTRIBUTE, 
             objects.named(Usage.class, Usage.C_PLUS_PLUS_API))
     }
-    linktimeLibs {
+
+    // linktime libraries (i.e. static libraries)
+    linktimeLibsDebug {
         attributes.attribute(Usage.USAGE_ATTRIBUTE, 
             objects.named(Usage.class, Usage.NATIVE_LINK))
+        attributes.attribute(CppBinary.DEBUGGABLE_ATTRIBUTE, true)
+        attributes.attribute(CppBinary.OPTIMIZED_ATTRIBUTE, false)
     }
-    runtimeLibs {
+    linktimeLibsRelease {
+        attributes.attribute(Usage.USAGE_ATTRIBUTE, 
+            objects.named(Usage.class, Usage.NATIVE_LINK))
+        attributes.attribute(CppBinary.DEBUGGABLE_ATTRIBUTE, true)
+        attributes.attribute(CppBinary.OPTIMIZED_ATTRIBUTE, true)
+    }
+
+    // runtime libraries (i.e. shared libraries)
+    runtimeLibsDebug {
         attributes.attribute(Usage.USAGE_ATTRIBUTE, 
             objects.named(Usage.class, Usage.NATIVE_RUNTIME))
+        attributes.attribute(CppBinary.DEBUGGABLE_ATTRIBUTE, true)
+        attributes.attribute(CppBinary.OPTIMIZED_ATTRIBUTE, false)
+    }
+    runtimeLibsRelease {
+        attributes.attribute(Usage.USAGE_ATTRIBUTE, 
+            objects.named(Usage.class, Usage.NATIVE_RUNTIME))
+        attributes.attribute(CppBinary.DEBUGGABLE_ATTRIBUTE, true)
+        attributes.attribute(CppBinary.OPTIMIZED_ATTRIBUTE, true)
     }
 }
 
 /**
  * Create some tasks to drive the CMake build
  */
-def cmakeExecutable = System.getenv('CMAKE_EXECUTABLE') ?: 'cmake'
-def makeExecutable = System.getenv('MAKE_EXECUTABLE') ?: 'make'
-
-task cmake(type: Exec) { task ->
-    ext.cmakeFiles = fileTree(projectDir)
-        .include('**/CMakeFiles/**/*')
-        .include('**/Makefile')
-        .include('**/*.cmake')
-        .include('CMakeCache.txt')
-        .include('install_manifest.txt')
-        .builtBy(task)
-
-    workingDir projectDir
-
-    commandLine cmakeExecutable, '.'
-
-    inputs.files fileTree(projectDir).include('**/CMakeLists.txt')
-    outputs.files cmakeFiles
+task cmakeDebug(type: CMake) {
+    buildType = "Debug"
+    variantDir = file("${buildDir}/debug")
 }
 
-task make(type: Exec) {
-    ext.staticLibrary = newOutputFile()
-
-    workingDir projectDir
-
-    commandLine makeExecutable
-
-    staticLibrary.set(file("src/utilities/libutilities.a"))
-
-    inputs.files cmake.cmakeFiles
-    outputs.file staticLibrary
+task cmakeRelease(type: CMake) {
+    buildType = "RelWithDebInfo"
+    variantDir = file("${buildDir}/release")
 }
 
-clean {
-    delete cmake.cmakeFiles
-    delete make.staticLibrary
+task makeDebug(type: Make) {
+    generatedBy cmakeDebug
+    binary.set(new File(cmakeDebug.variantDir, "src/utilities/libutilities.a"))
+}
+
+task makeRelease(type: Make) {
+    generatedBy cmakeRelease
+    binary.set(new File(cmakeRelease.variantDir, "src/utilities/libutilities.a"))
 }
 
 /**
@@ -67,4 +69,64 @@ clean {
  * to other Gradle projects.
  */
 configurations.headers.outgoing.artifact file('src/utilities/include')
-configurations.linktimeLibs.outgoing.artifact make.staticLibrary
+configurations.linktimeLibsDebug.outgoing.artifact tasks.makeDebug.binary
+configurations.linktimeLibsRelease.outgoing.artifact tasks.makeRelease.binary
+
+/**
+ * Tasks to execute CMake and Make
+ */
+class CMake extends DefaultTask {
+    @Input String buildType
+    @Internal File variantDir
+
+    @TaskAction
+    void generateCmakeFiles() {
+        def cmakeExecutable = System.getenv('CMAKE_EXECUTABLE') ?: 'cmake'
+
+        variantDir.mkdirs()
+        project.exec {
+            workingDir variantDir
+
+            commandLine cmakeExecutable, "-DCMAKE_BUILD_TYPE=${buildType.capitalize()}", project.projectDir
+        }
+    }
+
+    @InputFiles
+    FileCollection getCMakeLists() {
+        return project.fileTree(project.projectDir).include('**/CMakeLists.txt')
+    }
+
+    @OutputFiles
+    FileCollection getCmakeFiles() {
+        project.fileTree(variantDir)
+        .include('**/CMakeFiles/**/*')
+        .include('**/Makefile')
+        .include('**/*.cmake')
+        .builtBy(this)
+    }
+}
+
+class Make extends DefaultTask {
+    @Internal File variantDir
+    @InputFiles FileCollection cmakeFiles
+    Provider<File> binary
+
+    Make() {
+        binary = newOutputFile()
+    }
+
+    @TaskAction
+    void executeMake() {
+        def makeExecutable = System.getenv('MAKE_EXECUTABLE') ?: 'make'
+        project.exec {
+            workingDir variantDir
+
+            commandLine makeExecutable
+        }
+    }
+
+    void generatedBy(CMake cmake) {
+        variantDir = cmake.variantDir
+        cmakeFiles = cmake.cmakeFiles
+    }
+}

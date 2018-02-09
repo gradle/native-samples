@@ -8,3 +8,5 @@ CPackConfig.cmake
 CPackSourceConfig.cmake
 _CPack_Packages
 libraries-*-Darwin.zip
+buildDebug
+buildRelease
