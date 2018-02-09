@@ -1,0 +1,56 @@
+plugins {
+    id 'base'
+}
+
+configurations {
+    headers {
+        attributes.attribute(Usage.USAGE_ATTRIBUTE, 
+            objects.named(Usage.class, Usage.C_PLUS_PLUS_API))
+    }
+    linktimeLibs {
+        attributes.attribute(Usage.USAGE_ATTRIBUTE, 
+            objects.named(Usage.class, Usage.NATIVE_LINK))
+    }
+    runtimeLibs {
+        attributes.attribute(Usage.USAGE_ATTRIBUTE, 
+            objects.named(Usage.class, Usage.NATIVE_RUNTIME))
+    }
+}
+
+def cmakeExecutable = System.getenv('CMAKE_EXECUTABLE') ?: 'cmake'
+def makeExecutable = System.getenv('MAKE_EXECUTABLE') ?: 'make'
+def cmakeFiles = fileTree(projectDir).include('**/CMakeFiles/**/*').include('**/Makefile').include('**/*.cmake').include('CMakeCache.txt').include('install_manifest.txt')
+
+task cmake(type: Exec) {
+    workingDir projectDir
+
+    commandLine cmakeExecutable, '.'
+
+    inputs.files fileTree(projectDir).include('**/CMakeLists.txt')
+    outputs.files cmakeFiles
+}
+
+cmakeFiles.builtBy(cmake)
+
+task make(type: Exec) {
+    ext.staticLibrary = newOutputFile()
+
+    workingDir projectDir
+
+    commandLine makeExecutable
+
+    //dependsOn cmake
+
+    staticLibrary.set(file("src/utilities/libutilities.a"))
+
+    inputs.files cmakeFiles
+    outputs.file staticLibrary
+}
+
+clean {
+    delete cmakeFiles
+    delete make.staticLibrary
+}
+
+configurations.headers.outgoing.artifact file('src/utilities/include')
+configurations.linktimeLibs.outgoing.artifact make.staticLibrary

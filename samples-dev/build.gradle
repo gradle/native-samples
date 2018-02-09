@@ -149,10 +149,10 @@ task cppPrebuiltBinaries(type: SourceCopyTask) {
 task cppCmakeLibrary(type: SourceCopyTask) {
     sampleDir = file("../cpp/cmake-library") 
 
-    appProject(".").buildRoot()
-    appProject(".").fromTemplate("cpp-app")
+    project(".").buildRoot()
+    appProject("app").fromTemplate("cpp-app")
     cmakeProject("library", "utilities").fromTemplate(cppUtilsLib)
-    cmakeProject("library", "list").fromTemplate(cppListLib)
+    cmakeProject("library", "utilities").fromTemplate(cppListLib)
 }
 
 task cppCompositeBuild(type: SourceCopyTask) {

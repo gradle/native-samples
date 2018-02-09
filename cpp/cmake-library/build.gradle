@@ -1,53 +1,6 @@
-plugins {
-    id 'cpp-application'
-    id 'xcode'
+allprojects {
+    apply plugin: "xcode"
+
+    group = 'org.gradle.cpp-samples'
+    version = '1.2'
 }
-
-configurations {
-    cmake
-}
-
-def cmakeLibraryPackage = file('library/libraries-0.1.1-Darwin.zip')
-
-dependencies {
-    cmake files(cmakeLibraryPackage)
-}
-
-task extract(type: Copy) { task ->
-    ext {
-        extractDir = file("${buildDir}/extracted")
-        headerDirs = files().builtBy(task)
-        libFiles = fileTree(extractDir).builtBy(task)
-            .include('*/lib/*')
-    }
-
-    inputs.files configurations.cmake
-    
-    from { 
-        configurations.cmake.collect { zipFile ->
-            def packageName = zipFile.name - ".zip"
-            headerDirs.from("${extractDir}/${packageName}/include")
-            return zipTree(zipFile) 
-        } 
-    }
-    into extractDir
-}
-
-components.main.binaries.whenElementFinalized { binary ->
-    project.dependencies {
-        add(binary.includePathConfiguration.name, extract.headerDirs)
-        add(binary.linkLibraries.name, extract.libFiles)
-    }
-}
-
-gradle.taskGraph.whenReady { taskGraph ->
-    if (!taskGraph.hasTask(":help")) {
-        if (!cmakeLibraryPackage.exists()) {
-            throw new GradleException("Please build the CMake project at ${file('library')} with: 'cd ${file('library')} && cmake . && cpack --config CPackConfig.cmake'")
-        }
-    }
-}
-
-
-
-

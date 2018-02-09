@@ -46,7 +46,7 @@ class SourceCopyTask extends DefaultTask {
 
     private def add(TemplateTarget target) {
         if (projects.containsKey(target.key)) {
-            return projects.get(target.projectDir)
+            return projects.get(target.key)
         }
         projects.put(target.key, target)
         return target
