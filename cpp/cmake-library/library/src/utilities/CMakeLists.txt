@@ -1,4 +1,4 @@
-project(utilitiesLib VERSION 0.1 LANGUAGES CXX)
+project(utilitiesLib LANGUAGES CXX)
 
 add_library(utilities 
     join.cpp
