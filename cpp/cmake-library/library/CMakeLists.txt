@@ -1,4 +1,4 @@
 cmake_minimum_required(VERSION 2.8)
-project(libraries LANGUAGES CXX)
+project(libraries)
 
 add_subdirectory(src/utilities)
