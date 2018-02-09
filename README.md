@@ -732,7 +732,7 @@ This sample demonstrates integrating a legacy library that is built by CMake int
 
 ```
 > cd cpp/cmake-library
-> ./gradlew :app:assemble
+> ./gradlew assemble
 
 BUILD SUCCESSFUL in 1s
 
