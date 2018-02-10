@@ -14,6 +14,7 @@ plugins {
  def RUNTIME = objects.named(Usage.class, Usage.NATIVE_RUNTIME)
 
 configurations {
+    // public headers
     headers {
         attributes.attribute(USAGE, CPP_API)
     }
@@ -76,7 +77,8 @@ task makeRelease(type: Make) {
 
 /**
  * Configure the artifacts which should be exposed by this build
- * to other Gradle projects.
+ * to other Gradle projects. (Note that this build does not currently
+ * expose any runtime (shared library) artifacts)
  */
 configurations.headers.outgoing.artifact file('src/utilities/include')
 configurations.linktimeLibsDebug.outgoing.artifact makeDebug.binary
@@ -87,15 +89,19 @@ configurations.linktimeLibsRelease.outgoing.artifact makeRelease.binary
  */
 class CMake extends DefaultTask {
     @Input String buildType
-    @Internal File variantDir
+    @Internal DirectoryProperty variantDir
+
+    CMake() {
+        variantDir = newOutputDirectory()
+    }
 
     @TaskAction
     void generateCmakeFiles() {
         def cmakeExecutable = System.getenv('CMAKE_EXECUTABLE') ?: 'cmake'
 
-        variantDir.mkdirs()
+        variantDir.get().asFile.mkdirs()
         project.exec {
-            workingDir variantDir
+            workingDir variantDir.get()
 
             commandLine cmakeExecutable, "-DCMAKE_BUILD_TYPE=${buildType.capitalize()}", project.projectDir
         }
@@ -108,11 +114,10 @@ class CMake extends DefaultTask {
 
     @OutputFiles
     FileCollection getCmakeFiles() {
-        project.fileTree(variantDir)
-        .include('**/CMakeFiles/**/*')
-        .include('**/Makefile')
-        .include('**/*.cmake')
-        .builtBy(this)
+        project.fileTree(variantDir.get())
+            .include('**/CMakeFiles/**/*')
+            .include('**/Makefile')
+            .include('**/*.cmake')
     }
 }
 
