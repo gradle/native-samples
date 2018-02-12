@@ -99,8 +99,17 @@ def cppListLib = CppLibraryTemplate.of("cpp-lib", "list")
 def swiftUtilsLib = SwiftLibraryTemplate.of("swift-lib-with-api-dep", "Utilities")
 def swiftListLib = SwiftLibraryTemplate.of("swift-lib", "List")
 
-task cppTransitiveDependencies(type: SourceCopyTask) {
-    sampleDir = file("../cpp/transitive-dependencies")
+task cppTransitiveDependenciesGroovyDsl(type: SourceCopyTask) {
+    sampleDir = file("../cpp/transitive-dependencies/groovy-dsl")
+
+    project(".").buildRoot()
+    appProject("app").fromTemplate("cpp-app")
+    libProject("utilities").fromTemplate(cppUtilsLib)
+    libProject("list").fromTemplate(cppListLib)
+}
+
+task cppTransitiveDependenciesKotlinDsl(type: SourceCopyTask) {
+    sampleDir = file("../cpp/transitive-dependencies/kotlin-dsl")
 
     project(".").buildRoot()
     appProject("app").fromTemplate("cpp-app")

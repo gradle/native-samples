@@ -17,14 +17,14 @@ allprojects {
     task assembleDebuggable {
         group = "Build"
         description = "Assemble all debuggable C++ binaries."
-        components.withType(CppExecutable) { binary ->
-            if (binary.isDebuggable()) {
-               dependsOn binary.executableFile
+        components.withType(CppExecutable) {
+            if (isDebuggable()) {
+               dependsOn executableFile
             }
         }
-        components.withType(CppSharedLibrary) { binary ->
-            if (binary.isDebuggable()) {
-               dependsOn binary.linkFile
+        components.withType(CppSharedLibrary) {
+            if (isDebuggable()) {
+               dependsOn linkFile
             }
         }
     }
