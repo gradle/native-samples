@@ -45,6 +45,9 @@ class ExecuteSamplesIntegrationTest extends Specification {
 
     @Unroll
     def "can build C '#sample.name'"() {
+        // Sample does not yet work on Windows
+        Assume.assumeFalse(sample.sampleName == 'application' && OperatingSystem.current().windows)
+
         given:
         sample.clean()
         runSetupFor(sample)
