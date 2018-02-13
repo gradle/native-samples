@@ -40,9 +40,13 @@ class SourceCopyTask extends DefaultTask {
         return add(new SwiftPmTarget(projectDir, targetName))
     }
 
+    CmakeTarget cmakeProject(String projectDir, String targetName) {
+        return add(new CmakeTarget(projectDir, targetName))
+    }
+
     private def add(TemplateTarget target) {
         if (projects.containsKey(target.key)) {
-            return projects.get(target.projectDir)
+            return projects.get(target.key)
         }
         projects.put(target.key, target)
         return target
@@ -319,6 +323,32 @@ class SourceCopyTask extends DefaultTask {
             cl.call("src/main/public", "Sources/${targetName}/include", addDllExportToPublicHeader(template))
             cl.call("src/main/swift", "Sources/${targetName}", null)
             cl.call("src/test/swift", "Tests/${targetName}Tests", null)
+        }
+    }
+
+    static class CmakeTarget extends TemplateTarget {
+        final String targetName
+
+        CmakeTarget(String projectDir, String targetName) {
+            super(projectDir)
+            this.targetName = targetName
+        }
+
+        @Override
+        String getModule() {
+            return targetName
+        }
+
+        @Override
+        String getKey() {
+            return "$projectDir:$targetName"
+        }
+
+        @Override
+        void visitDirMappings(Template template, Closure cl) {
+            cl.call("src/main/cpp", "src/${targetName}", null)
+            cl.call("src/main/headers", "src/${targetName}/include", null)
+            cl.call("src/main/public", "src/${targetName}/include", addDllExportToPublicHeader(template))
         }
     }
 }

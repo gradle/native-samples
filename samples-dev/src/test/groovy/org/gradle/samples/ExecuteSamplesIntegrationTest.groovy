@@ -16,6 +16,9 @@ class ExecuteSamplesIntegrationTest extends Specification {
         // TODO - remove these once documentation parsing can better understand the setup
         Assume.assumeTrue(sample.sampleName != 'swift-package-manager-publish')
 
+        // CMake is currently only available on Linux CI machines
+        Assume.assumeFalse(sample.sampleName == 'cmake-library' && !OperatingSystem.current().linux)
+
         given:
         sample.clean()
         runSetupFor(sample)

@@ -1,0 +1,12 @@
+plugins {
+    id 'cpp-application'
+    id 'xcode'
+}
+
+dependencies {
+    implementation project(':library')
+}
+
+
+
+

@@ -1,0 +1,152 @@
+plugins {
+    id 'base'
+}
+
+/**
+ * Define some configurations to present the outputs of this build
+ * to other Gradle projects.
+ */
+ def USAGE = Usage.USAGE_ATTRIBUTE
+ def DEBUG = CppBinary.DEBUGGABLE_ATTRIBUTE
+ def OPTIMIZED = CppBinary.OPTIMIZED_ATTRIBUTE
+ def CPP_API = objects.named(Usage.class, Usage.C_PLUS_PLUS_API)
+ def LINKTIME = objects.named(Usage.class, Usage.NATIVE_LINK)
+ def RUNTIME = objects.named(Usage.class, Usage.NATIVE_RUNTIME)
+
+configurations {
+    // public headers
+    headers {
+        attributes.attribute(USAGE, CPP_API)
+    }
+
+    // linktime libraries (i.e. static libraries)
+    linktimeLibsDebug {
+        attributes {
+            attribute(USAGE, LINKTIME)
+            attribute(DEBUG, true)
+            attribute(OPTIMIZED, false)
+        }
+    }
+    linktimeLibsRelease {
+        attributes {
+            attribute(USAGE, LINKTIME)
+            attribute(DEBUG, true)
+            attribute(OPTIMIZED, true)
+        }
+    }
+
+    // runtime libraries (i.e. shared libraries)
+    runtimeLibsDebug {
+        attributes {
+            attribute(USAGE, RUNTIME)
+            attribute(DEBUG, true)
+            attribute(OPTIMIZED, false)
+        }
+    }
+    runtimeLibsRelease {
+        attributes {
+            attribute(USAGE, RUNTIME)
+            attribute(DEBUG, true)
+            attribute(OPTIMIZED, true)
+        }
+    }
+}
+
+/**
+ * Create some tasks to drive the CMake build
+ */
+task cmakeDebug(type: CMake) {
+    buildType = "Debug"
+    variantDir = file("${buildDir}/debug")
+}
+
+task cmakeRelease(type: CMake) {
+    buildType = "RelWithDebInfo"
+    variantDir = file("${buildDir}/release")
+}
+
+task makeDebug(type: Make) {
+    generatedBy cmakeDebug
+    binary "src/utilities/libutilities.a"
+}
+
+task makeRelease(type: Make) {
+    generatedBy cmakeRelease
+    binary "src/utilities/libutilities.a"
+}
+
+/**
+ * Configure the artifacts which should be exposed by this build
+ * to other Gradle projects. (Note that this build does not currently
+ * expose any runtime (shared library) artifacts)
+ */
+configurations.headers.outgoing.artifact file('src/utilities/include')
+configurations.linktimeLibsDebug.outgoing.artifact makeDebug.binary
+configurations.linktimeLibsRelease.outgoing.artifact makeRelease.binary
+
+/**
+ * Task types to execute CMake and Make
+ */
+class CMake extends DefaultTask {
+    @Input String buildType
+    @Internal DirectoryProperty variantDir
+
+    CMake() {
+        variantDir = newOutputDirectory()
+    }
+
+    @TaskAction
+    void generateCmakeFiles() {
+        def cmakeExecutable = System.getenv('CMAKE_EXECUTABLE') ?: 'cmake'
+
+        variantDir.get().asFile.mkdirs()
+        project.exec {
+            workingDir variantDir.get()
+
+            commandLine cmakeExecutable, "-DCMAKE_BUILD_TYPE=${buildType.capitalize()}", project.projectDir
+        }
+    }
+
+    @InputFiles
+    FileCollection getCMakeLists() {
+        return project.fileTree(project.projectDir).include('**/CMakeLists.txt')
+    }
+
+    @OutputFiles
+    FileCollection getCmakeFiles() {
+        project.fileTree(variantDir.get())
+            .include('**/CMakeFiles/**/*')
+            .include('**/Makefile')
+            .include('**/*.cmake')
+    }
+}
+
+class Make extends DefaultTask {
+    @Internal DirectoryProperty variantDir
+    @InputFiles FileCollection cmakeFiles
+    Provider<File> binary
+
+    Make() {
+        variantDir = newInputDirectory()
+        binary = newOutputFile()
+    }
+
+    @TaskAction
+    void executeMake() {
+        def makeExecutable = System.getenv('MAKE_EXECUTABLE') ?: 'make'
+        project.exec {
+            workingDir variantDir
+
+            commandLine makeExecutable
+        }
+    }
+
+    void generatedBy(CMake cmake) {
+        variantDir.set(cmake.variantDir)
+        cmakeFiles = cmake.cmakeFiles
+    }
+
+    void binary(String path) {
+        binary.set(variantDir.file(path))
+    }
+}
