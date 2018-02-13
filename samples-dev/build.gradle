@@ -153,6 +153,22 @@ task cppCmakeLibrary(type: SourceCopyTask) {
     appProject("app").fromTemplate("cpp-app")
     cmakeProject("library", "utilities").fromTemplate(cppUtilsLib)
     cmakeProject("library", "utilities").fromTemplate(cppListLib)
+    project("cmake-plugin").buildRoot()
+    project("cmake-plugin").fromTemplate("cmake-plugin")
+}
+
+task cppCmakeSourceDepedencies(type: SourceCopyTask) {
+    sampleDir = file("../cpp/cmake-source-dependencies")
+
+    cmakeProject("app").buildRoot()
+    cmakeProject("app").fromTemplate("cpp-app")
+    cmakeProject("utilities").buildRoot()
+    cmakeProject("utilities").fromTemplate(cppUtilsLib)
+    cmakeProject("list").buildRoot()
+    cmakeProject("list").fromTemplate("cpp-list-lib-cmake-build")
+    cmakeProject("list").fromTemplate(cppListLib)
+    project("cmake-plugin").buildRoot()
+    project("cmake-plugin").fromTemplate("cmake-plugin")
 }
 
 task cppCompositeBuild(type: SourceCopyTask) {
@@ -629,5 +645,32 @@ task generateBranchSwiftUtilitiesRepo(type: GitRepoTask) {
         checkout("master")
         changeContent("build.gradle", "version = '1.0'", "version = '2.0'")
         "prepare next version"
+    }
+}
+
+task generateCmakeLibraryPluginRepo(type:  GitRepoTask) {
+    dependsOn cppCmakeLibrary
+    sampleDir = file("../cpp/cmake-library/cmake-plugin")
+    change {
+        tag("1.0")
+        "initial version"
+    }
+}
+
+task generateCmakeSourceDependenciesPluginRepo(type:  GitRepoTask) {
+    dependsOn cppCmakeSourceDepedencies
+    sampleDir = file("../cpp/cmake-source-dependencies/cmake-plugin")
+    change {
+        tag("1.0")
+        "initial version"
+    }
+}
+
+task generateCmakeSourceDependenciesListLibraryRepo(type:  GitRepoTask) {
+    dependsOn cppCmakeSourceDepedencies
+    sampleDir = file("../cpp/cmake-source-dependencies/list")
+    change {
+        tag("1.0")
+        "initial version"
     }
 }

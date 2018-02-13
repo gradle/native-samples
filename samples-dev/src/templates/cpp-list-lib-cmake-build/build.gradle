@@ -5,11 +5,14 @@ buildscript {
         classpath "org.gradle.samples:cmake:1.0"
     }
 }
+plugins {
+    id 'xcode'
+}
 
 // Apply the cmake-library plugin explicitly as we can't use the plugins { } block
 apply plugin: 'org.gradle.samples.cmake-library'
 
 cmake {
-    binary = "src/utilities/libutilities.a"
-    includeDir = "src/utilities/include"
+    binary = "src/list/liblist.a"
+    includeDir = "src/list/include"
 }

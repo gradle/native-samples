@@ -1,12 +1,10 @@
-rootProject.name = 'app'
-
-include ":app", ":library"
+rootProject.name = 'list'
 
 sourceControl {
     vcsMappings {
         withModule("org.gradle.samples:cmake") {
             from(GitVersionControlSpec) {
-                url = uri("cmake-plugin")
+                url = uri("../cmake-plugin")
             }
         }
     }

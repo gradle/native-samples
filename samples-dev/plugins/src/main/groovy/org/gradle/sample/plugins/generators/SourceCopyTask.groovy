@@ -40,6 +40,10 @@ class SourceCopyTask extends DefaultTask {
         return add(new SwiftPmTarget(projectDir, targetName))
     }
 
+    CmakeTarget cmakeProject(String projectDir) {
+        return add(new CmakeTarget(projectDir, projectDir))
+    }
+
     CmakeTarget cmakeProject(String projectDir, String targetName) {
         return add(new CmakeTarget(projectDir, targetName))
     }
@@ -55,6 +59,7 @@ class SourceCopyTask extends DefaultTask {
     static abstract class TemplateTarget {
         final List<Template> templates = []
         final String projectDir
+        boolean rootDir
 
         TemplateTarget(String projectDir) {
             this.projectDir = projectDir
@@ -66,6 +71,11 @@ class SourceCopyTask extends DefaultTask {
 
         TemplateTarget fromTemplate(Template template) {
             templates.add(template)
+            return this
+        }
+
+        TemplateTarget buildRoot() {
+            rootDir = true
             return this
         }
 
@@ -86,6 +96,16 @@ class SourceCopyTask extends DefaultTask {
          * @param cl
          */
         void visitDirs(SourceBuilder builder) {
+            if (rootDir) {
+                def relPath = builder.relativePathTo(projectDir)
+                def bashContent = builder.getTemplateFile("build-root/gradlew").text
+                bashContent = bashContent.replace("REL_PATH", relPath)
+                def bashFile = builder.writeTargetFile("${projectDir}/gradlew", bashContent)
+                bashFile.setExecutable(true)
+                def batContent = builder.getTemplateFile("build-root/gradlew.bat").text
+                batContent = batContent.replace("REL_PATH", relPath.replace("/", "\\"))
+                builder.writeTargetFile("${projectDir}/gradlew.bat", batContent)
+            }
             templates.each { template ->
                 builder.copyDir(template.templateName, projectDir)
                 visitDirMappings(template) { src, dest, lineFilter ->
@@ -173,7 +193,11 @@ class SourceCopyTask extends DefaultTask {
             def destDir = sampleDir.dir(targetDirName).get().asFile
             if (recursive && cleaned.add(destDir)) {
                 // TODO - generate the test main.swift
-                project.delete project.fileTree(destDir, { exclude '**/main.swift' })
+                // TODO - generate the CMake build
+                project.delete project.fileTree(destDir, {
+                    exclude '**/main.swift'
+                    exclude 'CMakeLists.txt'
+                })
             }
             project.copy {
                 from srcDir
@@ -199,30 +223,9 @@ class SourceCopyTask extends DefaultTask {
     }
 
     static class GradleTarget extends TemplateTarget {
-        boolean rootDir
 
         GradleTarget(String projectDir) {
             super(projectDir)
-        }
-
-        GradleTarget buildRoot() {
-            rootDir = true
-            return this
-        }
-
-        @Override
-        void visitDirs(SourceBuilder sourceBuilder) {
-            if (rootDir) {
-                def relPath = sourceBuilder.relativePathTo(projectDir)
-                def bashContent = sourceBuilder.getTemplateFile("build-root/gradlew").text
-                bashContent = bashContent.replace("REL_PATH", relPath)
-                def bashFile = sourceBuilder.writeTargetFile("${projectDir}/gradlew", bashContent)
-                bashFile.setExecutable(true)
-                def batContent = sourceBuilder.getTemplateFile("build-root/gradlew.bat").text
-                batContent = batContent.replace("REL_PATH", relPath.replace("/", "\\"))
-                sourceBuilder.writeTargetFile("${projectDir}/gradlew.bat", batContent)
-            }
-            super.visitDirs(sourceBuilder)
         }
 
         @Override

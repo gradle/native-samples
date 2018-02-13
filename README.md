@@ -755,3 +755,12 @@ BUILD SUCCESSFUL in 1s
 > ./app/build/install/main/debug/app
 Hello, World!
 ```
+
+## Dependency management for libraries built by CMake (cmake-source-dependencies)
+
+### C++
+
+```
+> cd cpp/cmake-source-dependencies/list
+> ./gradlew assemble
+```
