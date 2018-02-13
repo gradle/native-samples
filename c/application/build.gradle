@@ -1,0 +1,19 @@
+/*
+ * There is currently no "C application" plugin, so this build uses the "C++ application" plugin and then reconfigures it
+ * to build C instead. Later versions of Gradle will add a "C application" plugin.
+ */
+plugins {
+    id 'cpp-application'
+    id 'xcode'
+}
+
+application {
+    binaries.configureEach {
+        def compileTask = compileTask.get()
+        compileTask.source.from fileTree(dir: "src/main/c", include: "**/*.c")
+        compileTask.compilerArgs = ["-x", "c", "-std=c11"]
+
+        def linkTask = linkTask.get()
+        linkTask.linkerArgs = ["-nodefaultlibs", "-lc"]
+    }
+}

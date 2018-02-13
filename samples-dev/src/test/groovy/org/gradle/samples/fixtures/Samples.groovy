@@ -6,7 +6,7 @@ class Samples {
     private static final Documentation documentation = new Documentation()
 
     static List<NativeSample> getAllSamples() {
-        getSamples("cpp", "swift")
+        getSamples("cpp", "swift", "c")
     }
 
     static List<NativeSample> getSamples(String... languages) {

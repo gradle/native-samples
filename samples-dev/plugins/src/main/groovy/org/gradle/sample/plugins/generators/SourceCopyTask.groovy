@@ -250,6 +250,7 @@ class SourceCopyTask extends DefaultTask {
         @Override
         void visitDirMappings(Template template, Closure cl) {
             cl.call("src/main/cpp", "src/main/cpp", null)
+            cl.call("src/main/c", "src/main/c", null)
             cl.call("src/main/headers", "src/main/headers", null)
             cl.call("src/main/public", "src/main/headers", null)
             cl.call("src/main/swift", "src/main/swift", null)
@@ -272,6 +273,7 @@ class SourceCopyTask extends DefaultTask {
         @Override
         void visitDirMappings(Template template, Closure cl) {
             cl.call("src/main/cpp", "src/main/cpp", null)
+            cl.call("src/main/c", "src/main/c", null)
             if (privateHeaderDir) {
                 cl.call("src/main/headers", "src/main/headers", null)
             } else {
@@ -291,6 +293,7 @@ class SourceCopyTask extends DefaultTask {
         @Override
         void visitDirMappings(Template template, Closure cl) {
             cl.call("src/main/cpp", "src/main/cpp", null)
+            cl.call("src/main/c", "src/main/c", null)
             cl.call("src/main/headers", "src/main/headers", null)
             cl.call("src/main/public", "src/main/public", null)
             cl.call("src/main/swift", "src/main/swift", null)
@@ -319,6 +322,7 @@ class SourceCopyTask extends DefaultTask {
         @Override
         void visitDirMappings(Template template, Closure cl) {
             cl.call("src/main/cpp", "Sources/${targetName}", null)
+            cl.call("src/main/c", "Sources/${targetName}", null)
             cl.call("src/main/headers", "Sources/${targetName}/include", null)
             cl.call("src/main/public", "Sources/${targetName}/include", addDllExportToPublicHeader(template))
             cl.call("src/main/swift", "Sources/${targetName}", null)
@@ -347,6 +351,7 @@ class SourceCopyTask extends DefaultTask {
         @Override
         void visitDirMappings(Template template, Closure cl) {
             cl.call("src/main/cpp", "src/${targetName}", null)
+            cl.call("src/main/c", "src/${targetName}", null)
             cl.call("src/main/headers", "src/${targetName}/include", null)
             cl.call("src/main/public", "src/${targetName}/include", addDllExportToPublicHeader(template))
         }

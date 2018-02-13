@@ -43,6 +43,32 @@ class ExecuteSamplesIntegrationTest extends Specification {
         sample << Samples.getSamples("cpp")
     }
 
+    @Unroll
+    def "can build C '#sample.name'"() {
+        given:
+        sample.clean()
+        runSetupFor(sample)
+
+        expect:
+        GradleRunner.create()
+                .withProjectDir(sample.workingDir)
+                .withArguments("build")
+                .build()
+
+        GradleRunner.create()
+                .withProjectDir(sample.workingDir)
+                .withArguments("xcode")
+                .build()
+
+        GradleRunner.create()
+                .withProjectDir(sample.workingDir)
+                .withArguments("assembleRelease")
+                .build()
+
+        where:
+        sample << Samples.getSamples("c")
+    }
+
     @Requires({ !OperatingSystem.current().windows })
     @Unroll
     def "can build Swift '#sample.name'"() {

@@ -243,6 +243,13 @@ task cppSwiftPackageManagerPublish(type: SourceCopyTask) {
     libProject("utilities-library").fromTemplate(cppUtilsLib)
 }
 
+task cApplication(type: SourceCopyTask) {
+    sampleDir = file("../c/application")
+
+    appProject(".").buildRoot()
+    appProject(".").fromTemplate("c-app")
+}
+
 task swiftApplication(type: SourceCopyTask) {
     sampleDir = file("../swift/application")
 

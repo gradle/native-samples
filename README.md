@@ -115,7 +115,9 @@ To run the unit tests for the library:
 
 ## Simple application (application)
 
-This build shows how a Swift or C++ application can be built with Gradle. The application has no dependencies.
+This sample shows how a Swift or C++ application can be built with Gradle. The application has no dependencies.
+
+Although there is currently no direct support for building applications and libraries from C, there is also a sample build that shows how the C++ support can be configured to build C.
 
 ### C++
 
@@ -142,6 +144,20 @@ To build and run the application:
 BUILD SUCCESSFUL in 1s
 
 > ./build/install/main/debug/App
+Hello, World!
+```
+
+### C
+
+To build and run the application:
+
+```
+> cd c/application
+> ./gradlew assemble
+
+BUILD SUCCESSFUL in 1s
+
+> ./build/install/main/debug/app
 Hello, World!
 ```
 

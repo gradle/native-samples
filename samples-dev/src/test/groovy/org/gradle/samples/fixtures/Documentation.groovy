@@ -12,7 +12,7 @@ import java.util.regex.Pattern
  *
  * - A level 2 heading with '(<sample-name>)' at the end of the heading text
  * - Includes all content up to the next level 2 heading.
- * - Must contain a level 3 `C++` and/or `Swift` heading for each language
+ * - Must contain a level 3 `C++` and/or `Swift` and/or `C` heading for each language.
  * - Must contain at least one fenced code block containing the instructions for the sample for each language.
  * - All lines in the instructions that start with '>' are considered user input
  * - Instructions should include a `> cd <sample-dir>` command, this directory is assumed to be the working directory for subsequent commands.
@@ -68,6 +68,8 @@ class Documentation {
                     def lang = getText(node)
                     if (lang == 'C++') {
                         samples.put("cpp/" + name, new SampleDocumentation(name, node))
+                    } else if (lang == 'C') {
+                        samples.put("c/" + name, new SampleDocumentation(name, node))
                     } else if (lang.matches('Swift(\\s+4)?')) {
                         samples.put("swift/" + name, new SampleDocumentation(name, node))
                     }
