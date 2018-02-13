@@ -66,56 +66,9 @@ Some of the C++ samples are configured to publish binaries to a local Maven repo
 
 This will build and publish the debug and release binaries. The binaries are published to a repository in the `cpp/repo` directory.
 
-## Simple Library (simple-library)
-
-This build shows how a Swift or C++ library can be built with Gradle. There are no dependencies, just the library itself.
-
-### C++
-
-To build the library:
-
-```
-> cd cpp/simple-library
-> ./gradlew assemble
-
-BUILD SUCCESSFUL in 1s
-
-> find build/lib/main/debug
-build/lib/main/debug/liblist.dylib
-```
-
-To run the unit tests for the library:
-
-```
-> ./gradlew test
-
-BUILD SUCCESSFUL in 1s
-```
-
-### Swift
-
-To build the library:
-
-```
-> cd swift/simple-library
-> ./gradlew assemble
-
-BUILD SUCCESSFUL in 1s
-
-> find build/lib/main/debug
-build/lib/main/debug/libList.dylib
-```
-
-To run the unit tests for the library:
-
-```
-> ./gradlew test
-> open build/reports/tests/xcTest/index.html
-```
-
 ## Simple application (application)
 
-This sample shows how a Swift or C++ application can be built with Gradle. The application has no dependencies.
+This sample shows how a simple Swift or C++ application can be built with Gradle. The application has no dependencies and the build has minimal configuration.
 
 Although there is currently no direct support for building applications and libraries from C, there is also a sample build that shows how the C++ support can be configured to build C.
 
@@ -159,6 +112,53 @@ BUILD SUCCESSFUL in 1s
 
 > ./build/install/main/debug/app
 Hello, World!
+```
+
+## Simple Library (simple-library)
+
+This build shows how a Swift or C++ library can be built with Gradle. The library has no dependencies. The build is configured to add unit tests. The C++ sample also adds binary publishing to a Maven repository.
+
+### C++
+
+To build the library:
+
+```
+> cd cpp/simple-library
+> ./gradlew assemble
+
+BUILD SUCCESSFUL in 1s
+
+> find build/lib/main/debug
+build/lib/main/debug/liblist.dylib
+```
+
+To run the unit tests for the library:
+
+```
+> ./gradlew test
+
+BUILD SUCCESSFUL in 1s
+```
+
+### Swift
+
+To build the library:
+
+```
+> cd swift/simple-library
+> ./gradlew assemble
+
+BUILD SUCCESSFUL in 1s
+
+> find build/lib/main/debug
+build/lib/main/debug/libList.dylib
+```
+
+To run the unit tests for the library:
+
+```
+> ./gradlew test
+> open build/reports/tests/xcTest/index.html
 ```
 
 ## Application with library dependencies in a single build (transitive-dependencies)
