@@ -11,6 +11,7 @@ class WellBehavedSampleIntegrationTest extends Specification {
     def "can run help for '#sample.name' without running any setup steps"() {
         // TODO - remove this when instruction parsing is smarter
         Assume.assumeTrue(sample.sampleName != 'swift-package-manager-publish')
+        Assume.assumeTrue(sample.sampleName != 'cmake-library')
 
         given:
         sample.clean()
