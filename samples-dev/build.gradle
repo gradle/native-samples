@@ -50,7 +50,7 @@ task cleanSamples {
             file('../cpp/swift-package-manager-publish/list-library'),
             file('../cpp/swift-package-manager-publish/utilities-library')
         ]
-        [file("../swift"), file("../cpp")]*.eachFileRecurse(FileType.DIRECTORIES) { def dir ->
+        [file("../swift"), file("../cpp"), file("../c")]*.eachFileRecurse(FileType.DIRECTORIES) { def dir ->
             if ([/repo/, /build/, /\.gradle/, /\.build/, /.+\.xcworkspace/, /.+\.xcodeproj/].any { dir.name ==~ it }) {
                 toDelete << dir
             }
