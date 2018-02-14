@@ -161,6 +161,7 @@ task cppCmakeSourceDepedencies(type: SourceCopyTask) {
     sampleDir = file("../cpp/cmake-source-dependencies")
 
     cmakeProject("app").buildRoot()
+    cmakeProject("app").fromTemplate("cpp-app-cmake-build")
     cmakeProject("app").fromTemplate("cpp-app")
     cmakeProject("utilities").buildRoot()
     cmakeProject("utilities").fromTemplate("cpp-utilities-lib-cmake-build")
@@ -670,6 +671,24 @@ task generateCmakeSourceDependenciesPluginRepo(type:  GitRepoTask) {
 task generateCmakeSourceDependenciesListLibraryRepo(type:  GitRepoTask) {
     dependsOn cppCmakeSourceDepedencies
     sampleDir = file("../cpp/cmake-source-dependencies/list")
+    change {
+        tag("1.0")
+        "initial version"
+    }
+}
+
+task generateCmakeSourceDependenciesUtilityLibraryRepo(type:  GitRepoTask) {
+    dependsOn cppCmakeSourceDepedencies
+    sampleDir = file("../cpp/cmake-source-dependencies/utilities")
+    change {
+        tag("1.0")
+        "initial version"
+    }
+}
+
+task generateCmakeSourceDependenciesUtilityAppRepo(type:  GitRepoTask) {
+    dependsOn cppCmakeSourceDepedencies
+    sampleDir = file("../cpp/cmake-source-dependencies/app")
     change {
         tag("1.0")
         "initial version"

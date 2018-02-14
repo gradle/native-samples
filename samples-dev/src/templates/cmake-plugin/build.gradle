@@ -8,9 +8,13 @@ version = "1.0"
 
 gradlePlugin {
     plugins {
-        release {
+        library {
             id = "org.gradle.samples.cmake-library"
-            implementationClass = "org.gradle.samples.CMakePlugin"
+            implementationClass = "org.gradle.samples.CMakeLibraryPlugin"
+        }
+        application {
+            id = "org.gradle.samples.cmake-application"
+            implementationClass = "org.gradle.samples.CMakeApplicationPlugin"
         }
     }
 }

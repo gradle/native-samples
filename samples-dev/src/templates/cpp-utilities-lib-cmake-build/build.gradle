@@ -12,8 +12,10 @@ plugins {
 // Apply the cmake-library plugin explicitly as we can't use the plugins { } block
 apply plugin: 'org.gradle.samples.cmake-library'
 
+group = "org.gradle.cpp-samples"
+
 cmake {
-    binary = "src/utilities/libutilities.a"
+    binary = "libutilities.a"
     includeDir = "src/utilities/include"
 }
 

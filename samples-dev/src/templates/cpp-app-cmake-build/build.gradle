@@ -9,12 +9,9 @@ plugins {
     id 'xcode'
 }
 
-// Apply the cmake-library plugin explicitly as we can't use the plugins { } block
-apply plugin: 'org.gradle.samples.cmake-library'
+// Apply the cmake-application plugin explicitly as we can't use the plugins { } block
+apply plugin: 'org.gradle.samples.cmake-application'
 
-group = "org.gradle.cpp-samples"
-
-cmake {
-    binary = "liblist.a"
-    includeDir = "src/list/include"
+dependencies {
+    implementation 'org.gradle.cpp-samples:utilities:1.0'
 }

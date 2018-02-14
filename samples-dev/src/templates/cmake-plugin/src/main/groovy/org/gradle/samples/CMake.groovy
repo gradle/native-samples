@@ -17,10 +17,12 @@ class CMake extends DefaultTask {
     @Input String buildType
     @Internal DirectoryProperty variantDir
     @InputFiles ConfigurableFileCollection includeDirs
+    @InputFiles ConfigurableFileCollection linkFiles
 
     CMake() {
         variantDir = newOutputDirectory()
         includeDirs = project.files()
+        linkFiles = project.files()
     }
 
     @TaskAction
@@ -30,7 +32,7 @@ class CMake extends DefaultTask {
         variantDir.get().asFile.mkdirs()
         project.exec {
             workingDir variantDir.get()
-            commandLine cmakeExecutable, "-DCMAKE_BUILD_TYPE=${buildType.capitalize()}", "-DINCLUDE_DIRS=${includeDirs.join(' ')}", project.projectDir
+            commandLine cmakeExecutable, "-DCMAKE_BUILD_TYPE=${buildType.capitalize()}", "-DINCLUDE_DIRS=${includeDirs.join(';  ')}", "-DCMAKE_EXE_LINKER_FLAGS=${linkFiles.join(' ')}", project.projectDir
         }
     }
 

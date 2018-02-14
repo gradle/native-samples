@@ -6,11 +6,12 @@ import org.gradle.api.attributes.Usage
 import org.gradle.language.cpp.CppBinary
 
 /**
- * A sample plugin that wraps a CMake build with Gradle to take care of dependency management.*/
-class CMakePlugin implements Plugin<Project> {
+ * A sample plugin that wraps a CMake build with Gradle to take care of dependency management.
+ */
+class CMakeLibraryPlugin implements Plugin<Project> {
     void apply(Project project) {
         // Apply the base plugin, to define 'clean' task and other things
-        project.pluginManager.apply("base")
+        project.pluginManager.apply("lifecycle-base")
 
         // Add a CMake extension to the Gradle model
         def extension = project.extensions.create("cmake", CMakeExtension.class, project.objects)
@@ -24,12 +25,7 @@ class CMakePlugin implements Plugin<Project> {
         def runtimeUsage = project.objects.named(Usage.class, Usage.NATIVE_RUNTIME)
 
         project.configurations {
-            // outgoing public headers
-            headers {
-                canBeResolved = false
-                attributes.attribute(Usage.USAGE_ATTRIBUTE, cppApiUsage)
-            }
-
+            // dependencies of the library
             implementation {
                 canBeConsumed = false
                 canBeResolved = false
@@ -38,13 +34,21 @@ class CMakePlugin implements Plugin<Project> {
             // incoming compile time headers
             cppCompile {
                 canBeConsumed = false
-                attributes.attribute(Usage.USAGE_ATTRIBUTE, cppApiUsage)
                 extendsFrom implementation
+                attributes.attribute(Usage.USAGE_ATTRIBUTE, cppApiUsage)
+            }
+
+            // outgoing public headers
+            headers {
+                canBeResolved = false
+                extendsFrom implementation
+                attributes.attribute(Usage.USAGE_ATTRIBUTE, cppApiUsage)
             }
 
             // outgoing linktime libraries (i.e. static libraries)
             linktimeLibsDebug {
                 canBeResolved = false
+                extendsFrom implementation
                 attributes {
                     attribute(Usage.USAGE_ATTRIBUTE, linkUsage)
                     attribute(CppBinary.DEBUGGABLE_ATTRIBUTE, true)
@@ -53,6 +57,7 @@ class CMakePlugin implements Plugin<Project> {
             }
             linktimeLibsRelease {
                 canBeResolved = false
+                extendsFrom implementation
                 attributes {
                     attribute(Usage.USAGE_ATTRIBUTE, linkUsage)
                     attribute(CppBinary.DEBUGGABLE_ATTRIBUTE, true)
@@ -63,6 +68,7 @@ class CMakePlugin implements Plugin<Project> {
             // outgoing runtime libraries (i.e. shared libraries)
             runtimeLibsDebug {
                 canBeResolved = false
+                extendsFrom implementation
                 attributes {
                     attribute(Usage.USAGE_ATTRIBUTE, runtimeUsage)
                     attribute(CppBinary.DEBUGGABLE_ATTRIBUTE, true)
@@ -71,6 +77,7 @@ class CMakePlugin implements Plugin<Project> {
             }
             runtimeLibsRelease {
                 canBeResolved = false
+                extendsFrom implementation
                 attributes {
                     attribute(Usage.USAGE_ATTRIBUTE, runtimeUsage)
                     attribute(CppBinary.DEBUGGABLE_ATTRIBUTE, true)
@@ -110,6 +117,8 @@ class CMakePlugin implements Plugin<Project> {
             binary extension.binary
         }
 
+        tasks.assemble.dependsOn assembleDebug
+
         /*
          * Configure the artifacts which should be exposed by this build
          * to other Gradle projects. (Note that this build does not currently
@@ -117,7 +126,7 @@ class CMakePlugin implements Plugin<Project> {
          */
         def configurations = project.configurations
         configurations.headers.outgoing.artifact project.layout.projectDirectory.dir(extension.includeDir)
-        configurations.linktimeLibsDebug.outgoing.artifact tasks.assembleDebug.binary
-        configurations.linktimeLibsRelease.outgoing.artifact tasks.assembleRelease.binary
+        configurations.linktimeLibsDebug.outgoing.artifact assembleDebug.binary
+        configurations.linktimeLibsRelease.outgoing.artifact assembleRelease.binary
     }
 }
