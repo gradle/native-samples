@@ -76,7 +76,7 @@ This will build and publish the debug and release binaries. The binaries are pub
 
 This sample shows how a simple Swift or C++ application can be built with Gradle. The application has no dependencies and the build has minimal configuration.
 
-Although there is currently no direct support for building applications and libraries from C, there is also a sample build that shows how the C++ support can be configured to build C.
+Although there is currently no direct support for building applications and libraries from C, there is also a sample build that shows how the C++ support can be configured to build a C application.
 
 ### C++
 
@@ -122,7 +122,7 @@ Hello, World!
 
 ## Simple Library (simple-library)
 
-This build shows how a Swift or C++ library can be built with Gradle. The library has no dependencies. The build is configured to add unit tests. The C++ sample also adds binary publishing to a Maven repository.
+This sample shows how a Swift or C++ library can be built with Gradle. The library has no dependencies. The build is configured to add unit tests. The C++ sample also adds binary publishing to a Maven repository.
 
 ### C++
 
@@ -169,10 +169,9 @@ To run the unit tests for the library:
 
 ## Application with library dependencies in a single build (transitive-dependencies)
 
-This builds shows how an application and several Swift or C++ libraries can be built with Gradle and linked together. The
-dependencies are added using project dependencies between libraries.
+This sample shows how a C++ or Swift application and several libraries can be built with Gradle and linked together. The sample is structured as a multi-project build, with the application and each library as separate projects in this build. Dependencies are added using project dependencies.
 
-In this sample, the application and libraries all use the same implementation language.
+In this sample, the application and libraries all use the same implementation language. Mixing C++ and Swift is shown in another sample below.
 
 ### C++
 
@@ -212,9 +211,7 @@ Hello, World!
 
 ## Application with library dependencies in a composite build (composite-build)
 
-This build shows that several otherwise independent Swift or C++ libraries can be built together with Gradle. The
-dependencies are added transitively from the dependencies between modules
-and the builds taking part in the composite build.
+This sample shows how several otherwise independent Swift or C++ libraries can be built together with Gradle. The sample is structured as separate builds for each of the libraries and a composite build that includes these.
 
 ### C++
 
@@ -246,7 +243,7 @@ Hello, World!
 
 ## Application with prebuilt library dependencies in a Maven repository (binary-dependencies)
 
-This build shows how to publish C++ libraries to a Maven repository and use them from another build. This is currently only supported for C++.
+This sample shows how to publish C++ libraries to a Maven repository and use them from another build. This is currently only supported for C++.
 
 ### C++
 
@@ -274,7 +271,7 @@ Hello, World!
 
 ## Application with prebuilt library dependencies (prebuilt-binaries)
 
-This build shows how to use pre-built binaries that are already available on the local machine. Currently, Gradle does not offer a convenient way to do this but it is possible to configure Gradle to use these binaries.
+This sample shows how to use pre-built binaries that are already available on the local machine. Currently, Gradle does not offer a convenient way to do this but it is possible to configure Gradle to use these binaries.
 
 ### C++
 
@@ -322,7 +319,7 @@ Hello, World!
 
 ## Application with Swift package manager conventions (swift-package-manager)
 
-This build shows how to configure Gradle to use the typical layout for a Swift Package Manager package.
+This sample shows how to configure Gradle to use the typical layout for a Swift Package Manager package.
 It contains an application and a single library. The source files for the application and libraries are all under a single `Sources` directory.
 
 This sample also includes a Swift Package Manager build file, so the same source can be built using Swift Package Manager
@@ -353,7 +350,7 @@ Hello, World!
 
 ## Source generation (source-generation) 
 
-This build demonstrates using a task to generate source code before building a Swift or C++ application.
+This sample demonstrates using a task to generate source code before building a Swift or C++ application.
 
 ### C++
 
@@ -385,7 +382,7 @@ Generated sources will be under `build/generated`.
 
 ## Application with source library dependencies (source-dependencies)
 
-This build demonstrates using external source dependencies to build Swift and C++ applications that require two libraries. The source for the libraries are hosted in separate Git repositories and declared as 'source dependencies' of the application. When Gradle builds the application, it first checks out a revision of the library source and uses this to build the binaries for the library.
+This sample demonstrates using external source dependencies to build Swift and C++ applications that require two libraries. The source for the libraries are hosted in separate Git repositories and declared as 'source dependencies' of the application. When Gradle builds the application, it first checks out a revision of the library source and uses this to build the binaries for the library.
 
 ### Swift
 
@@ -517,7 +514,7 @@ Try the same experiments as for the Swift sample above.
 
 ## Application with static library dependencies (static-library)
 
-This build demonstrates building and using static libraries.
+This sample demonstrates building and using static libraries.
 
 ### C++
 
@@ -545,7 +542,7 @@ Hello, World!
 
 ## Application with operating system specific library dependencies (operating-system-specific-dependencies)
 
-This build demonstrates an application that has dependencies on different libraries for each operating system. Currently there are no conveniences for use libraries that are installed on the build machine.
+This sample demonstrates an application that has dependencies on different libraries for each operating system. Currently there are no conveniences for using libraries that are installed on the build machine.
 
 ### Swift
 
@@ -577,7 +574,7 @@ The application selects the 'ansiConsole' library on macOS and Linux and the 'wi
 
 ## Swift application with C++ library dependencies (cpp-dependencies)
 
-This build demonstrates using a C++ library from Swift.
+This sample demonstrates using a C++ library from Swift.
 
 ### Swift
 
@@ -597,7 +594,7 @@ By default, when building the application, only the shared library will be built
 
 ## Supporting multiple Swift versions (swift-versions)
 
-This build demonstrates using multiple versions of Swift in a single build. There are two projects that build identical applications. One is written in Swift 3 compatible code (`swift3-app`) and one is written with Swift 4 compatible code (`swift4-app`). When running the application, it will print a message about which version of Swift was used.
+This sample demonstrates using multiple versions of Swift in a single build. There are two projects that build identical applications. One is written in Swift 3 compatible code (`swift3-app`) and one is written with Swift 4 compatible code (`swift4-app`). When running the application, it will print a message about which version of Swift was used.
 
 ### Swift 4
 
@@ -637,7 +634,7 @@ Hello, World!
 
 Currently, Gradle does not offer a convenience to ignore projects that are not buildable due to missing or incompatible tool chains.
 
-## Using non-Gradle source dependency builds (injected-plugins)
+## Application uses libraries that are not built by Gradle (injected-plugins)
 
 Gradle can also consume source dependencies that come from repositories without Gradle builds. When declaring a source dependency's repository information, you can instruct Gradle to inject plugins into the source dependency. These plugins can configure a Gradle build based on the contents of the repository.
 
@@ -682,7 +679,7 @@ BUILD SUCCESSFUL in 1s
 Hello, World!
 ```
 
-## Applications and libraries built by CMake (cmake-source-dependencies)
+## Application and libraries built by CMake (cmake-source-dependencies)
 
 This sample demonstrates using Gradle's dependency management features to coordinate building an application and libraries built by CMake. The sample is composed of an application and two libraries. Each of these is hosted in a separate Git repository and connected together using source dependencies.
 
