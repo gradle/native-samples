@@ -24,13 +24,27 @@ class CMakePlugin implements Plugin<Project> {
         def runtimeUsage = project.objects.named(Usage.class, Usage.NATIVE_RUNTIME)
 
         project.configurations {
-            // public headers
+            // outgoing public headers
             headers {
+                canBeResolved = false
                 attributes.attribute(Usage.USAGE_ATTRIBUTE, cppApiUsage)
             }
 
-            // linktime libraries (i.e. static libraries)
+            implementation {
+                canBeConsumed = false
+                canBeResolved = false
+            }
+
+            // incoming compile time headers
+            cppCompile {
+                canBeConsumed = false
+                attributes.attribute(Usage.USAGE_ATTRIBUTE, cppApiUsage)
+                extendsFrom implementation
+            }
+
+            // outgoing linktime libraries (i.e. static libraries)
             linktimeLibsDebug {
+                canBeResolved = false
                 attributes {
                     attribute(Usage.USAGE_ATTRIBUTE, linkUsage)
                     attribute(CppBinary.DEBUGGABLE_ATTRIBUTE, true)
@@ -38,6 +52,7 @@ class CMakePlugin implements Plugin<Project> {
                 }
             }
             linktimeLibsRelease {
+                canBeResolved = false
                 attributes {
                     attribute(Usage.USAGE_ATTRIBUTE, linkUsage)
                     attribute(CppBinary.DEBUGGABLE_ATTRIBUTE, true)
@@ -45,8 +60,9 @@ class CMakePlugin implements Plugin<Project> {
                 }
             }
 
-            // runtime libraries (i.e. shared libraries)
+            // outgoing runtime libraries (i.e. shared libraries)
             runtimeLibsDebug {
+                canBeResolved = false
                 attributes {
                     attribute(Usage.USAGE_ATTRIBUTE, runtimeUsage)
                     attribute(CppBinary.DEBUGGABLE_ATTRIBUTE, true)
@@ -54,6 +70,7 @@ class CMakePlugin implements Plugin<Project> {
                 }
             }
             runtimeLibsRelease {
+                canBeResolved = false
                 attributes {
                     attribute(Usage.USAGE_ATTRIBUTE, runtimeUsage)
                     attribute(CppBinary.DEBUGGABLE_ATTRIBUTE, true)
@@ -66,22 +83,29 @@ class CMakePlugin implements Plugin<Project> {
          * Create some tasks to drive the CMake build
          */
         def tasks = project.tasks
+
         def cmakeDebug = tasks.create("cmakeDebug", CMake) {
             buildType = "Debug"
+            includeDirs.from(project.configurations.cppCompile)
             variantDir = project.file("${project.buildDir}/debug")
         }
 
         def cmakeRelease = tasks.create("cmakeRelease", CMake) {
             buildType = "RelWithDebInfo"
+            includeDirs.from(project.configurations.cppCompile)
             variantDir = project.file("${project.buildDir}/release")
         }
 
-        tasks.create("makeDebug", Make) {
+        def assembleDebug = tasks.create("assembleDebug", Make) {
+            group = "Build"
+            description = "Builds the debug binaries"
             generatedBy cmakeDebug
             binary extension.binary
         }
 
-        tasks.create("makeRelease", Make) {
+        def assembleRelease = tasks.create("assembleRelease", Make) {
+            group = "Build"
+            description = "Builds the release binaries"
             generatedBy cmakeRelease
             binary extension.binary
         }
@@ -93,7 +117,7 @@ class CMakePlugin implements Plugin<Project> {
          */
         def configurations = project.configurations
         configurations.headers.outgoing.artifact project.layout.projectDirectory.dir(extension.includeDir)
-        configurations.linktimeLibsDebug.outgoing.artifact tasks.makeDebug.binary
-        configurations.linktimeLibsRelease.outgoing.artifact tasks.makeRelease.binary
+        configurations.linktimeLibsDebug.outgoing.artifact tasks.assembleDebug.binary
+        configurations.linktimeLibsRelease.outgoing.artifact tasks.assembleRelease.binary
     }
 }

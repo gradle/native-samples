@@ -1,6 +1,7 @@
 package org.gradle.samples
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.Input
@@ -15,9 +16,11 @@ import org.gradle.api.tasks.TaskAction
 class CMake extends DefaultTask {
     @Input String buildType
     @Internal DirectoryProperty variantDir
+    @InputFiles ConfigurableFileCollection includeDirs
 
     CMake() {
         variantDir = newOutputDirectory()
+        includeDirs = project.files()
     }
 
     @TaskAction
@@ -27,8 +30,7 @@ class CMake extends DefaultTask {
         variantDir.get().asFile.mkdirs()
         project.exec {
             workingDir variantDir.get()
-
-            commandLine cmakeExecutable, "-DCMAKE_BUILD_TYPE=${buildType.capitalize()}", project.projectDir
+            commandLine cmakeExecutable, "-DCMAKE_BUILD_TYPE=${buildType.capitalize()}", "-DINCLUDE_DIRS=${includeDirs.join(' ')}", project.projectDir
         }
     }
 

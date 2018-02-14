@@ -163,6 +163,7 @@ task cppCmakeSourceDepedencies(type: SourceCopyTask) {
     cmakeProject("app").buildRoot()
     cmakeProject("app").fromTemplate("cpp-app")
     cmakeProject("utilities").buildRoot()
+    cmakeProject("utilities").fromTemplate("cpp-utilities-lib-cmake-build")
     cmakeProject("utilities").fromTemplate(cppUtilsLib)
     cmakeProject("list").buildRoot()
     cmakeProject("list").fromTemplate("cpp-list-lib-cmake-build")

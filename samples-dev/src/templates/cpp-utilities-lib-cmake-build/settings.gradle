@@ -1,0 +1,16 @@
+rootProject.name = 'utilities'
+
+sourceControl {
+    vcsMappings {
+        withModule("org.gradle.samples:cmake") {
+            from(GitVersionControlSpec) {
+                url = uri("../cmake-plugin")
+            }
+        }
+        withModule("org.gradle.cpp-samples:list") {
+            from(GitVersionControlSpec) {
+                url = uri("../list")
+            }
+        }
+    }
+}
