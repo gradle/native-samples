@@ -46,6 +46,12 @@ To run the tests from the command line:
 > ./gradlew test
 ```
 
+### Incremental Swift compilation
+
+The `swiftc` compiler has a built-in incremental compilation feature that tries to reduce the number of `.swift` files that need to be recompiled on each build by analyzing the dependencies between all files.
+
+Gradle enables Swift incremental compilation by default, so no extra configuration is required to take advantage of this feature with your Swift projects.
+
 ### Debug and release variants
 
 The Swift/C++ plugins add a 'debug' and 'release' variant for each library or application. By default, the `assemble` task will build the debug variant only.
@@ -658,6 +664,42 @@ Hello, World!
 
 In the "repos" directory, you can find the source code without any Gradle configuration. The `utilities` and `list` builds are configured with the `utilities-build` and `list-build` plugins.
 
+## Application uses a library built by CMake (cmake-library)
+
+This sample demonstrates integrating a library that is built by CMake into a Gradle build.  There are two projects: 'app' which is a Gradle-built executable that depends on 'library' which is built using CMake.  The 'library' project has a Gradle build that wraps the CMake build and exposes its outputs in a way that other Gradle builds can consume.
+
+The sample packages the CMake integration logic as a 'cmake-library' plugin and applies the plugin to the 'library' project as a source dependency.
+
+### C++
+
+```
+> cd cpp/cmake-library
+> ./gradlew assemble
+
+BUILD SUCCESSFUL in 1s
+
+> ./app/build/install/main/debug/app
+Hello, World!
+```
+
+## Applications and libraries built by CMake (cmake-source-dependencies)
+
+This sample demonstrates using Gradle's dependency management features to coordinate building an application and libraries built by CMake. The sample is composed of an application and two libraries. Each of these is hosted in a separate Git repository and connected together using source dependencies.
+
+The sample packages the CMake integration logic as a 'cmake-application' and 'cmake-library' plugin and applies these to the different builds. 
+
+### C++
+
+```
+> cd cpp/cmake-source-dependencies/app
+> ./gradlew assemble
+
+BUILD SUCCESSFUL in 1s
+
+> ./build/debug/app
+Hello, World!
+```
+
 ## Using Gradle builds from Swift Package Manager (swift-package-manager-publish)
 
 This sample shows how libraries built with Gradle can be used by projects that are built with Swift Package Manager, without having to maintain separate Gradle and Swift PM build for the library.
@@ -732,35 +774,4 @@ This sample demonstrates a Swift application that uses libcurl to fetch `example
 BUILD SUCCESSFUL in 1s
 
 > ./build/install/main/debug/App
-```
-
-## Incremental Swift compilation
-
-The `swiftc` has a built-in incremental compilation feature that tries to reduce the number of `.swift` files that need to be recompiled on each build by analyzing the dependencies between all files.
-
-Gradle enables Swift incremental compilation by default, so no extra configuration is required to take advantage of this feature with your Swift projects.
-
-## Consuming a legacy library built by CMake (cmake-library)
-
-This sample demonstrates integrating a legacy library that is built by CMake into a Gradle build.  There are two projects: 'app' which is a Gradle-built executable that depends on 'library' which is built using CMake.  The 'library' project has a Gradle build that wraps the CMake build and exposes its artifacts in a way that other Gradle builds can consume.
-
-### C++
-
-```
-> cd cpp/cmake-library
-> ./gradlew assemble
-
-BUILD SUCCESSFUL in 1s
-
-> ./app/build/install/main/debug/app
-Hello, World!
-```
-
-## Dependency management for libraries built by CMake (cmake-source-dependencies)
-
-### C++
-
-```
-> cd cpp/cmake-source-dependencies/list
-> ./gradlew assemble
 ```
