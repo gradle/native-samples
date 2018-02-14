@@ -12,6 +12,7 @@ class WellBehavedSampleIntegrationTest extends Specification {
         // TODO - remove this when instruction parsing is smarter
         Assume.assumeTrue(sample.sampleName != 'swift-package-manager-publish')
         Assume.assumeTrue(sample.sampleName != 'cmake-library')
+        Assume.assumeTrue(sample.sampleName != 'cmake-source-dependencies')
 
         given:
         sample.clean()

@@ -10,6 +10,6 @@ buildscript {
 apply plugin: 'org.gradle.samples.cmake-library'
 
 cmake {
-    binary = "src/utilities/libutilities.a"
-    includeDir = "src/utilities/include"
+    binary = "src/list/liblist.a"
+    includeDir = "src/list/include"
 }

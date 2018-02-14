@@ -48,7 +48,12 @@ task cleanSamples {
             file('../swift/swift-package-manager-publish/utilities-library'),
             file('../cpp/swift-package-manager-publish/release-plugin'),
             file('../cpp/swift-package-manager-publish/list-library'),
-            file('../cpp/swift-package-manager-publish/utilities-library')
+            file('../cpp/swift-package-manager-publish/utilities-library'),
+            file('../cpp/cmake-library/cmake-plugin'),
+            file('../cpp/cmake-source-dependencies/cmake-plugin'),
+            file('../cpp/cmake-source-dependencies/app'),
+            file('../cpp/cmake-source-dependencies/utilities'),
+            file('../cpp/cmake-source-dependencies/list')
         ]
         [file("../swift"), file("../cpp"), file("../c")]*.eachFileRecurse(FileType.DIRECTORIES) { def dir ->
             if ([/repo/, /build/, /\.gradle/, /\.build/, /.+\.xcworkspace/, /.+\.xcodeproj/].any { dir.name ==~ it }) {
@@ -151,8 +156,8 @@ task cppCmakeLibrary(type: SourceCopyTask) {
 
     project(".").buildRoot()
     appProject("app").fromTemplate("cpp-app")
-    cmakeProject("library", "utilities").fromTemplate(cppUtilsLib)
-    cmakeProject("library", "utilities").fromTemplate(cppListLib)
+    libProject("utilities").fromTemplate(cppUtilsLib)
+    cmakeProject("list", "list").fromTemplate(cppListLib)
     project("cmake-plugin").buildRoot()
     project("cmake-plugin").fromTemplate("cmake-plugin")
 }

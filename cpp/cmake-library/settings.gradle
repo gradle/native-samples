@@ -1,6 +1,6 @@
 rootProject.name = 'app'
 
-include ":app", ":library"
+include ":app", ":utilities", ":list"
 
 sourceControl {
     vcsMappings {
