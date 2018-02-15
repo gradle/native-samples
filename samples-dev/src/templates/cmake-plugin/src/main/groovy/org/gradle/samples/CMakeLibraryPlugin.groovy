@@ -31,22 +31,62 @@ class CMakeLibraryPlugin implements Plugin<Project> {
                 canBeResolved = false
             }
 
-            // incoming compile time headers
+            // incoming compile time headers - this represents the headers we consume
             cppCompile {
                 canBeConsumed = false
                 extendsFrom implementation
                 attributes.attribute(Usage.USAGE_ATTRIBUTE, cppApiUsage)
             }
 
-            // outgoing public headers
+            // incoming linktime libraries (i.e. static libraries) - this represents the libraries we consume
+            cppLinkDebug {
+                canBeConsumed = false
+                extendsFrom implementation
+                attributes {
+                    attribute(Usage.USAGE_ATTRIBUTE, linkUsage)
+                    attribute(CppBinary.DEBUGGABLE_ATTRIBUTE, true)
+                    attribute(CppBinary.OPTIMIZED_ATTRIBUTE, false)
+                }
+            }
+            cppLinkRelease {
+                canBeConsumed = false
+                extendsFrom implementation
+                attributes {
+                    attribute(Usage.USAGE_ATTRIBUTE, linkUsage)
+                    attribute(CppBinary.DEBUGGABLE_ATTRIBUTE, true)
+                    attribute(CppBinary.OPTIMIZED_ATTRIBUTE, true)
+                }
+            }
+
+            // incoming runtime libraries (i.e. shared libraries) - this represents the libraries we consume
+            cppRuntimeDebug {
+                canBeConsumed = false
+                extendsFrom implementation
+                attributes {
+                    attribute(Usage.USAGE_ATTRIBUTE, runtimeUsage)
+                    attribute(CppBinary.DEBUGGABLE_ATTRIBUTE, true)
+                    attribute(CppBinary.OPTIMIZED_ATTRIBUTE, false)
+                }
+            }
+            cppRuntimeRelease {
+                canBeConsumed = false
+                extendsFrom implementation
+                attributes {
+                    attribute(Usage.USAGE_ATTRIBUTE, runtimeUsage)
+                    attribute(CppBinary.DEBUGGABLE_ATTRIBUTE, true)
+                    attribute(CppBinary.OPTIMIZED_ATTRIBUTE, true)
+                }
+            }
+
+            // outgoing public headers - this represents the headers we expose (including transitive headers)
             headers {
                 canBeResolved = false
                 extendsFrom implementation
                 attributes.attribute(Usage.USAGE_ATTRIBUTE, cppApiUsage)
             }
 
-            // outgoing linktime libraries (i.e. static libraries)
-            linktimeLibsDebug {
+            // outgoing linktime libraries (i.e. static libraries) - this represents the libraries we expose (including transitive headers)
+            linkDebug {
                 canBeResolved = false
                 extendsFrom implementation
                 attributes {
@@ -55,7 +95,7 @@ class CMakeLibraryPlugin implements Plugin<Project> {
                     attribute(CppBinary.OPTIMIZED_ATTRIBUTE, false)
                 }
             }
-            linktimeLibsRelease {
+            linkRelease {
                 canBeResolved = false
                 extendsFrom implementation
                 attributes {
@@ -65,8 +105,8 @@ class CMakeLibraryPlugin implements Plugin<Project> {
                 }
             }
 
-            // outgoing runtime libraries (i.e. shared libraries)
-            runtimeLibsDebug {
+            // outgoing runtime libraries (i.e. shared libraries) - this represents the libraries we expose (including transitive headers)
+            runtimeDebug {
                 canBeResolved = false
                 extendsFrom implementation
                 attributes {
@@ -75,7 +115,7 @@ class CMakeLibraryPlugin implements Plugin<Project> {
                     attribute(CppBinary.OPTIMIZED_ATTRIBUTE, false)
                 }
             }
-            runtimeLibsRelease {
+            runtimeRelease {
                 canBeResolved = false
                 extendsFrom implementation
                 attributes {
@@ -94,12 +134,14 @@ class CMakeLibraryPlugin implements Plugin<Project> {
         def cmakeDebug = tasks.create("cmakeDebug", CMake) {
             buildType = "Debug"
             includeDirs.from(project.configurations.cppCompile)
+            linkFiles.from(project.configurations.cppLinkDebug)
             variantDir = project.file("${project.buildDir}/debug")
         }
 
         def cmakeRelease = tasks.create("cmakeRelease", CMake) {
             buildType = "RelWithDebInfo"
             includeDirs.from(project.configurations.cppCompile)
+            linkFiles.from(project.configurations.cppLinkDebug)
             variantDir = project.file("${project.buildDir}/release")
         }
 
@@ -126,7 +168,7 @@ class CMakeLibraryPlugin implements Plugin<Project> {
          */
         def configurations = project.configurations
         configurations.headers.outgoing.artifact project.layout.projectDirectory.dir(extension.includeDir)
-        configurations.linktimeLibsDebug.outgoing.artifact assembleDebug.binary
-        configurations.linktimeLibsRelease.outgoing.artifact assembleRelease.binary
+        configurations.linkDebug.outgoing.artifact assembleDebug.binary
+        configurations.linkRelease.outgoing.artifact assembleRelease.binary
     }
 }
