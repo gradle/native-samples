@@ -18,7 +18,7 @@ class ExecuteSamplesIntegrationTest extends Specification {
 
         // CMake is currently only available on Linux CI machines
         Assume.assumeFalse(sample.sampleName == 'cmake-library' && !OperatingSystem.current().linux)
-        Assume.assumeFalse(sample.sampleName == 'cmake-source-dependencies')
+        Assume.assumeFalse(sample.sampleName == 'cmake-source-dependencies' && !OperatingSystem.current().linux)
 
         given:
         sample.clean()
