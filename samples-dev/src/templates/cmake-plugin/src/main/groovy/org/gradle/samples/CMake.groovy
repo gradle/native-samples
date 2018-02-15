@@ -36,6 +36,7 @@ class CMake extends DefaultTask {
                     "-DCMAKE_BUILD_TYPE=${buildType.capitalize()}",
                     "-DINCLUDE_DIRS=${includeDirs.join(';  ')}",
                     "-DLINK_DIRS=${linkFiles.collect { it.parent }.join(';')}",
+                    "--no-warn-unused-cli",
                     project.projectDir
         }
     }
