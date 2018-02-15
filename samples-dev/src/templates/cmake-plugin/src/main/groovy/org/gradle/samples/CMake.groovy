@@ -32,7 +32,11 @@ class CMake extends DefaultTask {
         variantDir.get().asFile.mkdirs()
         project.exec {
             workingDir variantDir.get()
-            commandLine cmakeExecutable, "-DCMAKE_BUILD_TYPE=${buildType.capitalize()}", "-DINCLUDE_DIRS=${includeDirs.join(';  ')}", "-DCMAKE_EXE_LINKER_FLAGS=${linkFiles.join(' ')}", project.projectDir
+            commandLine cmakeExecutable,
+                    "-DCMAKE_BUILD_TYPE=${buildType.capitalize()}",
+                    "-DINCLUDE_DIRS=${includeDirs.join(';  ')}",
+                    "-DLINK_DIRS=${linkFiles.collect { it.parent }.join(';')}",
+                    project.projectDir
         }
     }
 

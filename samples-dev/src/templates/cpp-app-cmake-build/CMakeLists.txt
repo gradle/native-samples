@@ -5,3 +5,7 @@ add_executable(app
     src/app/main.cpp)
 
 include_directories(${INCLUDE_DIRS})
+
+find_library(LIST_LIB list PATHS ${LINK_DIRS})
+find_library(UTILITIES_LIB utilities PATHS ${LINK_DIRS})
+target_link_libraries(app ${LIST_LIB} ${UTILITIES_LIB})
