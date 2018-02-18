@@ -1,0 +1,12 @@
+// TODO: Can't use plugin block because of the ordering issue
+apply plugin: 'cpp-application'
+apply plugin: 'xcode'
+
+model {
+    toolChains {
+        provisionedClang(Clang) {
+            path rootProject.file('buildSrc/.toolChains/clang-5.0.1/bin')
+        }
+    }
+}
+

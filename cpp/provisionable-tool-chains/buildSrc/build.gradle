@@ -1,0 +1,104 @@
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
+import org.apache.commons.compress.compressors.xz.XZCompressorInputStream
+import org.apache.commons.compress.utils.IOUtils
+import org.apache.commons.io.FileUtils
+import org.gradle.api.provider.Property
+
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.nio.file.attribute.FileTime
+import java.nio.file.attribute.PosixFilePermission
+
+buildscript {
+    dependencies {
+        classpath "org.apache.commons:commons-compress:1.16.1"
+        classpath "commons-io:commons-io:2.6"
+        classpath "org.tukaani:xz:1.0"
+    }
+    repositories {
+        mavenCentral()
+    }
+}
+
+class DownloadToolChainTask extends DefaultTask {
+    @Input  // URL is assumed to always point at the same file
+    final Property<URL> fromUrl = project.objects.property(URL)
+
+    @OutputFile
+    final RegularFileProperty outputFile = newOutputFile()
+
+    @TaskAction
+    private void download() {
+        IOUtils.copy(fromUrl.get().newInputStream(), outputFile.get().asFile.newOutputStream())
+    }
+}
+
+class ExtractToolChainTask extends DefaultTask {
+    @InputFile
+    final RegularFileProperty toolChainArchive = newInputFile()
+
+    // TODO: See https://github.com/gradle/gradle/issues/4428
+    //@OutputDirectory
+    final DirectoryProperty toolChainLocation = newOutputDirectory()
+
+    @TaskAction
+    private void extract() {
+        FileUtils.deleteDirectory(toolChainLocation.get().asFile)
+
+        InputStream fileStream = Files.newInputStream(toolChainArchive.get().asFile.toPath());
+        XZCompressorInputStream xzStream = new XZCompressorInputStream(fileStream);
+        TarArchiveInputStream tarStream = new TarArchiveInputStream(xzStream)
+
+        File outputDir = toolChainLocation.asFile.get()
+        try {
+            for (TarArchiveEntry entry = tarStream.getNextTarEntry(); entry != null; entry = tarStream.getNextTarEntry()) {
+                String entryPath = entry.getName().split("[\\/]").drop(1).join("/")
+                final File file = new File(outputDir, entryPath)
+                if (entry.isDirectory()) {
+                    continue
+                }
+
+                file.getParentFile().mkdirs()
+                if (entry.isSymbolicLink()) {
+                    Files.createSymbolicLink(file.toPath(), Paths.get(entry.getLinkName()))
+                } else if (entry.isFile()) {
+                    OutputStream outStream = file.newOutputStream()
+                    IOUtils.copy(tarStream, outStream)
+                    IOUtils.closeQuietly(outStream)
+
+                    Files.setLastModifiedTime(file.toPath(), FileTime.from(entry.getLastModifiedDate().toInstant()))
+                    file.setExecutable((entry.getMode() & toModeBit(PosixFilePermission.OWNER_EXECUTE)) > 0, true)
+                } else {
+                    continue
+                }
+            }
+        } catch (EOFException ex) {
+            // Ignore EOF exception
+        }
+
+        IOUtils.closeQuietly(tarStream)
+    }
+
+    private static int toModeBit(PosixFilePermission permission) {
+        return 1 << permission.ordinal()
+    }
+}
+
+task downloadClangToolChain(type: DownloadToolChainTask) {
+    fromUrl = new URL("http://releases.llvm.org/5.0.1/clang+llvm-5.0.1-x86_64-apple-darwin.tar.xz")
+    outputFile = layout.buildDirectory.file('clang-5.0.1.tar.xz')
+}
+
+task extractClangToolChain(type: ExtractToolChainTask) {
+    toolChainArchive = downloadClangToolChain.outputFile
+    toolChainLocation = layout.buildDirectory.dir('toolChains/clang-5.0.1')
+}
+
+task provisionClangToolChain {
+    dependsOn extractClangToolChain
+    group = 'Tool Chain Provisioning'
+    description = 'Provision Clang 5.0.1 tool chain'
+}
+
+tasks.build.dependsOn provisionClangToolChain
