@@ -5,7 +5,7 @@ apply plugin: 'xcode'
 model {
     toolChains {
         provisionedClang(Clang) {
-            path rootProject.file('buildSrc/.toolChains/clang-5.0.1/bin')
+            path rootProject.file('buildSrc/build/toolChains/clang-5.0.1/bin')
         }
     }
 }

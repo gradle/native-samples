@@ -86,7 +86,14 @@ class ExtractToolChainTask extends DefaultTask {
 }
 
 task downloadClangToolChain(type: DownloadToolChainTask) {
-    fromUrl = new URL("http://releases.llvm.org/5.0.1/clang+llvm-5.0.1-x86_64-apple-darwin.tar.xz")
+    String osName = System.getProperty('os.name').toLowerCase()
+    if (osName.contains('mac')) {
+        fromUrl = new URL("http://releases.llvm.org/5.0.1/clang+llvm-5.0.1-x86_64-apple-darwin.tar.xz")
+    } else if (osName.contains('linux')) {
+        fromUrl = new URL("http://releases.llvm.org/5.0.1/clang+llvm-5.0.1-x86_64-linux-gnu-ubuntu-16.04.tar.xz")
+    } else {
+        throw new UnsupportedOperationException("Clang tool chain provisioning doesn't support operating system '${System.getProperty('os.name')}'")
+    }
     outputFile = layout.buildDirectory.file('clang-5.0.1.tar.xz')
 }
 
