@@ -12,6 +12,12 @@ Each C++ sample works on macOS, Linux and Windows with GCC, Clang and Visual C++
 
 Each Swift sample works on macOS and Linux, with Swift 3 and later.
 
+## Deeper build insights with Build Scans
+
+You can generate [build-scans](https://gradle.com/build-scans) with these samples by running Gradle with `--scan`.  At the end of the build, you will be prompted to upload build data to [scans.gradle.com](https://scans.gradle.com/get-started).
+
+As an example of adding more data to a build scan, you can also run any sample with `-I ../../build-scan/buildScanUserData.gradle` in combination with `--scan`.  This will add custom values that describe what is being built like [these](https://scans.gradle.com/s/axgvl3hohykbk/custom-values#L1-L7).
+
 ### Contributing to these samples
 
 If you want to contribute an improvement to the samples, please refer to the [`samples-dev` subproject](samples-dev/README.md).

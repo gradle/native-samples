@@ -1,0 +1,29 @@
+rootProject {
+    pluginManager.withPlugin("com.gradle.build-scan") {
+        def buildScanExtension = extensions.getByName("buildScan")
+        allprojects { project ->
+            components.withType(ComponentWithNativeRuntime) { binary ->
+                def key = { attribute ->
+                    if (project == rootProject) {
+                        "root:" + binary.name + "." + attribute
+                    } else {
+                        project.path + ":" + binary.name + "." + attribute
+                    }
+                }
+                configure(buildScanExtension) { buildScan ->
+                    buildScan.buildFinished {
+                        value key("debuggable"), String.valueOf(binary.debuggable)
+                        value key("optimized"), String.valueOf(binary.optimized)
+                        value key("platform.OS"), String.valueOf(binary.targetPlatform.operatingSystem)
+                        value key("platform.arch"), String.valueOf(binary.targetPlatform.architecture)
+                        value key("toolChain"), String.valueOf(binary.toolChain)
+
+                        def compileTask = binary.compileTask.get()
+                        value key("toolChainVersion"), String.valueOf(compileTask.compilerVersion)
+                        value key("compilerArgs"), String.valueOf(compileTask.compilerArgs.get())
+                    }
+                }
+            }
+        }
+    }
+}
