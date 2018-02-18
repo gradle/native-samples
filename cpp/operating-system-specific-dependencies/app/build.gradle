@@ -3,6 +3,11 @@ plugins {
 }
 
 application {
+    operatingSystems = [
+        objects.named(OperatingSystemFamily, OperatingSystemFamily.WINDOWS),
+        objects.named(OperatingSystemFamily, OperatingSystemFamily.LINUX),
+        objects.named(OperatingSystemFamily, OperatingSystemFamily.MAC_OS)
+    ]
     binaries.configureEach {
         dependencies {
             if (targetPlatform.operatingSystem.windows) {
