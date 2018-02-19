@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.gradle.samples
+package org.gradle.samples.plugins.cmake
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project

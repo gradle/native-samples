@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.gradle.samples
+package org.gradle.samples.plugins.cmake
 
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.ProjectLayout
