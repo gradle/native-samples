@@ -34,6 +34,14 @@ Package.resolved
 *.xcodeproj
 *.xcworkspace
 
+# Visual Studio Files
+
+.vs
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+
 # AppCode/IDEA Files
 .idea
 *.iml
