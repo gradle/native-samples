@@ -56,11 +56,18 @@ task cleanSamples {
             file('../cpp/cmake-source-dependencies/list')
         ]
         [file("../swift"), file("../cpp"), file("../c")]*.eachFileRecurse(FileType.DIRECTORIES) { def dir ->
-            if ([/repo/, /build/, /\.gradle/, /\.build/, /.+\.xcworkspace/, /.+\.xcodeproj/].any { dir.name ==~ it }) {
+            if ([/repo/, /build/, /\.gradle/, /\.build/, /.+\.xcworkspace/, /.+\.xcodeproj/, /\.vs/].any { dir.name ==~ it }) {
                 toDelete << dir
             }
         }
         toDelete.each { it.deleteDir() }
+        toDelete.clear()
+        [file("../swift"), file("../cpp"), file("../c")]*.eachFileRecurse(FileType.FILES) { def file ->
+            if ([/.+\.sln/, /.+\.vcxproj/, /.+\.vcxproj.filters/, /.+\.vcxproj.user/].any { file.name ==~ it }) {
+                toDelete << file
+            }
+        }
+        toDelete.each { it.delete() }
     }
 }
 
@@ -277,6 +284,16 @@ task cppSwiftPackageManagerPublish(type: SourceCopyTask) {
     libProject("utilities-library").fromTemplate(cppUtilsLib)
 }
 
+task cppProvisionableToolChains(type: SourceCopyTask) {
+    sampleDir = file("../cpp/provisionable-tool-chains")
+
+    appProject(".").buildRoot()
+    appProject(".").fromTemplate("cpp-app")
+    appProject(".").fromTemplate(cppUtilsLib)
+    appProject(".").fromTemplate(cppListLib)
+    appProject(".").fromTemplate("cpp-provisionable-tool-chains-build")
+}
+
 task cApplication(type: SourceCopyTask) {
     sampleDir = file("../c/application")
 
@@ -440,6 +457,16 @@ task swiftSwiftPackageManagerPublish(type: SourceCopyTask) {
     libProject("utilities-library").buildRoot()
     libProject("utilities-library").fromTemplate("swift-utilities-lib-build-with-release")
     libProject("utilities-library").fromTemplate(swiftUtilsLib)
+}
+
+task swiftProvisionableToolChains(type: SourceCopyTask) {
+    sampleDir = file("../swift/provisionable-tool-chains")
+
+    appProject(".").buildRoot()
+    appProject(".").fromTemplate("swift-app")
+    appProject(".").fromTemplate(swiftUtilsLib)
+    appProject(".").fromTemplate(swiftListLib)
+    appProject(".").fromTemplate("swift-provisionable-tool-chains-build")
 }
 
 task generateCppListRepo(type: GitRepoTask) {

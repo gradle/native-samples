@@ -1,4 +1,4 @@
-rootProject.name = 'app'
+rootProject.name = 'cmake'
 
 include ":app", ":utilities", ":list"
 

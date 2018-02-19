@@ -1,5 +1,6 @@
 package org.gradle.samples
 
+import org.gradle.internal.os.OperatingSystem
 import org.gradle.samples.fixtures.Samples
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Assume
@@ -13,6 +14,9 @@ class WellBehavedSampleIntegrationTest extends Specification {
         Assume.assumeTrue(sample.sampleName != 'swift-package-manager-publish')
         Assume.assumeTrue(sample.sampleName != 'cmake-library')
         Assume.assumeTrue(sample.sampleName != 'cmake-source-dependencies')
+        // Tool chains can only be provision on Linux for Swift and Linux and macOS for C++
+        Assume.assumeFalse(sample.languageName == 'swift' && sample.sampleName == 'provisionable-tool-chains' && OperatingSystem.current().macOsX)
+        Assume.assumeFalse(sample.sampleName == 'provisionable-tool-chains' && OperatingSystem.current().windows)
 
         given:
         sample.clean()

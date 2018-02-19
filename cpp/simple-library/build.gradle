@@ -1,6 +1,7 @@
 plugins {
     id 'cpp-library'
     id 'xcode'
+    id 'visual-studio'
     id 'maven-publish'
     id 'cpp-unit-test'
 }

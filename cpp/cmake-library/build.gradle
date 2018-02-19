@@ -1,5 +1,5 @@
 allprojects {
-    apply plugin: "xcode"
+    apply plugin: 'xcode'
 
     group = 'org.gradle.cpp-samples'
     version = '1.2'

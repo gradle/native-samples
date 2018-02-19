@@ -21,6 +21,9 @@ class ExecuteSamplesIntegrationTest extends Specification {
             Assume.assumeTrue(cmakeAvailable())
         }
 
+        // Tool chains can only be provision on Linux and macOS for C++
+        Assume.assumeFalse(sample.sampleName == 'provisionable-tool-chains' && OperatingSystem.current().windows)
+
         given:
         sample.clean()
         runSetupFor(sample)
@@ -47,9 +50,6 @@ class ExecuteSamplesIntegrationTest extends Specification {
 
     @Unroll
     def "can build C '#sample.name'"() {
-        // Sample does not yet work on Windows
-        Assume.assumeFalse(sample.sampleName == 'application' && OperatingSystem.current().windows)
-
         given:
         sample.clean()
         runSetupFor(sample)
@@ -81,6 +81,9 @@ class ExecuteSamplesIntegrationTest extends Specification {
         Assume.assumeTrue(!OperatingSystem.current().linux || sample.sampleName != 'swift-versions')
         // TODO - remove this once documentation parsing can better understand the setup
         Assume.assumeTrue(sample.sampleName != 'swift-package-manager-publish')
+
+        // Tool chains can only be provision on Linux for Swift
+        Assume.assumeFalse(sample.sampleName == 'provisionable-tool-chains' && !OperatingSystem.current().linux)
 
         given:
         sample.clean()

@@ -1,6 +1,5 @@
 plugins {
     id 'cpp-application'
-    id 'xcode'
 }
 
 dependencies {

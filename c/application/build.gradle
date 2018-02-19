@@ -5,15 +5,22 @@
 plugins {
     id 'cpp-application'
     id 'xcode'
+    id 'visual-studio'
 }
 
 application {
     binaries.configureEach {
         def compileTask = compileTask.get()
         compileTask.source.from fileTree(dir: "src/main/c", include: "**/*.c")
-        compileTask.compilerArgs = ["-x", "c", "-std=c11"]
+        if (toolChain instanceof VisualCpp) {
+            compileTask.compilerArgs = ["/TC"]
+        } else if (toolChain instanceof GccCompatibleToolChain) {
+            compileTask.compilerArgs = ["-x", "c", "-std=c11"]
+        }
 
         def linkTask = linkTask.get()
-        linkTask.linkerArgs = ["-nodefaultlibs", "-lc"]
+        if (toolChain instanceof GccCompatibleToolChain) {
+            linkTask.linkerArgs = ["-nodefaultlibs", "-lc"]
+        }
     }
 }

@@ -107,6 +107,9 @@ class SourceCopyTask extends DefaultTask {
                 builder.writeTargetFile("${projectDir}/gradlew.bat", batContent)
             }
             templates.each { template ->
+                if (rootDir) {
+                    builder.copyDir("${template.templateName}/buildSrc", "${projectDir}/buildSrc")
+                }
                 builder.copyDir(template.templateName, projectDir)
                 visitDirMappings(template) { src, dest, lineFilter ->
                     builder.copyDirTree("${template.templateName}/${src}", "${projectDir}/${dest}", lineFilter)

@@ -1,5 +1,6 @@
 allprojects {
     apply plugin: "xcode"
+    apply plugin: "visual-studio"
     apply plugin: "maven-publish"
 
     group = 'org.gradle.cpp-samples'

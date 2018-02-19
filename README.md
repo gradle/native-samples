@@ -22,6 +22,16 @@ As an example of adding more data to a build scan, you can also run any sample w
 
 If you want to contribute an improvement to the samples, please refer to the [`samples-dev` subproject](samples-dev/README.md).
 
+### Visual Studio support
+
+All of the C++ sample have Visual Studio support, added by applying the `visual-studio' plugin. To open a sample build in Visual Studio:
+
+```
+> cd <sample-dir>
+> ./gradlew visualStudio
+> open <root-project>.sln
+```
+
 ### Xcode support
 
 All of the samples have Xcode support, added by applying the `xcode` plugin. To open a sample build in Xcode:
@@ -797,4 +807,34 @@ This sample demonstrates a Swift application that uses libcurl to fetch `example
 BUILD SUCCESSFUL in 1s
 
 > ./build/install/main/debug/App
+```
+
+## Provisioning tool chains from within Gradle (provisionable-tool-chains)
+
+This sample shows how to provision tool chains used by a Gradle build instead of the system tool chains.
+
+### Swift
+
+This sample demonstrates a Swift tool chain provisioning under Linux.
+
+```
+> cd swift/provisionable-tool-chains
+> ./gradlew assemble
+
+BUILD SUCCESSFUL in 1s
+
+> ./build/install/main/debug/App
+```
+
+### C++
+
+This sample demonstrates a Clang tool chain provisioning under macOS and Linux.
+
+```
+> cd cpp/provisionable-tool-chains
+> ./gradlew assemble
+
+BUILD SUCCESSFUL in 1s
+
+> ./build/install/main/debug/app
 ```
