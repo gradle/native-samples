@@ -4,12 +4,14 @@ import org.gradle.samples.fixtures.Documentation.SampleDocumentation
 
 class NativeSample {
     final String name
+    final String languageName
     final String sampleName
     final File rootSampleDir
     final SampleDocumentation documentation
 
-    NativeSample(String name, String sampleName, File rootSampleDir, SampleDocumentation documentation) {
+    NativeSample(String name, String languageName, String sampleName, File rootSampleDir, SampleDocumentation documentation) {
         this.name = name
+        this.languageName = languageName
         this.sampleName = sampleName
         this.rootSampleDir = rootSampleDir
         this.documentation = documentation

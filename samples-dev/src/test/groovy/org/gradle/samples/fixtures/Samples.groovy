@@ -19,7 +19,7 @@ class Samples {
             def languageName = it.parentFile.name
             def sampleName = it.name
             def name = "$languageName/$sampleName"
-            result << new NativeSample(name, sampleName, rootSampleDir, documentation.getSample(name))
+            result << new NativeSample(name, languageName, sampleName, rootSampleDir, documentation.getSample(name))
         }
         return result
     }
@@ -27,7 +27,7 @@ class Samples {
     static NativeSample useSampleIn(String sample) {
         def sampleDir = new File(rootSampleDir, sample)
         assert sampleDir.exists()
-        def sourceSample = new NativeSample(sample, sampleDir.getName(), rootSampleDir, documentation.getSample(sample))
+        def sourceSample = new NativeSample(sample, sampleDir.getParentFile().getName(), sampleDir.getName(), rootSampleDir, documentation.getSample(sample))
         return sourceSample
     }
 

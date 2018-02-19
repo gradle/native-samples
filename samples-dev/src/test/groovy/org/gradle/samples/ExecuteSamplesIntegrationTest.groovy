@@ -20,6 +20,9 @@ class ExecuteSamplesIntegrationTest extends Specification {
         Assume.assumeFalse(sample.sampleName == 'cmake-library' && !OperatingSystem.current().linux)
         Assume.assumeFalse(sample.sampleName == 'cmake-source-dependencies' && !OperatingSystem.current().linux)
 
+        // Tool chains can only be provision on Linux and macOS for C++
+        Assume.assumeFalse(sample.sampleName == 'provisionable-tool-chains' && OperatingSystem.current().windows)
+
         given:
         sample.clean()
         runSetupFor(sample)
@@ -77,6 +80,9 @@ class ExecuteSamplesIntegrationTest extends Specification {
         Assume.assumeTrue(!OperatingSystem.current().linux || sample.sampleName != 'swift-versions')
         // TODO - remove this once documentation parsing can better understand the setup
         Assume.assumeTrue(sample.sampleName != 'swift-package-manager-publish')
+
+        // Tool chains can only be provision on Linux for Swift
+        Assume.assumeFalse(sample.sampleName == 'provisionable-tool-chains' && !OperatingSystem.current().linux)
 
         given:
         sample.clean()

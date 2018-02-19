@@ -808,3 +808,33 @@ BUILD SUCCESSFUL in 1s
 
 > ./build/install/main/debug/App
 ```
+
+## Provisioning tool chains from within Gradle (provisionable-tool-chains)
+
+This sample shows how to provision tool chains used by a Gradle build instead of the system tool chains.
+
+### Swift
+
+This sample demonstrates a Swift tool chain provisioning under Linux.
+
+```
+> cd swift/provisionable-tool-chains
+> ./gradlew assemble
+
+BUILD SUCCESSFUL in 1s
+
+> ./build/install/main/debug/App
+```
+
+### C++
+
+This sample demonstrates a Clang tool chain provisioning under macOS and Linux.
+
+```
+> cd cpp/provisionable-tool-chains
+> ./gradlew assemble
+
+BUILD SUCCESSFUL in 1s
+
+> ./build/install/main/debug/app
+```
