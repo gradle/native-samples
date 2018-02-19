@@ -17,10 +17,50 @@ package org.gradle.samples.plugins
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.attributes.Usage
+import org.gradle.language.cpp.CppBinary
 
 class WrappedNativeApplicationPlugin implements Plugin<Project> {
     @Override
     void apply(Project project) {
         project.pluginManager.apply("org.gradle.samples.wrapped-native-base")
+
+        // Add configurations for incoming dependencies
+        def cppApiUsage = project.objects.named(Usage.class, Usage.C_PLUS_PLUS_API)
+        def linkUsage = project.objects.named(Usage.class, Usage.NATIVE_LINK)
+
+        project.configurations {
+            implementation {
+                canBeConsumed = false
+                canBeResolved = false
+            }
+
+            // incoming compile time headers
+            cppCompile {
+                canBeConsumed = false
+                attributes.attribute(Usage.USAGE_ATTRIBUTE, cppApiUsage)
+                extendsFrom implementation
+            }
+
+            // incoming link files
+            linkDebug {
+                canBeConsumed = false
+                attributes {
+                    attribute(Usage.USAGE_ATTRIBUTE, linkUsage)
+                    attribute(CppBinary.DEBUGGABLE_ATTRIBUTE, true)
+                    attribute(CppBinary.OPTIMIZED_ATTRIBUTE, false)
+                }
+                extendsFrom implementation
+            }
+            linkRelease {
+                canBeConsumed = false
+                attributes {
+                    attribute(Usage.USAGE_ATTRIBUTE, linkUsage)
+                    attribute(CppBinary.DEBUGGABLE_ATTRIBUTE, true)
+                    attribute(CppBinary.OPTIMIZED_ATTRIBUTE, true)
+                }
+                extendsFrom implementation
+            }
+        }
     }
 }

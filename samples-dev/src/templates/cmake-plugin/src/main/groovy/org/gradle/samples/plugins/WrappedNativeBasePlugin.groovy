@@ -18,7 +18,7 @@ package org.gradle.samples.plugins
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
-class BaseWrappedNativePlugin implements Plugin<Project> {
+class WrappedNativeBasePlugin implements Plugin<Project> {
     @Override
     void apply(Project project) {
         // Apply the base plugin, to define 'clean' task and other things
