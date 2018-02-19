@@ -4,6 +4,7 @@ import org.apache.commons.compress.compressors.xz.XZCompressorInputStream
 import org.apache.commons.compress.utils.IOUtils
 import org.apache.commons.io.FileUtils
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -42,8 +43,12 @@ class ExtractToolChainTask extends DefaultTask {
     //@OutputDirectory
     final DirectoryProperty toolChainLocation = newOutputDirectory()
 
+    @OutputFile  // See comment on toolChainLocation property
+    final Provider<File> doneFile = project.provider {new File(toolChainLocation.get().asFile.absolutePath + ".done")}
+
     @TaskAction
     private void extract() {
+        doneFile.get().delete()
         FileUtils.deleteDirectory(toolChainLocation.get().asFile)
 
         InputStream fileStream = Files.newInputStream(toolChainArchive.get().asFile.toPath());
@@ -78,6 +83,8 @@ class ExtractToolChainTask extends DefaultTask {
         }
 
         IOUtils.closeQuietly(tarStream)
+
+        doneFile.get().createNewFile()
     }
 
     private static int toModeBit(PosixFilePermission permission) {
