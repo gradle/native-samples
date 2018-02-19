@@ -9,11 +9,11 @@ buildscript {
 // Apply the cmake-library plugin explicitly as we can't use the plugins { } block
 apply plugin: 'org.gradle.samples.cmake-library'
 
-task downloadGoogletest(type: org.gradle.samples.DownloadZipAndUnpack) {
+task downloadGoogletest(type: org.gradle.samples.tasks.DownloadZipAndUnpack) {
     url = "https://github.com/gradle/googletest/archive/release-1.8.0.zip"
 
     ext.headerDir = newOutputDirectory()
-    headerDir.set outputDirectory.dir("googletest-release-1.8.0").dir("googletest/include")
+    headerDir.set outputDirectory.dir("googletest-release-1.8.0/googletest/include")
 
     ext.sourceDir = newOutputDirectory()
     sourceDir.set outputDirectory.dir("googletest-release-1.8.0")
