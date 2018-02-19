@@ -1,4 +1,4 @@
-rootProject.name = 'utilities'
+rootProject.name = 'app'
 
 sourceControl {
     vcsMappings {
