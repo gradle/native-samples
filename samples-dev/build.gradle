@@ -180,6 +180,15 @@ task cppCmakeLibrary(type: SourceCopyTask) {
     project("cmake-plugin").fromTemplate("cmake-plugin")
 }
 
+task cppCurlLibrary(type: SourceCopyTask) {
+    sampleDir = file("../cpp/curl-library")
+
+    appProject(".").buildRoot()
+    appProject("app").fromTemplate("cpp-app-with-curl")
+    appProject("app").fromTemplate(cppUtilsLib)
+    appProject("app").fromTemplate(cppListLib)
+}
+
 task cppCmakeSourceDepedencies(type: SourceCopyTask) {
     sampleDir = file("../cpp/cmake-source-dependencies")
 

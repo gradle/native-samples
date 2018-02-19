@@ -1,0 +1,193 @@
+project(':curl') {
+    apply plugin: "lifecycle-base"
+
+    ext.curlVersion = "7.58.0"
+
+    task downloadCurl {
+        ext.destinationDir = newOutputDirectory()
+        ext.curlFileName = "curl-${curlVersion}.zip"
+        ext.curlUrl = "https://curl.haxx.se/download/${curlFileName}"
+        ext.curlPackage = newOutputFile()
+
+        curlPackage.set destinationDir.file(curlFileName)
+
+        inputs.property "curlUrl", curlUrl
+        outputs.dir destinationDir
+
+        destinationDir.set file("${buildDir}/download")
+
+        doLast {
+            new URL(curlUrl).withInputStream{ i -> curlPackage.get().asFile.withOutputStream{ it << i }}
+        }
+    }
+
+    task extractCurl(type: Copy) {
+        ext.sourcesDir = layout.buildDir.dir("curl-source")
+        ext.headerDir = newOutputDirectory()
+
+        inputs.file downloadCurl.curlPackage
+
+        headerDir.set layout.buildDir.dir("curl-source/curl-${curlVersion}/include")
+
+        from { zipTree(downloadCurl.curlPackage) }
+        into sourcesDir
+    }
+
+    task configureCurlDebug {
+        ext.sourceDir = extractCurl.destinationDir
+        ext.makeDir = newOutputDirectory()
+        ext.prefixDir = file("${buildDir}/debug")
+
+        makeDir.set file("${buildDir}/make-debug")
+
+        inputs.dir sourceDir
+        outputs.dir makeDir
+
+        dependsOn extractCurl
+
+        doLast {
+            makeDir.get().asFile.mkdirs()
+            project.exec {
+                workingDir makeDir
+
+                commandLine new File(sourceDir, "curl-${curlVersion}/configure"),
+                        "--prefix=${prefixDir}",
+                        "--disable-ldap",
+                        "--without-zlib",
+                        "--enable-debug"
+            }
+        }
+    }
+
+    task assembleDebug {
+        ext.makeDir = configureCurlDebug.makeDir
+        ext.outputDir = newOutputDirectory()
+        ext.staticLibrary = newOutputFile()
+        ext.sharedLibrary = newOutputFile()
+
+        outputDir.set configureCurlDebug.prefixDir
+        staticLibrary.set outputDir.file('lib/libcurl.a')
+        sharedLibrary.set outputDir.file('lib/libcurl.dylib')
+
+        inputs.dir makeDir
+        outputs.dir outputDir
+
+        dependsOn configureCurlDebug
+
+        doLast {
+            outputDir.get().asFile.mkdirs()
+            project.exec {
+                workingDir makeDir
+
+                commandLine "make", "install"
+            }
+        }
+    }
+
+    task configureCurlRelease {
+        ext.sourceDir = extractCurl.destinationDir
+        ext.makeDir = newOutputDirectory()
+        ext.prefixDir = file("${buildDir}/release")
+
+        makeDir.set file("${buildDir}/make-release")
+
+        inputs.dir sourceDir
+        outputs.dir makeDir
+
+        dependsOn extractCurl
+
+        doLast {
+            makeDir.get().asFile.mkdirs()
+            project.exec {
+                workingDir makeDir
+
+                commandLine new File(sourceDir, "curl-${curlVersion}/configure"),
+                        "--prefix=${prefixDir}",
+                        "--disable-ldap",
+                        "--without-zlib",
+                        "--enable-debug",
+                        "--enable-optimizations"
+            }
+        }
+    }
+
+    task assembleRelease {
+        ext.makeDir = configureCurlRelease.makeDir
+        ext.outputDir = newOutputDirectory()
+        ext.staticLibrary = newOutputFile()
+        ext.sharedLibrary = newOutputFile()
+
+        outputDir.set configureCurlRelease.prefixDir
+        staticLibrary.set outputDir.file('lib/libcurl.a')
+        sharedLibrary.set outputDir.file('lib/libcurl.dylib')
+
+        inputs.dir makeDir
+        outputs.dir outputDir
+
+        dependsOn configureCurlRelease
+
+        doLast {
+            outputDir.get().asFile.mkdirs()
+            project.exec {
+                workingDir makeDir
+
+                commandLine "make", "install"
+            }
+        }
+
+    }
+
+    def cppApiUsage = project.objects.named(Usage.class, Usage.C_PLUS_PLUS_API)
+    def linkUsage = project.objects.named(Usage.class, Usage.NATIVE_LINK)
+    def runtimeUsage = project.objects.named(Usage.class, Usage.NATIVE_RUNTIME)
+
+    configurations {
+        // outgoing public headers - this represents the headers we expose (including transitive headers)
+        headers {
+            canBeResolved = false
+            attributes.attribute(Usage.USAGE_ATTRIBUTE, cppApiUsage)
+        }
+
+        // outgoing linktime libraries (i.e. static libraries) - this represents the libraries we expose (including transitive headers)
+        linkDebug {
+            canBeResolved = false
+            attributes {
+                attribute(Usage.USAGE_ATTRIBUTE, linkUsage)
+                attribute(CppBinary.DEBUGGABLE_ATTRIBUTE, true)
+                attribute(CppBinary.OPTIMIZED_ATTRIBUTE, false)
+            }
+        }
+        linkRelease {
+            canBeResolved = false
+            attributes {
+                attribute(Usage.USAGE_ATTRIBUTE, linkUsage)
+                attribute(CppBinary.DEBUGGABLE_ATTRIBUTE, true)
+                attribute(CppBinary.OPTIMIZED_ATTRIBUTE, true)
+            }
+        }
+
+        // outgoing runtime libraries (i.e. shared libraries) - this represents the libraries we expose (including transitive headers)
+        runtimeDebug {
+            canBeResolved = false
+            attributes {
+                attribute(Usage.USAGE_ATTRIBUTE, runtimeUsage)
+                attribute(CppBinary.DEBUGGABLE_ATTRIBUTE, true)
+                attribute(CppBinary.OPTIMIZED_ATTRIBUTE, false)
+            }
+        }
+        runtimeRelease {
+            canBeResolved = false
+            attributes {
+                attribute(Usage.USAGE_ATTRIBUTE, runtimeUsage)
+                attribute(CppBinary.DEBUGGABLE_ATTRIBUTE, true)
+                attribute(CppBinary.OPTIMIZED_ATTRIBUTE, true)
+            }
+        }
+    }
+
+    configurations.headers.outgoing.artifact extractCurl.headerDir
+    configurations.linkDebug.outgoing.artifact assembleDebug.staticLibrary
+    configurations.linkRelease.outgoing.artifact assembleRelease.staticLibrary
+    configurations.runtimeDebug.outgoing.artifact assembleDebug.sharedLibrary
+    configurations.runtimeRelease.outgoing.artifact assembleRelease.sharedLibrary
+}

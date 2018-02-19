@@ -1,0 +1,5 @@
+apply plugin: "cpp-application"
+
+dependencies {
+    implementation project(":curl")
+}
