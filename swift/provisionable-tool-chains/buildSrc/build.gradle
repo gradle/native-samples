@@ -113,7 +113,7 @@ task downloadSwiftToolChain(type: DownloadToolChainTask) {
 }
 
 task extractSwiftToolChain(type: ExtractToolChainTask) {
-    toolChainArchive = downloadClangToolChain.outputFile
+    toolChainArchive = downloadSwiftToolChain.outputFile
     toolChainLocation = layout.buildDirectory.dir('toolChains/swift-4.0.3')
 }
 
