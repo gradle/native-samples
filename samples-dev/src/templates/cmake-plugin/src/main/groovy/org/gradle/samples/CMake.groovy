@@ -15,12 +15,16 @@ import org.gradle.api.tasks.TaskAction
  */
 class CMake extends DefaultTask {
     @Input String buildType
-    @Internal DirectoryProperty variantDir
+    @Internal final DirectoryProperty variantDir
+    @Internal final DirectoryProperty projectDirectory
     @InputFiles ConfigurableFileCollection includeDirs
     @InputFiles ConfigurableFileCollection linkFiles
 
+
     CMake() {
         variantDir = newOutputDirectory()
+        projectDirectory = newInputDirectory()
+
         includeDirs = project.files()
         linkFiles = project.files()
     }
@@ -37,13 +41,13 @@ class CMake extends DefaultTask {
                     "-DINCLUDE_DIRS=${includeDirs.join(';  ')}",
                     "-DLINK_DIRS=${linkFiles.collect { it.parent }.join(';')}",
                     "--no-warn-unused-cli",
-                    project.projectDir
+                    projectDirectory.get().asFile.absolutePath
         }
     }
 
     @InputFiles
     FileCollection getCMakeLists() {
-        return project.fileTree(project.projectDir).include('**/CMakeLists.txt')
+        return project.fileTree(projectDirectory.get().asFile).include('**/CMakeLists.txt')
     }
 
     @OutputFiles

@@ -1,0 +1,34 @@
+plugins {
+    id 'cpp-library'
+    id 'xcode'
+    id 'maven-publish'
+    id 'cpp-unit-test'
+}
+
+group = 'org.gradle.cpp-samples'
+version = '1.5'
+
+unitTest {
+    dependencies {
+        implementation project(':googletest')
+    }
+}
+
+tasks.withType(CppCompile) {
+    compilerArgs.addAll provider {
+        if (toolChain instanceof Gcc) {
+            // Use C++03 with the old ABIs, as this is what the googletest binaries were built with
+            // Later, Gradle's dependency management will understand ABI
+            return ['-std=c++03', '-D_GLIBCXX_USE_CXX11_ABI=0']
+        }
+        return []
+    }
+}
+tasks.withType(LinkSharedLibrary) {
+    linkerArgs.addAll provider {
+        if (toolChain instanceof Gcc) {
+            return ['-std=c++03']
+        }
+        return []
+    }
+}

@@ -14,7 +14,7 @@ class CMakeLibraryPlugin implements Plugin<Project> {
         project.pluginManager.apply("lifecycle-base")
 
         // Add a CMake extension to the Gradle model
-        def extension = project.extensions.create("cmake", CMakeExtension.class, project.objects)
+        def extension = project.extensions.create("cmake", CMakeExtension.class, project.layout, project.objects)
 
         /*
          * Define some configurations to present the outputs of this build
@@ -136,6 +136,7 @@ class CMakeLibraryPlugin implements Plugin<Project> {
             includeDirs.from(project.configurations.cppCompile)
             linkFiles.from(project.configurations.cppLinkDebug)
             variantDir = project.file("${project.buildDir}/debug")
+            projectDirectory = extension.projectDirectory
         }
 
         def cmakeRelease = tasks.create("cmakeRelease", CMake) {
@@ -143,6 +144,7 @@ class CMakeLibraryPlugin implements Plugin<Project> {
             includeDirs.from(project.configurations.cppCompile)
             linkFiles.from(project.configurations.cppLinkDebug)
             variantDir = project.file("${project.buildDir}/release")
+            projectDirectory = extension.projectDirectory
         }
 
         def assembleDebug = tasks.create("assembleDebug", Make) {
@@ -161,13 +163,19 @@ class CMakeLibraryPlugin implements Plugin<Project> {
 
         tasks.assemble.dependsOn assembleDebug
 
+        tasks.withType(CMake) {
+            dependsOn tasks.withType(DownloadZipAndUnpack)
+        }
+
         /*
          * Configure the artifacts which should be exposed by this build
          * to other Gradle projects. (Note that this build does not currently
          * expose any runtime (shared library) artifacts)
          */
         def configurations = project.configurations
-        configurations.headers.outgoing.artifact project.layout.projectDirectory.dir(extension.includeDir)
+        configurations.headers.outgoing.artifact(extension.includeDirectory) {
+            builtBy tasks.withType(DownloadZipAndUnpack)
+        }
         configurations.linkDebug.outgoing.artifact assembleDebug.binary
         configurations.linkRelease.outgoing.artifact assembleRelease.binary
     }

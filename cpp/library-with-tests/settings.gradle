@@ -1,0 +1,4 @@
+rootProject.name = "list"
+
+include("googletest")
+includeBuild("cmake-plugin")

@@ -61,6 +61,7 @@ class CMakeApplicationPlugin implements Plugin<Project> {
             includeDirs.from(project.configurations.cppCompile)
             linkFiles.from(project.configurations.linkDebug)
             variantDir = project.file("${project.buildDir}/debug")
+            projectDirectory = project.layout.projectDirectory
         }
 
         def cmakeRelease = tasks.create("cmakeRelease", CMake) {
@@ -68,6 +69,7 @@ class CMakeApplicationPlugin implements Plugin<Project> {
             includeDirs.from(project.configurations.cppCompile)
             linkFiles.from(project.configurations.linkRelease)
             variantDir = project.file("${project.buildDir}/release")
+            projectDirectory = project.layout.projectDirectory
         }
 
         def assembleDebug = tasks.create("assembleDebug", Make) {
