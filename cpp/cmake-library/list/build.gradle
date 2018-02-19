@@ -11,5 +11,5 @@ apply plugin: 'org.gradle.samples.cmake-library'
 
 cmake {
     binary = "src/list/liblist.a"
-    includeDir = "src/list/include"
+    includeDirectory = layout.projectDirectory.dir("src/list/include")
 }

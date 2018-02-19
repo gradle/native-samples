@@ -16,5 +16,5 @@ group = "org.gradle.cpp-samples"
 
 cmake {
     binary = "liblist.a"
-    includeDir = "src/list/include"
+    includeDirectory = layout.projectDirectory.dir("src/list/include")
 }

@@ -16,9 +16,10 @@ class ExecuteSamplesIntegrationTest extends Specification {
         // TODO - remove these once documentation parsing can better understand the setup
         Assume.assumeTrue(sample.sampleName != 'swift-package-manager-publish')
 
-        // CMake is currently only available on Linux CI machines
-        Assume.assumeFalse(sample.sampleName == 'cmake-library' && !OperatingSystem.current().linux)
-        Assume.assumeFalse(sample.sampleName == 'cmake-source-dependencies' && !OperatingSystem.current().linux)
+        // CMake may not be available
+        if (sample.name.contains('cmake')) {
+            Assume.assumeTrue(cmakeAvailable())
+        }
 
         given:
         sample.clean()
@@ -171,5 +172,9 @@ class ExecuteSamplesIntegrationTest extends Specification {
             .withArguments(command.split().drop(1))
             .build()
         }
+    }
+
+    boolean cmakeAvailable() {
+        OperatingSystem.current().findInPath("cmake") != null
     }
 }

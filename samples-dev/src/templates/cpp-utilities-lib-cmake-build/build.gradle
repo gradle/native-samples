@@ -16,7 +16,7 @@ group = "org.gradle.cpp-samples"
 
 cmake {
     binary = "libutilities.a"
-    includeDir = "src/utilities/include"
+    includeDirectory = layout.projectDirectory.dir("src/utilities/include")
 }
 
 dependencies {
