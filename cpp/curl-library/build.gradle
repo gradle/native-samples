@@ -54,6 +54,7 @@ project(':curl') {
                         "--prefix=${prefixDir}",
                         "--disable-ldap",
                         "--without-zlib",
+                        "--enable-shared=no",
                         "--enable-debug"
             }
         }
@@ -67,7 +68,6 @@ project(':curl') {
 
         outputDir.set configureCurlDebug.prefixDir
         staticLibrary.set outputDir.file('lib/libcurl.a')
-        sharedLibrary.set outputDir.file('lib/libcurl.dylib')
 
         inputs.dir makeDir
         outputs.dir outputDir
@@ -105,6 +105,7 @@ project(':curl') {
                         "--prefix=${prefixDir}",
                         "--disable-ldap",
                         "--without-zlib",
+                        "--enable-shared=no",
                         "--enable-debug",
                         "--enable-optimizations"
             }
@@ -115,11 +116,9 @@ project(':curl') {
         ext.makeDir = configureCurlRelease.makeDir
         ext.outputDir = newOutputDirectory()
         ext.staticLibrary = newOutputFile()
-        ext.sharedLibrary = newOutputFile()
 
         outputDir.set configureCurlRelease.prefixDir
         staticLibrary.set outputDir.file('lib/libcurl.a')
-        sharedLibrary.set outputDir.file('lib/libcurl.dylib')
 
         inputs.dir makeDir
         outputs.dir outputDir
@@ -188,6 +187,4 @@ project(':curl') {
     configurations.headers.outgoing.artifact extractCurl.headerDir
     configurations.linkDebug.outgoing.artifact assembleDebug.staticLibrary
     configurations.linkRelease.outgoing.artifact assembleRelease.staticLibrary
-    configurations.runtimeDebug.outgoing.artifact assembleDebug.sharedLibrary
-    configurations.runtimeRelease.outgoing.artifact assembleRelease.sharedLibrary
 }
