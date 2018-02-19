@@ -4,6 +4,8 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.attributes.Usage
 import org.gradle.language.cpp.CppBinary
+import org.gradle.samples.tasks.CMake
+import org.gradle.samples.tasks.Make
 
 /**
  * A sample plugin that wraps a CMake build with Gradle to take care of dependency management.

@@ -1,4 +1,4 @@
-package org.gradle.samples
+package org.gradle.samples.tasks
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
