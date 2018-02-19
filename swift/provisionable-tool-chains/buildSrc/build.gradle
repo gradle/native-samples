@@ -109,7 +109,7 @@ task downloadSwiftToolChain(type: DownloadToolChainTask) {
     } else {
         throw new UnsupportedOperationException("Swift tool chain provisioning doesn't support operating system '${System.getProperty('os.name')}'")
     }
-    outputFile = layout.buildDirectory.file('swift-4.0.3.tar.xz')
+    outputFile = layout.buildDirectory.file('swift-4.0.3.tar.gz')
 }
 
 task extractSwiftToolChain(type: ExtractToolChainTask) {
