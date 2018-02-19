@@ -5,7 +5,7 @@ apply plugin: 'xcode'
 model {
     toolChains {
         provisionedSwift(Swiftc) {
-            path rootProject.file('buildSrc/build/toolChains/swift-4.0.3/bin')
+            path rootProject.file('buildSrc/build/toolChains/swift-4.0.3/usr/bin')
         }
     }
 }
