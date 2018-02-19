@@ -68,19 +68,13 @@ class CMakeLibraryPlugin implements Plugin<Project> {
 
         tasks.assemble.dependsOn assembleDebug
 
-        tasks.withType(CMake) {
-            dependsOn tasks.withType(DownloadZipAndUnpack)
-        }
-
         /*
          * Configure the artifacts which should be exposed by this build
          * to other Gradle projects. (Note that this build does not currently
          * expose any runtime (shared library) artifacts)
          */
         def configurations = project.configurations
-        configurations.headers.outgoing.artifact(extension.includeDirectory) {
-            builtBy tasks.withType(DownloadZipAndUnpack)
-        }
+        configurations.headers.outgoing.artifact extension.includeDirectory
         configurations.linkDebug.outgoing.artifact assembleDebug.binary
         configurations.linkRelease.outgoing.artifact assembleRelease.binary
     }
