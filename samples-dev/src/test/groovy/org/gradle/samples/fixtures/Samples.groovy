@@ -19,7 +19,7 @@ class Samples {
             def languageName = it.parentFile.name
             def sampleName = it.name
             def name = "$languageName/$sampleName"
-            result << new NativeSample(name, sampleName, rootSampleDir, documentation.getSample(name))
+            result << new NativeSample(name, languageName, sampleName, rootSampleDir, documentation.getSample(name))
         }
         return result
     }

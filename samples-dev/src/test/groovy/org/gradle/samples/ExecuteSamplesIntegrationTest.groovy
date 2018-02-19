@@ -20,6 +20,10 @@ class ExecuteSamplesIntegrationTest extends Specification {
         Assume.assumeFalse(sample.sampleName == 'cmake-library' && !OperatingSystem.current().linux)
         Assume.assumeFalse(sample.sampleName == 'cmake-source-dependencies' && !OperatingSystem.current().linux)
 
+        // Tool chains can only be provision on Linux for Swift and Linux and macOS for C++
+        Assume.assumeFalse(sample.languageName == 'swift' && sample.sampleName == 'provisionable-tool-chains' && OperatingSystem.current().macOsX)
+        Assume.assumeFalse(sample.sampleName == 'provisionable-tool-chains' && OperatingSystem.current().windows)
+
         given:
         sample.clean()
         runSetupFor(sample)
