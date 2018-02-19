@@ -40,7 +40,9 @@ class ExtractToolChainTask extends DefaultTask {
     @InputFile
     final RegularFileProperty toolChainArchive = newInputFile()
 
-    // TODO: See https://github.com/gradle/gradle/issues/4428
+    // Currently cannot use the OutputDirectory annotation on directory containing symbolic links to non-existing files
+    // See https://github.com/gradle/gradle/issues/4428
+    // Use a done file instead
     //@OutputDirectory
     final DirectoryProperty toolChainLocation = newOutputDirectory()
 
@@ -105,7 +107,7 @@ class ExtractToolChainTask extends DefaultTask {
 task downloadSwiftToolChain(type: DownloadToolChainTask) {
     String osName = System.getProperty('os.name').toLowerCase()
     if (osName.contains('linux')) {
-        fromUrl = new URL("https://swift.org/builds/swift-4.0.3-release/ubuntu1604/swift-4.0.3-RELEASE/swift-4.0.3-RELEASE-ubuntu16.04.tar.gz")
+        fromUrl = new URL("https://swift.org/builds/swift-4.0.3-release/ubuntu1404/swift-4.0.3-RELEASE/swift-4.0.3-RELEASE-ubuntu14.04.tar.gz")
     } else {
         throw new UnsupportedOperationException("Swift tool chain provisioning doesn't support operating system '${System.getProperty('os.name')}'")
     }

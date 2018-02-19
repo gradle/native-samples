@@ -40,7 +40,9 @@ class ExtractToolChainTask extends DefaultTask {
     @InputFile
     final RegularFileProperty toolChainArchive = newInputFile()
 
-    // TODO: See https://github.com/gradle/gradle/issues/4428
+    // Currently cannot use the OutputDirectory annotation on directory containing symbolic links to non-existing files
+    // See https://github.com/gradle/gradle/issues/4428
+    // Use a done file instead
     //@OutputDirectory
     final DirectoryProperty toolChainLocation = newOutputDirectory()
 
@@ -107,7 +109,7 @@ task downloadClangToolChain(type: DownloadToolChainTask) {
     if (osName.contains('mac')) {
         fromUrl = new URL("http://releases.llvm.org/5.0.1/clang+llvm-5.0.1-x86_64-apple-darwin.tar.xz")
     } else if (osName.contains('linux')) {
-        fromUrl = new URL("http://releases.llvm.org/5.0.1/clang+llvm-5.0.1-x86_64-linux-gnu-ubuntu-16.04.tar.xz")
+        fromUrl = new URL("http://releases.llvm.org/5.0.1/clang+llvm-5.0.1-x86_64-linux-gnu-ubuntu-14.04.tar.xz")
     } else {
         throw new UnsupportedOperationException("Clang tool chain provisioning doesn't support operating system '${System.getProperty('os.name')}'")
     }
