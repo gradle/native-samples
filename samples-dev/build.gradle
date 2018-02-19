@@ -135,6 +135,7 @@ task cppLibrary(type: SourceCopyTask) {
     libProject(".").fromTemplate(cppListLib)
 }
 
+/*
 task cppLibraryWithTests(type: SourceCopyTask) {
     sampleDir = file("../cpp/library-with-tests")
 
@@ -143,6 +144,7 @@ task cppLibraryWithTests(type: SourceCopyTask) {
     project("cmake-plugin").buildRoot()
     project("cmake-plugin").fromTemplate("cmake-plugin")
 }
+*/
 
 task cppBinaryDependencies(type: SourceCopyTask) {
     sampleDir = file("../cpp/binary-dependencies")
