@@ -46,7 +46,7 @@ gradlePlugin {
         }
         "autotoolsLibrary" {
             id = "org.gradle.samples.autotools-library"
-            implementationClass = "org.gradle.samples.AutotoolsLibraryPlugin"
+            implementationClass = "org.gradle.samples.plugins.autotools.AutotoolsLibraryPlugin"
         }
     }
 }

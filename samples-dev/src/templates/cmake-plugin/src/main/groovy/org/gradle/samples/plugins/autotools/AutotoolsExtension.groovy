@@ -1,4 +1,4 @@
-package org.gradle.samples
+package org.gradle.samples.plugins.autotools
 
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.ProjectLayout
