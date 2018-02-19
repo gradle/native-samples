@@ -15,14 +15,14 @@ import org.gradle.api.tasks.TaskAction
  */
 class CMake extends DefaultTask {
     @Input String buildType
-    @Internal final DirectoryProperty variantDir
+    @Internal final DirectoryProperty variantDirectory
     @Internal final DirectoryProperty projectDirectory
     @InputFiles ConfigurableFileCollection includeDirs
     @InputFiles ConfigurableFileCollection linkFiles
 
 
     CMake() {
-        variantDir = newOutputDirectory()
+        variantDirectory = newOutputDirectory()
         projectDirectory = newInputDirectory()
 
         includeDirs = project.files()
@@ -33,9 +33,9 @@ class CMake extends DefaultTask {
     void generateCmakeFiles() {
         def cmakeExecutable = System.getenv('CMAKE_EXECUTABLE') ?: 'cmake'
 
-        variantDir.get().asFile.mkdirs()
+        variantDirectory.get().asFile.mkdirs()
         project.exec {
-            workingDir variantDir.get()
+            workingDir variantDirectory.get()
             commandLine cmakeExecutable,
                     "-DCMAKE_BUILD_TYPE=${buildType.capitalize()}",
                     "-DINCLUDE_DIRS=${includeDirs.join(';  ')}",
@@ -52,7 +52,7 @@ class CMake extends DefaultTask {
 
     @OutputFiles
     FileCollection getCmakeFiles() {
-        project.fileTree(variantDir.get())
+        project.fileTree(variantDirectory.get())
             .include('**/CMakeFiles/**/*')
             .include('**/Makefile')
             .include('**/*.cmake')

@@ -29,7 +29,7 @@ class Make extends DefaultTask {
     }
 
     void generatedBy(CMake cmake) {
-        variantDir.set(cmake.variantDir)
+        variantDir.set(cmake.variantDirectory)
         cmakeFiles = cmake.cmakeFiles
     }
 

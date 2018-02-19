@@ -138,7 +138,7 @@ class CMakeLibraryPlugin implements Plugin<Project> {
             buildType = "Debug"
             includeDirs.from(project.configurations.cppCompile)
             linkFiles.from(project.configurations.cppLinkDebug)
-            variantDir = project.file("${project.buildDir}/debug")
+            variantDirectory = project.file("${project.buildDir}/debug")
             projectDirectory = extension.projectDirectory
         }
 
@@ -146,7 +146,7 @@ class CMakeLibraryPlugin implements Plugin<Project> {
             buildType = "RelWithDebInfo"
             includeDirs.from(project.configurations.cppCompile)
             linkFiles.from(project.configurations.cppLinkDebug)
-            variantDir = project.file("${project.buildDir}/release")
+            variantDirectory = project.file("${project.buildDir}/release")
             projectDirectory = extension.projectDirectory
         }
 
