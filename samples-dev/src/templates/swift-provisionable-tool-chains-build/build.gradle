@@ -7,6 +7,9 @@ model {
     toolChains {
         provisionedSwift(Swiftc) {
             path rootProject.file('buildSrc/build/toolChains/swift-4.0.3/usr/bin')
+
+            // Required to locate dsymutil on macOS and objcopy on Linux
+            path System.getenv('PATH').split(':')
         }
     }
 }

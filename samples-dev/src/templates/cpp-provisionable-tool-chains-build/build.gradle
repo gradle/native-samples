@@ -7,6 +7,9 @@ model {
     toolChains {
         provisionedClang(Clang) {
             path rootProject.file('buildSrc/build/toolChains/clang-5.0.1/bin')
+
+            // Required to locate dsymutil on macOS and objcopy on Linux
+            path System.getenv('PATH').split(':')
         }
     }
 }
