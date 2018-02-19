@@ -31,7 +31,8 @@ class CMakeLibraryPlugin implements Plugin<Project> {
     void apply(Project project) {
         // Apply the base plugin, to define 'clean' task and other things
         project.pluginManager.apply("lifecycle-base")
-
+        project.pluginManager.apply("org.gradle.samples.wrapped-native-base")
+        
         // Add a CMake extension to the Gradle model
         def extension = project.extensions.create("cmake", CMakeExtension.class, project.layout, project.objects)
 

@@ -8,13 +8,17 @@ version = "1.0"
 
 gradlePlugin {
     plugins {
-        library {
+        cmakeLibrary {
             id = "org.gradle.samples.cmake-library"
             implementationClass = "org.gradle.samples.plugins.cmake.CMakeLibraryPlugin"
         }
-        application {
+        cmakeApplication {
             id = "org.gradle.samples.cmake-application"
             implementationClass = "org.gradle.samples.plugins.cmake.CMakeApplicationPlugin"
+        }
+        wrappedBase {
+            id = "org.gradle.samples.wrapped-native-base"
+            implementationClass = "org.gradle.samples.plugins.BaseWrappedNativePlugin"
         }
     }
 }
