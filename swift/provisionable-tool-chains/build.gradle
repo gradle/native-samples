@@ -1,0 +1,12 @@
+// TODO: Can't use plugin block because of the ordering issue
+apply plugin: 'swift-application'
+apply plugin: 'xcode'
+
+model {
+    toolChains {
+        provisionedSwift(Swiftc) {
+            path rootProject.file('buildSrc/build/toolChains/swift-4.0.3/bin')
+        }
+    }
+}
+
