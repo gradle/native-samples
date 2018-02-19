@@ -11,30 +11,30 @@ import org.gradle.api.provider.ListProperty
 
 class ConfigureTask extends DefaultTask {
     @InputDirectory
-    DirectoryProperty sourceDir
+    DirectoryProperty sourceDirectory
 
     @OutputDirectory
-    DirectoryProperty makeDir
+    DirectoryProperty makeDirectory
 
     @Internal
-    DirectoryProperty prefixDir
+    DirectoryProperty prefixDirectory
 
     @Input
     ListProperty<String> arguments
 
     public ConfigureTask() {
-        sourceDir = newInputDirectory()
-        makeDir = newOutputDirectory()
-        prefixDir = newInputDirectory()
+        sourceDirectory = newInputDirectory()
+        makeDirectory = newOutputDirectory()
+        prefixDirectory = newInputDirectory()
         arguments = getProject().getObjects().listProperty(String.class)
     }
 
     @TaskAction
     void runConfigure() {
         project.exec {
-            workingDir makeDir
+            workingDir makeDirectory
 
-            List<String> allArguments = [sourceDir.file('configure').get().asFile, "--prefix=${prefixDir.get().asFile}"]
+            List<String> allArguments = [sourceDirectory.file('configure').get().asFile, "--prefix=${prefixDirectory.get().asFile}"]
             allArguments.addAll arguments.get()
             commandLine allArguments
         }

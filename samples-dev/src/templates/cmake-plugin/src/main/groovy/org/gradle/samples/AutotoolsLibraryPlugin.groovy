@@ -15,9 +15,9 @@ class AutotoolsLibraryPlugin implements Plugin<Project> {
         def extension = project.extensions.create("autotools", AutotoolsExtension.class, project.layout, project.objects)
 
         def configureDebug = project.tasks.create('configureDebug', ConfigureTask) {
-            sourceDir.set extension.sourceDirectory
-            prefixDir.set project.layout.buildDirectory.dir("debug")
-            makeDir.set project.layout.buildDirectory.dir("make-debug")
+            sourceDirectory.set extension.sourceDirectory
+            prefixDirectory.set project.layout.buildDirectory.dir("debug")
+            makeDirectory.set project.layout.buildDirectory.dir("make-debug")
 
             arguments.addAll(extension.configureArguments)
             arguments.add("--enable-shared=no")
@@ -33,9 +33,9 @@ class AutotoolsLibraryPlugin implements Plugin<Project> {
         }
 
         def configureRelease = project.tasks.create('configureRelease', ConfigureTask) {
-            sourceDir.set extension.sourceDirectory
-            prefixDir.set project.layout.buildDirectory.dir("release")
-            makeDir.set project.layout.buildDirectory.dir("make-release")
+            sourceDirectory.set extension.sourceDirectory
+            prefixDirectory.set project.layout.buildDirectory.dir("release")
+            makeDirectory.set project.layout.buildDirectory.dir("make-release")
 
             arguments.addAll(extension.configureArguments)
             arguments.add("--enable-shared=no")

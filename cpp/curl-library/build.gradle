@@ -28,9 +28,9 @@ project(':curl') {
     }
 
     autotools {
-        sourceDirectory.set downloadAndExtractCurl.sourceBase
-        includeDirectory.set downloadAndExtractCurl.headerDir
-        binary.set 'lib/libcurl.a'
+        sourceDirectory = downloadAndExtractCurl.sourceBase
+        includeDirectory = downloadAndExtractCurl.headerDir
+        binary = 'lib/libcurl.a'
 
         // Additional arguments to pass to the 'configure' command
         configureArguments.add("--disable-ldap")
