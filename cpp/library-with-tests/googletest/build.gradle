@@ -22,5 +22,5 @@ task downloadGoogletest(type: org.gradle.samples.tasks.DownloadZipAndUnpack) {
 cmake {
     binary = "googlemock/gtest/libgtest.a"
     projectDirectory = downloadGoogletest.sourceDir
-    includeDirectory = downloadGoogletest.headerDir
+    includeDirectory.set downloadGoogletest.headerDir
 }
