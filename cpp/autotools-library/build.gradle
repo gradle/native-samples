@@ -8,6 +8,12 @@ buildscript {
     }
 }
 
+project(':app') {
+    // TODO: Remove this workaround with new nightly
+    tasks.withType(CppCompile) {
+        dependsOn ":curl:downloadAndExtractCurl"
+    }
+}
 project(':curl') {
     apply plugin: "lifecycle-base"
 
