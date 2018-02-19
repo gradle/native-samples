@@ -27,7 +27,7 @@ class Samples {
     static NativeSample useSampleIn(String sample) {
         def sampleDir = new File(rootSampleDir, sample)
         assert sampleDir.exists()
-        def sourceSample = new NativeSample(sample, sampleDir.getName(), rootSampleDir, documentation.getSample(sample))
+        def sourceSample = new NativeSample(sample, sampleDir.getParentFile().getName(), sampleDir.getName(), rootSampleDir, documentation.getSample(sample))
         return sourceSample
     }
 
