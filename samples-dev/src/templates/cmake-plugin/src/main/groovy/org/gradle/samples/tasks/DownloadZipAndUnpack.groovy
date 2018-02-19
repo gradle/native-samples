@@ -45,6 +45,9 @@ class DownloadZipAndUnpack extends DefaultTask {
         logger.warn("Downloaded to ${zipDestination.absolutePath}")
 
         def unzipDestination = outputDirectory.get().asFile
-        ant.unzip(src: zipDestination, dest: unzipDestination)
+        project.copy {
+            from project.zipTree(zipDestination)
+            into unzipDestination
+        }
     }
 }

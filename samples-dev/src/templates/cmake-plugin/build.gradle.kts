@@ -44,5 +44,9 @@ gradlePlugin {
             id = "org.gradle.samples.wrapped-native-library"
             implementationClass = "org.gradle.samples.plugins.WrappedNativeLibraryPlugin"
         }
+        "autotoolsLibrary" {
+            id = "org.gradle.samples.autotools-library"
+            implementationClass = "org.gradle.samples.AutotoolsLibraryPlugin"
+        }
     }
 }

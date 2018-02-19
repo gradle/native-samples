@@ -1,190 +1,43 @@
+import org.gradle.samples.tasks.DownloadZipAndUnpack
+
+// Currently cannot use the plugins { } block to reference plugins in included builds
+// Use the buildscript { } block instead
+buildscript {
+    dependencies {
+        classpath "org.gradle.samples:cmake:1.0"
+    }
+}
+
 project(':curl') {
     apply plugin: "lifecycle-base"
 
+    // Apply the autotools-library plugin explicitly as we can't use the plugins { } block
+    apply plugin: 'org.gradle.samples.autotools-library'
+
     ext.curlVersion = "7.58.0"
 
-    task downloadCurl {
-        ext.destinationDir = newOutputDirectory()
-        ext.curlFileName = "curl-${curlVersion}.zip"
-        ext.curlUrl = "https://curl.haxx.se/download/${curlFileName}"
-        ext.curlPackage = newOutputFile()
+    task downloadAndExtractCurl(type: DownloadZipAndUnpack) {
+        url.set "https://curl.haxx.se/download/curl-${curlVersion}.zip".toString()
+        outputDirectory.set layout.buildDirectory.dir("curl-source")
 
-        curlPackage.set destinationDir.file(curlFileName)
-
-        inputs.property "curlUrl", curlUrl
-        outputs.dir destinationDir
-
-        destinationDir.set file("${buildDir}/download")
-
-        doLast {
-            new URL(curlUrl).withInputStream{ i -> curlPackage.get().asFile.withOutputStream{ it << i }}
-        }
-    }
-
-    task extractCurl(type: Copy) {
-        ext.sourcesDir = layout.buildDir.dir("curl-source")
         ext.headerDir = newOutputDirectory()
+        headerDir.set outputDirectory.dir("curl-source/curl-${curlVersion}/include")
 
-        inputs.file downloadCurl.curlPackage
-
-        headerDir.set layout.buildDir.dir("curl-source/curl-${curlVersion}/include")
-
-        from { zipTree(downloadCurl.curlPackage) }
-        into sourcesDir
+        ext.sourceBase = newOutputDirectory()
+        sourceBase.set outputDirectory.dir("curl-${curlVersion}")
     }
 
-    task configureCurlDebug {
-        ext.sourceDir = extractCurl.destinationDir
-        ext.makeDir = newOutputDirectory()
-        ext.prefixDir = file("${buildDir}/debug")
+    autotools {
+        sourceDirectory.set downloadAndExtractCurl.sourceBase
+        includeDirectory.set downloadAndExtractCurl.headerDir
+        binary.set 'lib/libcurl.a'
 
-        makeDir.set file("${buildDir}/make-debug")
+        // Additional arguments to pass to the 'configure' command
+        configureArguments.add("--disable-ldap")
+        configureArguments.add("--without-zlib")
 
-        inputs.dir sourceDir
-        outputs.dir makeDir
-
-        dependsOn extractCurl
-
-        doLast {
-            makeDir.get().asFile.mkdirs()
-            project.exec {
-                workingDir makeDir
-
-                commandLine new File(sourceDir, "curl-${curlVersion}/configure"),
-                        "--prefix=${prefixDir}",
-                        "--disable-ldap",
-                        "--without-zlib",
-                        "--enable-shared=no",
-                        "--enable-debug"
-            }
-        }
+        // Additional arguments to pass to the 'make' command
+        makeArguments.add("-j4")
     }
-
-    task assembleDebug {
-        ext.makeDir = configureCurlDebug.makeDir
-        ext.outputDir = newOutputDirectory()
-        ext.staticLibrary = newOutputFile()
-        ext.sharedLibrary = newOutputFile()
-
-        outputDir.set configureCurlDebug.prefixDir
-        staticLibrary.set outputDir.file('lib/libcurl.a')
-
-        inputs.dir makeDir
-        outputs.dir outputDir
-
-        dependsOn configureCurlDebug
-
-        doLast {
-            outputDir.get().asFile.mkdirs()
-            project.exec {
-                workingDir makeDir
-
-                commandLine "make", "install"
-            }
-        }
-    }
-
-    task configureCurlRelease {
-        ext.sourceDir = extractCurl.destinationDir
-        ext.makeDir = newOutputDirectory()
-        ext.prefixDir = file("${buildDir}/release")
-
-        makeDir.set file("${buildDir}/make-release")
-
-        inputs.dir sourceDir
-        outputs.dir makeDir
-
-        dependsOn extractCurl
-
-        doLast {
-            makeDir.get().asFile.mkdirs()
-            project.exec {
-                workingDir makeDir
-
-                commandLine new File(sourceDir, "curl-${curlVersion}/configure"),
-                        "--prefix=${prefixDir}",
-                        "--disable-ldap",
-                        "--without-zlib",
-                        "--enable-shared=no",
-                        "--enable-debug",
-                        "--enable-optimizations"
-            }
-        }
-    }
-
-    task assembleRelease {
-        ext.makeDir = configureCurlRelease.makeDir
-        ext.outputDir = newOutputDirectory()
-        ext.staticLibrary = newOutputFile()
-
-        outputDir.set configureCurlRelease.prefixDir
-        staticLibrary.set outputDir.file('lib/libcurl.a')
-
-        inputs.dir makeDir
-        outputs.dir outputDir
-
-        dependsOn configureCurlRelease
-
-        doLast {
-            outputDir.get().asFile.mkdirs()
-            project.exec {
-                workingDir makeDir
-
-                commandLine "make", "install"
-            }
-        }
-
-    }
-
-    def cppApiUsage = project.objects.named(Usage.class, Usage.C_PLUS_PLUS_API)
-    def linkUsage = project.objects.named(Usage.class, Usage.NATIVE_LINK)
-    def runtimeUsage = project.objects.named(Usage.class, Usage.NATIVE_RUNTIME)
-
-    configurations {
-        // outgoing public headers - this represents the headers we expose (including transitive headers)
-        headers {
-            canBeResolved = false
-            attributes.attribute(Usage.USAGE_ATTRIBUTE, cppApiUsage)
-        }
-
-        // outgoing linktime libraries (i.e. static libraries) - this represents the libraries we expose (including transitive headers)
-        linkDebug {
-            canBeResolved = false
-            attributes {
-                attribute(Usage.USAGE_ATTRIBUTE, linkUsage)
-                attribute(CppBinary.DEBUGGABLE_ATTRIBUTE, true)
-                attribute(CppBinary.OPTIMIZED_ATTRIBUTE, false)
-            }
-        }
-        linkRelease {
-            canBeResolved = false
-            attributes {
-                attribute(Usage.USAGE_ATTRIBUTE, linkUsage)
-                attribute(CppBinary.DEBUGGABLE_ATTRIBUTE, true)
-                attribute(CppBinary.OPTIMIZED_ATTRIBUTE, true)
-            }
-        }
-
-        // outgoing runtime libraries (i.e. shared libraries) - this represents the libraries we expose (including transitive headers)
-        runtimeDebug {
-            canBeResolved = false
-            attributes {
-                attribute(Usage.USAGE_ATTRIBUTE, runtimeUsage)
-                attribute(CppBinary.DEBUGGABLE_ATTRIBUTE, true)
-                attribute(CppBinary.OPTIMIZED_ATTRIBUTE, false)
-            }
-        }
-        runtimeRelease {
-            canBeResolved = false
-            attributes {
-                attribute(Usage.USAGE_ATTRIBUTE, runtimeUsage)
-                attribute(CppBinary.DEBUGGABLE_ATTRIBUTE, true)
-                attribute(CppBinary.OPTIMIZED_ATTRIBUTE, true)
-            }
-        }
-    }
-
-    configurations.headers.outgoing.artifact extractCurl.headerDir
-    configurations.linkDebug.outgoing.artifact assembleDebug.staticLibrary
-    configurations.linkRelease.outgoing.artifact assembleRelease.staticLibrary
 }
+

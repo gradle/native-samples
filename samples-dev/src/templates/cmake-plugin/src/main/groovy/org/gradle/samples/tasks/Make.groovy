@@ -20,18 +20,24 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.provider.Provider
+import org.gradle.api.provider.ListProperty
 
 class Make extends DefaultTask {
     @Internal DirectoryProperty variantDir
-    @InputFiles FileCollection cmakeFiles
+    @InputFiles FileCollection makeFiles
+    @OutputDirectory DirectoryProperty outputDir
     Provider<File> binary
+    ListProperty<String> arguments
 
     Make() {
         variantDir = newInputDirectory()
+        outputDir = newInputDirectory()
         binary = newOutputFile()
+        arguments = getProject().getObjects().listProperty(String.class)
     }
 
     @TaskAction
@@ -40,16 +46,25 @@ class Make extends DefaultTask {
         project.exec {
             workingDir variantDir
 
-            commandLine makeExecutable
+            List<String> allArguments = [makeExecutable]
+            allArguments.addAll(arguments.get())
+            commandLine allArguments
         }
     }
 
     void generatedBy(CMake cmake) {
         variantDir.set(cmake.variantDirectory)
-        cmakeFiles = cmake.cmakeFiles
+        outputDir.set(variantDir)
+        makeFiles = cmake.cmakeFiles
+    }
+
+    void generatedBy(ConfigureTask configureTask) {
+        variantDir.set(configureTask.makeDir)
+        outputDir.set(configureTask.prefixDir)
+        makeFiles = configureTask.outputs.files
     }
 
     void binary(Provider<String> path) {
-        binary.set(variantDir.file(path))
+        binary.set(outputDir.file(path))
     }
 }

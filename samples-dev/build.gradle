@@ -187,6 +187,8 @@ task cppCurlLibrary(type: SourceCopyTask) {
     appProject("app").fromTemplate("cpp-app-with-curl")
     appProject("app").fromTemplate(cppUtilsLib)
     appProject("app").fromTemplate(cppListLib)
+    project("cmake-plugin").buildRoot()
+    project("cmake-plugin").fromTemplate("cmake-plugin")
 }
 
 task cppCmakeSourceDepedencies(type: SourceCopyTask) {
@@ -741,6 +743,15 @@ task generateCmakeSourceDependenciesUtilityLibraryRepo(type:  GitRepoTask) {
 task generateCmakeSourceDependenciesUtilityAppRepo(type:  GitRepoTask) {
     dependsOn cppCmakeSourceDepedencies
     sampleDir = file("../cpp/cmake-source-dependencies/app")
+    change {
+        tag("1.0")
+        "initial version"
+    }
+}
+
+task generateCurlLibraryPluginRepo(type:  GitRepoTask) {
+    dependsOn cppCurlLibrary
+    sampleDir = file("../cpp/curl-library/cmake-plugin")
     change {
         tag("1.0")
         "initial version"
