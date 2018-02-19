@@ -56,11 +56,18 @@ task cleanSamples {
             file('../cpp/cmake-source-dependencies/list')
         ]
         [file("../swift"), file("../cpp"), file("../c")]*.eachFileRecurse(FileType.DIRECTORIES) { def dir ->
-            if ([/repo/, /build/, /\.gradle/, /\.build/, /.+\.xcworkspace/, /.+\.xcodeproj/].any { dir.name ==~ it }) {
+            if ([/repo/, /build/, /\.gradle/, /\.build/, /.+\.xcworkspace/, /.+\.xcodeproj/, /\.vs/].any { dir.name ==~ it }) {
                 toDelete << dir
             }
         }
         toDelete.each { it.deleteDir() }
+        toDelete.clear()
+        [file("../swift"), file("../cpp"), file("../c")]*.eachFileRecurse(FileType.FILES) { def file ->
+            if ([/.+\.sln/, /.+\.vcxproj/, /.+\.vcxproj.filters/, /.+\.vcxproj.user/].any { file.name ==~ it }) {
+                toDelete << file
+            }
+        }
+        toDelete.each { it.delete() }
     }
 }
 
