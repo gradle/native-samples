@@ -27,9 +27,7 @@ import org.gradle.samples.tasks.Make
  */
 class CMakeApplicationPlugin implements Plugin<Project> {
     void apply(Project project) {
-        // Apply the base plugin, to define 'clean' task and other things
-        project.pluginManager.apply("lifecycle-base")
-        project.pluginManager.apply("org.gradle.samples.wrapped-native-base")
+        project.pluginManager.apply("org.gradle.samples.wrapped-native-application")
 
         // Add configurations for incoming dependencies
         def cppApiUsage = project.objects.named(Usage.class, Usage.C_PLUS_PLUS_API)

@@ -34,7 +34,15 @@ gradlePlugin {
         }
         "wrappedBase" {
             id = "org.gradle.samples.wrapped-native-base"
-            implementationClass = "org.gradle.samples.plugins.BaseWrappedNativePlugin"
+            implementationClass = "org.gradle.samples.plugins.WrappedNativeBasePlugin"
+        }
+        "wrappedApplication" {
+            id = "org.gradle.samples.wrapped-native-application"
+            implementationClass = "org.gradle.samples.plugins.WrappedNativeApplicationPlugin"
+        }
+        "wrappedLibrary" {
+            id = "org.gradle.samples.wrapped-native-library"
+            implementationClass = "org.gradle.samples.plugins.WrappedNativeLibraryPlugin"
         }
     }
 }

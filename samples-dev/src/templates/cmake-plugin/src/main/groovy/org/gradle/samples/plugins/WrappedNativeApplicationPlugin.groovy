@@ -18,9 +18,9 @@ package org.gradle.samples.plugins
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
-class BaseWrappedNativePlugin implements Plugin<Project> {
+class WrappedNativeApplicationPlugin implements Plugin<Project> {
     @Override
     void apply(Project project) {
-
+        project.pluginManager.apply("org.gradle.samples.wrapped-native-base")
     }
 }
