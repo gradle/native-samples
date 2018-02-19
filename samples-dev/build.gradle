@@ -49,6 +49,7 @@ task cleanSamples {
             file('../cpp/swift-package-manager-publish/release-plugin'),
             file('../cpp/swift-package-manager-publish/list-library'),
             file('../cpp/swift-package-manager-publish/utilities-library'),
+            file('../cpp/autotools-library/cmake-plugin'),
             file('../cpp/cmake-library/cmake-plugin'),
             file('../cpp/cmake-source-dependencies/cmake-plugin'),
             file('../cpp/cmake-source-dependencies/app'),
@@ -180,8 +181,8 @@ task cppCmakeLibrary(type: SourceCopyTask) {
     project("cmake-plugin").fromTemplate("cmake-plugin")
 }
 
-task cppCurlLibrary(type: SourceCopyTask) {
-    sampleDir = file("../cpp/curl-library")
+task cppAutotoolsLibrary(type: SourceCopyTask) {
+    sampleDir = file("../cpp/autotools-library")
 
     appProject(".").buildRoot()
     appProject("app").fromTemplate("cpp-app-with-curl")
@@ -749,9 +750,9 @@ task generateCmakeSourceDependenciesUtilityAppRepo(type:  GitRepoTask) {
     }
 }
 
-task generateCurlLibraryPluginRepo(type:  GitRepoTask) {
-    dependsOn cppCurlLibrary
-    sampleDir = file("../cpp/curl-library/cmake-plugin")
+task generateAutotoolsLibraryPluginRepo(type:  GitRepoTask) {
+    dependsOn cppAutotoolsLibrary
+    sampleDir = file("../cpp/autotools-library/cmake-plugin")
     change {
         tag("1.0")
         "initial version"

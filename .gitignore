@@ -11,6 +11,7 @@ cpp/source-dependencies/repos/utilities-library
 cpp/swift-package-manager-publish/release-plugin
 cpp/swift-package-manager-publish/list-library
 cpp/swift-package-manager-publish/utilities-library
+cpp/autotools-library/cmake-plugin
 cpp/cmake-library/cmake-plugin
 cpp/cmake-source-dependencies/cmake-plugin
 cpp/cmake-source-dependencies/list
