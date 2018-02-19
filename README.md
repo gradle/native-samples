@@ -22,6 +22,16 @@ As an example of adding more data to a build scan, you can also run any sample w
 
 If you want to contribute an improvement to the samples, please refer to the [`samples-dev` subproject](samples-dev/README.md).
 
+### Visual Studio support
+
+All of the C++ sample have Visual Studio support, added by applying the `visual-studio' plugin. To open a sample build in Visual Studio:
+
+```
+> cd <sample-dir>
+> ./gradlew visualStudio
+> open <root-project>.sln
+```
+
 ### Xcode support
 
 All of the samples have Xcode support, added by applying the `xcode` plugin. To open a sample build in Xcode:
