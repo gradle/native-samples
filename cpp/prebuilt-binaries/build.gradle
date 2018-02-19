@@ -3,6 +3,7 @@ import org.gradle.internal.os.OperatingSystem
 plugins {
     id 'cpp-application'
     id 'xcode'
+    id 'visual-studio'
 }
 
 def libIncludePath = file('../simple-library/src/main/public')

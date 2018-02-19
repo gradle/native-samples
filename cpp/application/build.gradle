@@ -1,4 +1,5 @@
 plugins {
     id 'cpp-application'
     id 'xcode'
+    id 'visual-studio'
 }
