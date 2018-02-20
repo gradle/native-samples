@@ -27,9 +27,11 @@ dependencies {
     testImplementation "com.atlassian.commonmark:commonmark:0.10.0"
 }
 
+def supportedLanguages = [file("../swift"), file("../cpp"), file("../c")]
+
 test {
     maxParallelForks = gradle.startParameter.maxWorkerCount
-    inputs.files files("../swift", '../cpp').asFileTree.matching { PatternFilterable pattern ->
+    inputs.files files(supportedLanguages).asFileTree.matching { PatternFilterable pattern ->
         pattern.exclude "**/build", "**/.gradle", "**/*.xcworkspace", "**/*.xcodeproj", "**/repo"
     }
 }
@@ -51,20 +53,21 @@ task cleanSamples {
             file('../cpp/swift-package-manager-publish/list-library'),
             file('../cpp/swift-package-manager-publish/utilities-library'),
             file('../cpp/autotools-library/cmake-plugin'),
+            file('../cpp/library-with-tests/cmake-plugin'),
             file('../cpp/cmake-library/cmake-plugin'),
             file('../cpp/cmake-source-dependencies/cmake-plugin'),
             file('../cpp/cmake-source-dependencies/app'),
             file('../cpp/cmake-source-dependencies/utilities'),
             file('../cpp/cmake-source-dependencies/list')
         ]
-        [file("../swift"), file("../cpp"), file("../c")]*.eachFileRecurse(FileType.DIRECTORIES) { def dir ->
+        supportedLanguages*.eachFileRecurse(FileType.DIRECTORIES) { def dir ->
             if ([/repo/, /build/, /\.gradle/, /\.build/, /.+\.xcworkspace/, /.+\.xcodeproj/, /\.vs/].any { dir.name ==~ it }) {
                 toDelete << dir
             }
         }
         toDelete.each { it.deleteDir() }
         toDelete.clear()
-        [file("../swift"), file("../cpp"), file("../c")]*.eachFileRecurse(FileType.FILES) { def file ->
+        supportedLanguages*.eachFileRecurse(FileType.FILES) { def file ->
             if ([/.+\.sln/, /.+\.vcxproj/, /.+\.vcxproj.filters/, /.+\.vcxproj.user/].any { file.name ==~ it }) {
                 toDelete << file
             }
@@ -150,8 +153,6 @@ task cppLibraryWithTests(type: SourceCopyTask) {
 
     libProject(".").buildRoot()
     libProject(".").fromTemplate(cppListLib)
-    project("cmake-plugin").buildRoot()
-    project("cmake-plugin").fromTemplate("cmake-plugin")
 }
 
 task cppBinaryDependencies(type: SourceCopyTask) {
@@ -177,8 +178,6 @@ task cppCmakeLibrary(type: SourceCopyTask) {
     appProject("app").fromTemplate("cpp-app")
     libProject("utilities").fromTemplate(cppUtilsLib)
     cmakeProject("list", "list").fromTemplate(cppListLib)
-    project("cmake-plugin").buildRoot()
-    project("cmake-plugin").fromTemplate("cmake-plugin")
 }
 
 task cppAutotoolsLibrary(type: SourceCopyTask) {
@@ -188,8 +187,6 @@ task cppAutotoolsLibrary(type: SourceCopyTask) {
     appProject("app").fromTemplate("cpp-app-with-curl")
     appProject("app").fromTemplate(cppUtilsLib)
     appProject("app").fromTemplate(cppListLib)
-    project("cmake-plugin").buildRoot()
-    project("cmake-plugin").fromTemplate("cmake-plugin")
 }
 
 task cppCmakeSourceDepedencies(type: SourceCopyTask) {
@@ -204,8 +201,6 @@ task cppCmakeSourceDepedencies(type: SourceCopyTask) {
     cmakeProject("list").buildRoot()
     cmakeProject("list").fromTemplate("cpp-list-lib-cmake-build")
     cmakeProject("list").fromTemplate(cppListLib)
-    project("cmake-plugin").buildRoot()
-    project("cmake-plugin").fromTemplate("cmake-plugin")
 }
 
 task cppCompositeBuild(type: SourceCopyTask) {
@@ -531,10 +526,6 @@ task generateCppUtilitiesRepo(type: GitRepoTask) {
     }
 }
 
-task generateCppRepos {
-    dependsOn generateCppListRepo, generateCppUtilitiesRepo
-}
-
 task generateSwiftListRepo(type: GitRepoTask) {
     dependsOn swiftSourceDependencies
     sampleDir = file("../swift/source-dependencies/repos/list-library")
@@ -585,10 +576,6 @@ task generateSwiftUtilitiesRepo(type: GitRepoTask) {
     }
 }
 
-task generateSwiftRepos {
-    dependsOn generateSwiftListRepo, generateSwiftUtilitiesRepo
-}
-
 task generateMinimalSwiftListRepo(type: GitRepoTask) {
     dependsOn swiftInjectedPlugins
     sampleDir = file("../swift/injected-plugins/repos/list-library")
@@ -605,10 +592,6 @@ task generateMinimalSwiftUtilitiesRepo(type: GitRepoTask) {
         tag("1.0")
         "initial version"
     }
-}
-
-task generateMinimalSwiftRepos {
-    dependsOn generateMinimalSwiftListRepo, generateMinimalSwiftUtilitiesRepo
 }
 
 task generatePublishCppReleasePluginRepo(type: GitRepoTask) {
