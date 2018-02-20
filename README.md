@@ -406,7 +406,7 @@ To use this sample, first create the Git repositories for the libraries:
 
 ```
 > cd swift/source-dependencies
-> ./gradlew -p ../.. generateRepos
+> ./gradlew -p ../.. generateSwiftRepos
 ```
 
 The repositories are created in the `repos` directory. Each repository is set up to contain some source files and includes several commits and tags.
@@ -456,7 +456,7 @@ Change to version 1.1 to use a version with a fix for the bug. Dynamic dependenc
 
 ```
 > cd cpp/source-dependencies
-> ./gradlew -p ../.. generateRepos
+> ./gradlew -p ../.. generateCppRepos
 > ./gradlew assemble
 
 BUILD SUCCESSFUL in 1s
@@ -477,7 +477,7 @@ To use this sample, create the Git repositories containing the libraries:
 
 ```
 > cd swift/dependency-on-upstream-branch/app
-> ./gradlew -p ../../.. generateRepos
+> ./gradlew -p ../../.. generateSwiftRepos
 ```
 
 Now you can build the application:
@@ -514,7 +514,7 @@ To use this sample, create the Git repositories containing the libraries:
 
 ```
 > cd cpp/dependency-on-upstream-branch/app
-> ./gradlew -p ../../.. generateRepos
+> ./gradlew -p ../../.. generateCppRepos
 ```
 
 ```
@@ -660,7 +660,7 @@ To use the sample, create the Git repositories containing the libraries:
 
 ```
 > cd swift/injected-plugins
-> ./gradlew -p ../.. generateRepos
+> ./gradlew -p ../.. generateSwiftRepos
 ```
 
 Now build the application:
@@ -689,7 +689,7 @@ To use the sample, first create the Git repository containing the sample plugin:
 
 ```
 > cd cpp/cmake-library
-> ./gradlew -p ../.. genRepos
+> ./gradlew -p ../.. generateCppRepos
 ```
 
 Now build the application: 
@@ -717,7 +717,7 @@ To use the sample, first create the Git repository containing the sample plugin:
 
 ```
 > cd cpp/cmake-source-dependencies/app
-> ./gradlew -p ../../.. genRepos
+> ./gradlew -p ../../.. generateCppRepos
 ```
 
 Now build the application:
@@ -744,7 +744,7 @@ The sample is made up of an application built using Swift PM, and two libraries 
 To use the sample, setup the Git repositories for the libraries:
 
 ```
-> ./gradlew generateRepos
+> ./gradlew generateCppRepos
 ```
 
 Next, create a release of the list library that can be used by Swift PM. This generates a `Package.swift` file to be used by Swift PM, commits the changes and creates a tag:
@@ -777,7 +777,7 @@ Now build the application using Swift PM:
 ### C++
 
 ```
-> ./gradlew generateRepos
+> ./gradlew generateCppRepos
 > cd cpp/swift-package-manager-publish/list-library
 > ./gradlew build release
 
@@ -849,7 +849,7 @@ The sample packages the Autotools integration logic as a 'autotools-library' plu
 
 ```
 > cd cpp/autotools-library
-> ./gradlew -p ../.. generateRepos
+> ./gradlew -p ../.. generateCppRepos
 > ./gradlew assemble
 
 BUILD SUCCESSFUL in 1s
@@ -867,6 +867,7 @@ To run the tests from the command line:
 
 ```
 > cd cpp/library-with-tests
+> ./gradlew -p ../.. generateCppRepos
 > ./gradlew assemble
 > ./gradlew test
 ```
