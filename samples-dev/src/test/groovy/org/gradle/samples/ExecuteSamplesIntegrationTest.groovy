@@ -58,5 +58,22 @@ abstract class ExecuteSamplesIntegrationTest extends Specification {
         sample << Samples.getSamples(getSampleLanguage())
     }
 
+    @Unroll
+    def "can generate build scan for '#sample.name'"() {
+        given:
+        expect:
+        GradleRunner.create()
+                .withProjectDir(sample.workingDir)
+                .withArguments("tasks",
+                "-I", "../../build-scan/buildScanAccept.gradle",
+                "-I", "../../build-scan/buildScanUserData.gradle",
+                "--scan")
+                .forwardOutput()
+                .build()
+
+        where:
+        sample << Samples.getSamples(getSampleLanguage())
+    }
+
     abstract String getSampleLanguage()
 }
