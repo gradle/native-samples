@@ -24,7 +24,7 @@ If you want to contribute an improvement to the samples, please refer to the [`s
 
 ### Visual Studio support
 
-All of the C++ sample have Visual Studio support, added by applying the `visual-studio' plugin. To open a sample build in Visual Studio:
+All of the C++ sample have Visual Studio support, added by applying the `visual-studio` plugin. To open a sample build in Visual Studio:
 
 ```
 > cd <sample-dir>
