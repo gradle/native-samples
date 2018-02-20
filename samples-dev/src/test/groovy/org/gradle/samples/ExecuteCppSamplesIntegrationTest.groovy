@@ -15,7 +15,7 @@ class ExecuteCppSamplesIntegrationTest extends ExecuteSamplesIntegrationTest {
         Assume.assumeTrue(sample.sampleName != 'swift-package-manager-publish')
 
         // CMake may not be available
-        if (sample.name.contains('cmake') || sample.name == "library-with-tests") {
+        if (sample.name.contains('cmake') || sample.name == "cpp/library-with-tests") {
             Assume.assumeTrue(cmakeAvailable())
         }
 
