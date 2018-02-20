@@ -13,8 +13,6 @@ class ExecuteSwiftSamplesIntegrationTest extends ExecuteSamplesIntegrationTest {
 
     @Unroll
     def "can build Swift '#sample.name'"() {
-        // TODO - remove this once Swift 4 tools installed on Linux CI machines
-        Assume.assumeTrue(!OperatingSystem.current().linux || sample.sampleName != 'swift-versions')
         // TODO - remove this once documentation parsing can better understand the setup
         Assume.assumeTrue(sample.sampleName != 'swift-package-manager-publish')
 
@@ -83,19 +81,5 @@ class ExecuteSwiftSamplesIntegrationTest extends ExecuteSamplesIntegrationTest {
                 .build()
     }
 
-    // TODO - replace this once Swift 4 tools installed on Linux CI machines
-    @Requires({ OperatingSystem.current().linux })
-    def "can build Swift 'swift-versions' with Swift 3 toolchain"() {
-        given:
-        def sample = Samples.useSampleIn("swift/swift-versions")
-        sample.clean()
-        runSetupFor(sample)
-
-        expect:
-        GradleRunner.create()
-                .withProjectDir(sample.workingDir)
-                .withArguments("swift3-app:build")
-                .build()
-    }
     String getSampleLanguage() { 'swift' }
 }
