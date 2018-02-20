@@ -19,6 +19,6 @@ abstract class ExecuteSamplesIntegrationTest extends Specification {
     }
 
     boolean cmakeAvailable() {
-        OperatingSystem.current().findInPath("cmake") != null
+        !OperatingSystem.current().isWindows() && OperatingSystem.current().findInPath("cmake") != null
     }
 }
