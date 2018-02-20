@@ -14,6 +14,8 @@ class WellBehavedSampleIntegrationTest extends Specification {
         Assume.assumeTrue(sample.sampleName != 'swift-package-manager-publish')
         Assume.assumeTrue(sample.sampleName != 'cmake-library')
         Assume.assumeTrue(sample.sampleName != 'cmake-source-dependencies')
+        Assume.assumeTrue(sample.sampleName != 'autotools-library')
+        Assume.assumeTrue(sample.sampleName != 'library-with-tests')
         // Tool chains can only be provision on Linux for Swift and Linux and macOS for C++
         Assume.assumeFalse(sample.languageName == 'swift' && sample.sampleName == 'provisionable-tool-chains' && OperatingSystem.current().macOsX)
         Assume.assumeFalse(sample.sampleName == 'provisionable-tool-chains' && OperatingSystem.current().windows)
