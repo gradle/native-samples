@@ -44,6 +44,8 @@ project(':curl') {
         configureArguments.add("--without-libidn2")
         configureArguments.add("--without-librtmp")
         configureArguments.add("--without-ssl")
+        configureArguments.add("--disable-threaded-resolver")
+        configureArguments.add("--disable-pthreads")
 
         // Additional arguments to pass to the 'make' command
         makeArguments.add("-j4")
