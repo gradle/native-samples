@@ -22,7 +22,11 @@ abstract class ExecuteSamplesIntegrationTest extends Specification {
     }
 
     boolean cmakeAvailable() {
-        !OperatingSystem.current().isWindows() && OperatingSystem.current().findInPath("cmake") != null
+         OperatingSystem.current().findInPath("cmake") != null
+    }
+
+    boolean notWindows() {
+        return !OperatingSystem.current().isWindows()
     }
 
     @Unroll

@@ -15,8 +15,12 @@ class ExecuteCppSamplesIntegrationTest extends ExecuteSamplesIntegrationTest {
         Assume.assumeTrue(sample.sampleName != 'swift-package-manager-publish')
 
         // CMake may not be available
-        if (sample.name.contains('cmake')||sample.name.contains('autotools')) {
+        if (sample.name.contains('cmake')) {
             Assume.assumeTrue(cmakeAvailable())
+        }
+
+        if (sample.name.contains('autotools')) {
+            Assume.assumeTrue(notWindows())
         }
 
         // Tool chains can only be provision on Linux and macOS for C++
