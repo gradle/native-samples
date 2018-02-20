@@ -30,4 +30,5 @@ class ExecuteCSamplesIntegrationTest extends ExecuteSamplesIntegrationTest {
         where:
         sample << Samples.getSamples("c")
     }
+    String getSampleLanguage() { 'c' }
 }

@@ -83,4 +83,6 @@ class ExecuteCppSamplesIntegrationTest extends ExecuteSamplesIntegrationTest {
                 .withArguments("build")
                 .build()
     }
+
+    String getSampleLanguage() { 'cpp' }
 }

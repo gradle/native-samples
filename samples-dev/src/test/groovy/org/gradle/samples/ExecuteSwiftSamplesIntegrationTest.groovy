@@ -97,4 +97,5 @@ class ExecuteSwiftSamplesIntegrationTest extends ExecuteSamplesIntegrationTest {
                 .withArguments("swift3-app:build")
                 .build()
     }
+    String getSampleLanguage() { 'swift' }
 }
