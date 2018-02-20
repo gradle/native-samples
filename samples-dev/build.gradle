@@ -78,27 +78,6 @@ task cleanSamples {
 
 clean.dependsOn cleanSamples, cleanRepo
 
-task configureNightlyWrapper {
-    doLast {
-        configure(tasks.nightlyWrapper) {
-            def version = new groovy.json.JsonSlurper().parseText(new URL("https://services.gradle.org/versions/nightly").text)
-            if (version.empty) {
-                throw new GradleException("Cannot update wrapper to 'nightly' version as there is currently no version of that label")
-            }
-            println "updating wrapper to nightly version: $version.version (downloadUrl: $version.downloadUrl)"
-            distributionUrl version.downloadUrl
-        }
-    }
-}
-
-task nightlyWrapper(type: Wrapper) {
-    dependsOn configureNightlyWrapper
-    group = "wrapper"
-    description = "Updates the samples to use the most recent nightly"
-    scriptFile = "../gradlew"
-    jarFile = "../gradle/wrapper/gradle-wrapper.jar"
-}
-
 tasks.withType(SourceCopyTask) {
     templatesDir = file("src/templates")
     group = "source generation"
@@ -108,12 +87,6 @@ task generateSource {
     dependsOn tasks.withType(SourceCopyTask)
     group = "source generation"
     description = "generate the source files for all samples"
-}
-
-task generateRepos {
-    dependsOn tasks.withType(GitRepoTask)
-    group = "sample setup"
-    description = "generate the Git repositories for all samples"
 }
 
 def cppUtilsLib = CppLibraryTemplate.of("cpp-lib-with-api-dep", "utilities")
@@ -476,6 +449,24 @@ task swiftProvisionableToolChains(type: SourceCopyTask) {
     appProject(".").fromTemplate("swift-provisionable-tool-chains-build")
 }
 
+task generateCppRepos {
+    dependsOn tasks.withType(GitRepoTask).matching { it.name.contains("Cpp") }
+    group = "sample setup"
+    description = "generate the Git repositories for C++ samples"
+}
+
+task generateSwiftRepos {
+    dependsOn tasks.withType(GitRepoTask).matching { it.name.contains("Swift") }
+    group = "sample setup"
+    description = "generate the Git repositories for Swift samples"
+}
+
+task generateRepos {
+    dependsOn generateSwiftRepos, generateCppRepos
+    group = "sample setup"
+    description = "generate the Git repositories for all samples"
+}
+
 task generateCppListRepo(type: GitRepoTask) {
     dependsOn cppSourceDependencies
     sampleDir = file("../cpp/source-dependencies/repos/list-library")
@@ -688,7 +679,7 @@ task generateBranchSwiftUtilitiesRepo(type: GitRepoTask) {
     }
 }
 
-task generateCmakeLibraryPluginRepo(type:  GitRepoTask) {
+task generateCppCmakeLibraryPluginRepo(type:  GitRepoTask) {
     dependsOn cppCmakeLibrary
     sampleDir = file("../cpp/cmake-library/cmake-plugin")
     change {
@@ -697,7 +688,7 @@ task generateCmakeLibraryPluginRepo(type:  GitRepoTask) {
     }
 }
 
-task generateCmakeSourceDependenciesPluginRepo(type:  GitRepoTask) {
+task generateCppCmakeSourceDependenciesPluginRepo(type:  GitRepoTask) {
     dependsOn cppCmakeSourceDepedencies
     sampleDir = file("../cpp/cmake-source-dependencies/cmake-plugin")
     change {
@@ -706,7 +697,7 @@ task generateCmakeSourceDependenciesPluginRepo(type:  GitRepoTask) {
     }
 }
 
-task generateCmakeSourceDependenciesListLibraryRepo(type:  GitRepoTask) {
+task generateCppCmakeSourceDependenciesListLibraryRepo(type:  GitRepoTask) {
     dependsOn cppCmakeSourceDepedencies
     sampleDir = file("../cpp/cmake-source-dependencies/list")
     change {
@@ -715,7 +706,7 @@ task generateCmakeSourceDependenciesListLibraryRepo(type:  GitRepoTask) {
     }
 }
 
-task generateCmakeSourceDependenciesUtilityLibraryRepo(type:  GitRepoTask) {
+task generateCppCmakeSourceDependenciesUtilityLibraryRepo(type:  GitRepoTask) {
     dependsOn cppCmakeSourceDepedencies
     sampleDir = file("../cpp/cmake-source-dependencies/utilities")
     change {
@@ -724,7 +715,7 @@ task generateCmakeSourceDependenciesUtilityLibraryRepo(type:  GitRepoTask) {
     }
 }
 
-task generateCmakeSourceDependenciesUtilityAppRepo(type:  GitRepoTask) {
+task generateCppCmakeSourceDependenciesUtilityAppRepo(type:  GitRepoTask) {
     dependsOn cppCmakeSourceDepedencies
     sampleDir = file("../cpp/cmake-source-dependencies/app")
     change {
@@ -733,7 +724,7 @@ task generateCmakeSourceDependenciesUtilityAppRepo(type:  GitRepoTask) {
     }
 }
 
-task generateAutotoolsLibraryPluginRepo(type:  GitRepoTask) {
+task generateCppAutotoolsLibraryPluginRepo(type:  GitRepoTask) {
     dependsOn cppAutotoolsLibrary
     sampleDir = file("../cpp/autotools-library/cmake-plugin")
     change {
