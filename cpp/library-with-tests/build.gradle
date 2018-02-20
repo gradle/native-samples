@@ -12,6 +12,12 @@ unitTest {
     dependencies {
         implementation project(':googletest')
     }
+
+    binaries.whenElementKnown(CppTestExecutable) { binary ->
+        if (binary.targetPlatform.operatingSystem.linux) {
+            binary.linkTask.get().linkerArgs.add('-pthread')
+        }
+    }
 }
 
 // TODO: Remove this workaround with new nightly
