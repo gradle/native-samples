@@ -41,6 +41,7 @@ project(':curl') {
         // Additional arguments to pass to the 'configure' command
         configureArguments.add("--disable-ldap")
         configureArguments.add("--without-zlib")
+        configureArguments.add("--without-libidn2")
 
         // Additional arguments to pass to the 'make' command
         makeArguments.add("-j4")

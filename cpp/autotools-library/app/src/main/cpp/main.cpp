@@ -2,6 +2,7 @@
  * A simple hello world application. Uses a library to tokenize and join a string and prints the result.
  */
 #include <iostream>
+#include <stdlib.h>
 #include <curl/curl.h>
 
 #include "string_utils.h"
