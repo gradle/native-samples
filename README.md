@@ -20,7 +20,11 @@ As an example of adding more data to a build scan, you can also run any sample w
 
 ### Contributing to these samples
 
-If you want to contribute an improvement to the samples, please refer to the [`samples-dev` subproject](samples-dev/README.md).
+If you want to contribute an improvement to the samples, please refer to the [`samples-dev` subproject](samples-dev/README.md). 
+
+### Suggesting new samples
+
+If you have a use case that isn't covered by an existing sample, open an issue for [gradle-native](https://github.com/gradle/gradle-native/issues). Please describe what you're trying to accomplish so we can help you find a solution.
 
 ### Visual Studio support
 
