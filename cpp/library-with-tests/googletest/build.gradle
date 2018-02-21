@@ -2,7 +2,7 @@
 // Use the buildscript { } block instead
 buildscript {
     dependencies {
-        classpath "org.gradle.samples:cmake:1.0"
+        classpath "org.gradle.samples:build-wrapper:1.0"
     }
 }
 
@@ -22,5 +22,5 @@ task downloadGoogletest(type: org.gradle.samples.tasks.DownloadZipAndUnpack) {
 cmake {
     binary = "googlemock/gtest/libgtest.a"
     projectDirectory = downloadGoogletest.sourceDir
-    includeDirectory.set downloadGoogletest.headerDir
+    includeDirectory = downloadGoogletest.headerDir
 }

@@ -4,7 +4,7 @@ import org.gradle.samples.tasks.DownloadZipAndUnpack
 // Use the buildscript { } block instead
 buildscript {
     dependencies {
-        classpath "org.gradle.samples:cmake:1.0"
+        classpath "org.gradle.samples:build-wrapper:1.0"
     }
 }
 

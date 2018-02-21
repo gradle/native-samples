@@ -12,11 +12,16 @@ cpp/swift-package-manager-publish/release-plugin
 cpp/swift-package-manager-publish/list-library
 cpp/swift-package-manager-publish/utilities-library
 cpp/autotools-library/cmake-plugin
+cpp/autotools-library/build-wrapper-plugin
 cpp/cmake-library/cmake-plugin
+cpp/cmake-library/build-wrapper-plugin
 cpp/cmake-source-dependencies/cmake-plugin
+cpp/cmake-source-dependencies/build-wrapper-plugin
 cpp/cmake-source-dependencies/list
 cpp/cmake-source-dependencies/utilities
 cpp/cmake-source-dependencies/app
+cpp/library-with-tests/cmake-plugin
+cpp/library-with-tests/build-wrapper-plugin
 swift/dependency-on-upstream-branch/list-library
 swift/dependency-on-upstream-branch/utilities-library
 swift/source-dependencies/repos/list-library

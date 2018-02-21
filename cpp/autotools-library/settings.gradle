@@ -2,9 +2,9 @@ include ':app', ':curl'
 
 sourceControl {
     vcsMappings {
-        withModule("org.gradle.samples:cmake") {
+        withModule("org.gradle.samples:build-wrapper") {
             from(GitVersionControlSpec) {
-                url = uri("cmake-plugin")
+                url = uri("build-wrapper-plugin")
             }
         }
     }

@@ -1,4 +1,13 @@
 rootProject.name = "list"
 
 include("googletest")
-includeBuild("cmake-plugin")
+
+sourceControl {
+    vcsMappings {
+        withModule("org.gradle.samples:build-wrapper") {
+            from(GitVersionControlSpec) {
+                url = uri("build-wrapper-plugin")
+            }
+        }
+    }
+}
