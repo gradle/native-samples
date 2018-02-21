@@ -19,8 +19,3 @@ unitTest {
         }
     }
 }
-
-// TODO: Remove this workaround with new nightly
-tasks.withType(CppCompile) {
-    dependsOn ":googletest:downloadGoogletest"
-}
