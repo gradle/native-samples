@@ -849,11 +849,16 @@ This sample demonstrates using Gradle's dependency management features to coordi
 
 ### C++
 
-The sample packages the Autotools integration logic as a 'autotools-library' plugin and applies these to curl project. 
+To use the sample, create the Git repositories containing the libraries:
 
 ```
 > cd cpp/autotools-library
 > ./gradlew -p ../.. generateCppRepos
+```
+
+Now build the application:
+
+```
 > ./gradlew assemble
 
 BUILD SUCCESSFUL in 1s
