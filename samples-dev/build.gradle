@@ -135,13 +135,19 @@ task cppApplicationKotlinDsl(type: SourceCopyTask) {
     appProject(".").fromTemplate(cppListLib)
 }
 
-task cppLibrary(type: SourceCopyTask) {
-    sampleDir = file("../cpp/simple-library")
+task cppLibraryGroovyDsl(type: SourceCopyTask) {
+    sampleDir = file("../cpp/simple-library/groovy-dsl")
 
     libProject(".").buildRoot()
     libProject(".").fromTemplate(cppListLib)
 }
 
+task cppLibraryKotlinDsl(type: SourceCopyTask) {
+    sampleDir = file("../cpp/simple-library/kotlin-dsl")
+
+    libProject(".").buildRoot()
+    libProject(".").fromTemplate(cppListLib)
+}
 
 task cppLibraryWithTests(type: SourceCopyTask) {
     sampleDir = file("../cpp/library-with-tests")
