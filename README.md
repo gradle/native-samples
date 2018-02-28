@@ -32,8 +32,7 @@ All of the C++ sample have Visual Studio support, added by applying the `visual-
 
 ```
 > cd <sample-dir>
-> ./gradlew visualStudio
-> open <root-project>.sln
+> ./gradlew openVisualStudio
 ```
 
 ### Xcode support
@@ -42,8 +41,7 @@ All of the samples have Xcode support, added by applying the `xcode` plugin. To 
 
 ```
 > cd <sample-dir>
-> ./gradlew xcode
-> open <root-project>.xcworkspace
+> ./gradlew openXcode
 ```
 
 ### XCTest support
