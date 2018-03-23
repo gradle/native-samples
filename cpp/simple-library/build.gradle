@@ -37,7 +37,7 @@ unitTest {
 
 tasks.withType(CppCompile) {
     compilerArgs.addAll provider {
-        if (toolChain instanceof Gcc) {
+        if (toolChain.get() instanceof Gcc) {
             // Use C++03 with the old ABIs, as this is what the googletest binaries were built with
             // Later, Gradle's dependency management will understand ABI
             return ['-std=c++03', '-D_GLIBCXX_USE_CXX11_ABI=0']
@@ -47,7 +47,7 @@ tasks.withType(CppCompile) {
 }
 tasks.withType(LinkSharedLibrary) {
     linkerArgs.addAll provider {
-        if (toolChain instanceof Gcc) {
+        if (toolChain.get() instanceof Gcc) {
             return ['-std=c++03']
         }
         return []
