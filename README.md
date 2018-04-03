@@ -560,7 +560,7 @@ Hello, World!
 
 ## Application with operating system specific library dependencies (operating-system-specific-dependencies)
 
-This sample demonstrates an application that has dependencies on different libraries for each operating system. Currently there are no conveniences for using libraries that are installed on the build machine.
+This sample demonstrates an application that has dependencies on different libraries for each operating system. Currently, there are no conveniences for using libraries that are installed on the build machine. 
 
 ### Swift
 
@@ -574,7 +574,7 @@ BUILD SUCCESSFUL in 1s
 Hello, World!
 ```
 
-The application selects the 'MacOsConsole' library that prints the output in blue when building on macOS.  On Linux, it selects the 'LinuxConsole' library that prints the output in green.
+The application selects the 'MacOsConsole' library that prints the output in blue when building on macOS.  On Linux, it selects the 'LinuxConsole' library that prints the output in green. Each console library is configured to only build on specific operating systems.
 
 ### C++
 
@@ -588,7 +588,7 @@ BUILD SUCCESSFUL in 1s
 Hello, World!
 ```
 
-The application selects the 'ansiConsole' library on macOS and Linux and the 'winConsole' library when built on Windows. The output is blue on macOS and green on Linux and Windows.
+The application selects the 'ansiConsole' library on macOS and Linux and the 'winConsole' library when built on Windows. The output is blue on macOS and green on Linux and Windows. Each console library is configured to only build on specific operating systems, while the application is configured to build on all operating systems (Windows, Linux, macOS).
 
 ## Swift application with C++ library dependencies (cpp-dependencies)
 
