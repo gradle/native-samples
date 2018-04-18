@@ -19,6 +19,9 @@ class ExecuteSwiftSamplesIntegrationTest extends ExecuteSamplesIntegrationTest {
         // Tool chains can only be provision on Linux for Swift
         Assume.assumeFalse(sample.sampleName == 'provisionable-tool-chains' && !OperatingSystem.current().linux)
 
+        // iOS application can only build on macOS
+        Assume.assumeFalse(sample.sampleName == 'ios-application' && !OperatingSystem.current().macOsX)
+
         given:
         sample.clean()
         runSetupFor(sample)
