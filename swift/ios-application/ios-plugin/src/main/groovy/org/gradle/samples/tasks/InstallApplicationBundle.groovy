@@ -22,6 +22,7 @@ class InstallApplicationBundle extends DefaultTask {
         project.copy {
             into applicationBundle
 
+            from(executableFile)
             for (File source : sources) {
                 from(source)
             }
