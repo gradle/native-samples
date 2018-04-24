@@ -1,10 +1,27 @@
+buildscript {
+    dependencies {
+        classpath "org.gradle.samples:custom-publication:1.0"
+    }
+}
+
 plugins {
     id 'cpp-library'
+    id 'maven-publish'
 }
+
+apply plugin: 'org.gradle.samples.custom-publication'
 
 library {
     linkage = [Linkage.STATIC]
     dependencies {
         api project(":list")
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            url "../repo"
+        }
     }
 }

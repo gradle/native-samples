@@ -3,13 +3,27 @@
 buildscript {
     dependencies {
         classpath "org.gradle.samples:build-wrapper:1.0"
+        classpath "org.gradle.samples:custom-publication:1.0"
     }
 }
 
+group = "org.gradle.cpp-samples"
+version = "1.3"
+
 // Apply the cmake-library plugin explicitly as we can't use the plugins { } block
 apply plugin: 'org.gradle.samples.cmake-library'
+apply plugin: 'maven-publish'
+apply plugin: 'org.gradle.samples.custom-publication'
 
 cmake {
     binary = "src/list/liblist.a"
     includeDirectory = layout.projectDirectory.dir("src/list/include")
+}
+
+publishing {
+    repositories {
+        maven {
+            url '../repo'
+        }
+    }
 }

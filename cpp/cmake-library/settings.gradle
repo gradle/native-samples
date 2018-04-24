@@ -9,5 +9,10 @@ sourceControl {
                 url = uri("build-wrapper-plugin")
             }
         }
+        withModule("org.gradle.samples:custom-publication") {
+            from(GitVersionControlSpec) {
+                url = uri("custom-publication-plugin")
+            }
+        }
     }
 }

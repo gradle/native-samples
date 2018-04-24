@@ -58,6 +58,7 @@ task cleanSamples {
             file('../cpp/library-with-tests/build-wrapper-plugin'),
             file('../cpp/cmake-library/cmake-plugin'),
             file('../cpp/cmake-library/build-wrapper-plugin'),
+            file('../cpp/cmake-library/custom-publication-plugin'),
             file('../cpp/cmake-source-dependencies/cmake-plugin'),
             file('../cpp/cmake-source-dependencies/build-wrapper-plugin'),
             file('../cpp/cmake-source-dependencies/app'),
@@ -159,6 +160,8 @@ task cppCmakeLibrary(type: SourceCopyTask) {
     cmakeProject("list", "list").fromTemplate(cppListLib)
     project("build-wrapper-plugin").buildRoot()
     project("build-wrapper-plugin").fromTemplate("build-wrapper-plugin")
+    project("custom-publication-plugin").buildRoot()
+    project("custom-publication-plugin").fromTemplate("custom-publication-plugin")
 }
 
 task cppAutotoolsLibrary(type: SourceCopyTask) {
@@ -691,9 +694,18 @@ task generateBranchSwiftUtilitiesRepo(type: GitRepoTask) {
     }
 }
 
-task generateCppCmakeLibraryPluginRepo(type: GitRepoTask) {
+task generateCppCmakeLibraryBuildWrapperPluginRepo(type: GitRepoTask) {
     dependsOn cppCmakeLibrary
     sampleDir = file("../cpp/cmake-library/build-wrapper-plugin")
+    change {
+        tag("1.0")
+        "initial version"
+    }
+}
+
+task generateCppCmakeLibraryCustomPublicationPluginRepo(type: GitRepoTask) {
+    dependsOn cppCmakeLibrary
+    sampleDir = file("../cpp/cmake-library/custom-publication-plugin")
     change {
         tag("1.0")
         "initial version"

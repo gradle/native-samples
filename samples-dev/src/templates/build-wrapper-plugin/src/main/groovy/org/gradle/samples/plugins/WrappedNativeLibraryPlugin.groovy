@@ -17,8 +17,20 @@ package org.gradle.samples.plugins
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.artifacts.ModuleVersionIdentifier
 import org.gradle.api.attributes.Usage
+import org.gradle.api.component.ComponentWithVariants
+import org.gradle.api.internal.artifacts.DefaultModuleVersionIdentifier
+import org.gradle.api.internal.artifacts.publish.ArchivePublishArtifact
+import org.gradle.api.internal.component.UsageContext
+import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.bundling.Zip
 import org.gradle.language.cpp.CppBinary
+import org.gradle.language.cpp.internal.MainLibraryVariant
+import org.gradle.language.nativeplatform.internal.PublicationAwareComponent
+import org.gradle.language.plugins.NativeBasePlugin
+import org.gradle.samples.WrappedUsageContext
+import org.gradle.samples.WrappedPublishableComponent
 
 class WrappedNativeLibraryPlugin implements Plugin<Project> {
     @Override
@@ -134,5 +146,79 @@ class WrappedNativeLibraryPlugin implements Plugin<Project> {
                 }
             }
         }
+
+        // Using the publication generation logic from Gradle
+        project.plugins.apply(NativeBasePlugin)
+
+        // Create components expected by the native Gradle publication code
+        PublicationAwareComponent mainComponent = new PublicationAwareComponent() {
+            MainLibraryVariant mainVariant = new MainLibraryVariant("api", cppApiUsage, project.configurations.headers)
+            @Override
+            Provider<String> getBaseName() {
+                return project.provider { project.name }
+            }
+
+            @Override
+            ComponentWithVariants getMainPublication() {
+                return mainVariant
+            }
+
+            @Override
+            String getName() {
+                return "main"
+            }
+        }
+        WrappedPublishableComponent debugVariant = new WrappedPublishableComponent() {
+            @Override
+            ModuleVersionIdentifier getCoordinates() {
+                return new DefaultModuleVersionIdentifier(project.group.toString(), project.name + "_" + name, project.version.toString())
+            }
+
+            @Override
+            Set<? extends UsageContext> getUsages() {
+                Set<UsageContext> result = new HashSet<UsageContext>()
+                result.add(new WrappedUsageContext('debugLink', linkUsage, project.configurations.linkDebug))
+                result.add(new WrappedUsageContext('debugRuntime', runtimeUsage, project.configurations.runtimeDebug))
+                return result;
+            }
+
+            @Override
+            String getName() {
+                return "mainDebug"
+            }
+        }
+        WrappedPublishableComponent releaseVariant = new WrappedPublishableComponent() {
+            @Override
+            ModuleVersionIdentifier getCoordinates() {
+                return new DefaultModuleVersionIdentifier(project.group.toString(), project.name + "_" + name, project.version.toString())
+            }
+
+            @Override
+            Set<? extends UsageContext> getUsages() {
+                Set<UsageContext> result = new HashSet<UsageContext>()
+                result.add(new WrappedUsageContext('releaseLink', linkUsage, project.configurations.linkRelease))
+                result.add(new WrappedUsageContext('releaseRuntime', runtimeUsage, project.configurations.runtimeRelease))
+                return result
+            }
+
+            @Override
+            String getName() {
+                return "mainRelease"
+            }
+        }
+
+        mainComponent.mainPublication.addVariant(debugVariant)
+        mainComponent.mainPublication.addVariant(releaseVariant)
+
+        Zip headersZip = project.tasks.create("cppHeaders", Zip) {
+            from project.configurations.headers.artifacts.files.asFileTree
+            // TODO - should track changes to build directory
+            destinationDir = new File(project.getBuildDir(), "headers")
+            classifier = "cpp-api-headers"
+            archiveName = "cpp-api-headers.zip"
+        }
+        mainComponent.mainPublication.addArtifact(new ArchivePublishArtifact(headersZip))
+
+        project.components.add(mainComponent)
     }
 }

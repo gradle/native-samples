@@ -4,6 +4,7 @@ build
 
 # Local repository
 cpp/repo
+cpp/cmake-library/repo
 cpp/dependency-on-upstream-branch/list-library
 cpp/dependency-on-upstream-branch/utilities-library
 cpp/source-dependencies/repos/list-library
