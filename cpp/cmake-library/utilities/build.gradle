@@ -6,7 +6,6 @@ buildscript {
 
 plugins {
     id 'cpp-library'
-    id 'maven-publish'
 }
 
 apply plugin: 'org.gradle.samples.custom-publication'

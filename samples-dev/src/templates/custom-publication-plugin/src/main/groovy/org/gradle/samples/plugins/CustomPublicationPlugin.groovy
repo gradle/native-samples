@@ -14,53 +14,51 @@ import org.gradle.language.nativeplatform.internal.PublicationAwareComponent
 class CustomPublicationPlugin implements Plugin<Project> {
     @Override
     void apply(Project project) {
-        project.plugins.withId("maven-publish") {
-            project.components.withType(PublicationAwareComponent) {
-                MainLibraryVariant mainVariant = (MainLibraryVariant) it.mainPublication
+        project.plugins.apply plugin: 'maven-publish'
+        project.components.withType(PublicationAwareComponent) {
+            MainLibraryVariant mainVariant = (MainLibraryVariant) it.mainPublication
 
-                Zip publicationPackage = project.tasks.create("createPublicationPackage", Zip) {
-                    assert mainVariant.usages.size() == 1
-                    UsageContext mainUsageContext = mainVariant.usages.iterator().next()
+            Zip publicationPackage = project.tasks.create("createPublicationPackage", Zip) {
+                assert mainVariant.usages.size() == 1
+                UsageContext mainUsageContext = mainVariant.usages.iterator().next()
 
-                    dependsOn { mainUsageContext.artifacts*.buildDependencies }
+                dependsOn { mainUsageContext.artifacts*.buildDependencies }
 
-                    from({
-                        assert mainUsageContext.artifacts.size() == 1
-                        PublishArtifact headersArtifact = mainUsageContext.artifacts.iterator().next()
-                        project.zipTree(headersArtifact.file)
-                    }) {
-                        into 'include'
-                    }
-
-
-                    dependsOn {
-                        // TODO: Make MainLibraryVariant.getVariants() lazy container to avoid ordering issues
-                        for (SoftwareComponent variant : mainVariant.variants) {
-                            from(variant*.usages.flatten()*.artifacts*.file) {
-                                into "lib/${variant.name}"
-                            }
-                        }
-
-                        return mainVariant.variants*.usages.flatten()*.artifacts*.buildDependencies
-                    }
-
-                    // TODO - should track changes to build directory
-                    destinationDir = new File(project.getBuildDir(), "custom-publications")
-                    classifier = System.getProperty("os.name").toLowerCase().replace(" ", "-")
-                    archiveName = "custom-package.zip"
+                from({
+                    assert mainUsageContext.artifacts.size() == 1
+                    PublishArtifact headersArtifact = mainUsageContext.artifacts.iterator().next()
+                    project.zipTree(headersArtifact.file)
+                }) {
+                    into 'include'
                 }
 
-                project.extensions.configure(PublishingExtension) {
-                    it.publications.create("mainCustomPublication", MavenPublication) {
-                        groupId = project.getGroup().toString()
-                        artifactId = project.getName()
-                        version = project.getVersion().toString()
-                        artifact publicationPackage
-                        publishWithOriginalFileName()
+
+                dependsOn {
+                    // TODO: Make MainLibraryVariant.getVariants() lazy container to avoid ordering issues
+                    for (SoftwareComponent variant : mainVariant.variants) {
+                        from(variant*.usages.flatten()*.artifacts*.file) {
+                            into "lib/${variant.name}"
+                        }
                     }
+
+                    return mainVariant.variants*.usages.flatten()*.artifacts*.buildDependencies
+                }
+
+                // TODO - should track changes to build directory
+                destinationDir = new File(project.getBuildDir(), "custom-publications")
+                classifier = System.getProperty("os.name").toLowerCase().replace(" ", "-")
+                archiveName = "custom-package.zip"
+            }
+
+            project.extensions.configure(PublishingExtension) {
+                it.publications.create("mainCustomPublication", MavenPublication) {
+                    groupId = project.getGroup().toString()
+                    artifactId = project.getName()
+                    version = project.getVersion().toString()
+                    artifact publicationPackage
+                    publishWithOriginalFileName()
                 }
             }
         }
-
     }
 }
