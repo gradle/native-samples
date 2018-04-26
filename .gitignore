@@ -16,6 +16,7 @@ cpp/autotools-library/cmake-plugin
 cpp/autotools-library/build-wrapper-plugin
 cpp/cmake-library/cmake-plugin
 cpp/cmake-library/build-wrapper-plugin
+cpp/cmake-library/custom-publication-plugin
 cpp/cmake-source-dependencies/cmake-plugin
 cpp/cmake-source-dependencies/build-wrapper-plugin
 cpp/cmake-source-dependencies/list
