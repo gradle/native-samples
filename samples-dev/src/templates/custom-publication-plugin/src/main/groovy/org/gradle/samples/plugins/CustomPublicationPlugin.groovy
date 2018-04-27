@@ -11,10 +11,15 @@ import org.gradle.api.tasks.bundling.Zip
 import org.gradle.language.cpp.internal.MainLibraryVariant
 import org.gradle.language.nativeplatform.internal.PublicationAwareComponent
 
+/**
+ * Example of publishing a different kind of publication that is consumed by another system.
+ *
+ * Gradle does not use this publication when resolving dependencies.
+ */
 class CustomPublicationPlugin implements Plugin<Project> {
     @Override
     void apply(Project project) {
-        project.plugins.apply plugin: 'maven-publish'
+        project.plugins.apply 'maven-publish'
         project.components.withType(PublicationAwareComponent) {
             MainLibraryVariant mainVariant = (MainLibraryVariant) it.mainPublication
 

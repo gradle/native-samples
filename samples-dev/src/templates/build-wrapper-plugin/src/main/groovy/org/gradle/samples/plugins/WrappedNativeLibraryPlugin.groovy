@@ -150,6 +150,9 @@ class WrappedNativeLibraryPlugin implements Plugin<Project> {
         // Using the publication generation logic from Gradle
         project.plugins.apply(NativeBasePlugin)
 
+        /*
+        TODO: We need to detangle this from the built-in plugins so that external plugins can opt into this same behavior
+         */
         // Create components expected by the native Gradle publication code
         PublicationAwareComponent mainComponent = new PublicationAwareComponent() {
             MainLibraryVariant mainVariant = new MainLibraryVariant("api", cppApiUsage, project.configurations.headers)
