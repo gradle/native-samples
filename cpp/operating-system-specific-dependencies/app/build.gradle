@@ -6,7 +6,7 @@ application {
     operatingSystems = [
         objects.named(OperatingSystemFamily, OperatingSystemFamily.WINDOWS),
         objects.named(OperatingSystemFamily, OperatingSystemFamily.LINUX),
-        objects.named(OperatingSystemFamily, OperatingSystemFamily.MAC_OS)
+        objects.named(OperatingSystemFamily, OperatingSystemFamily.MACOS)
     ]
     binaries.configureEach {
         dependencies {

@@ -5,6 +5,6 @@ plugins {
 library {
     operatingSystems = [
         objects.named(OperatingSystemFamily, OperatingSystemFamily.LINUX),
-        objects.named(OperatingSystemFamily, OperatingSystemFamily.MAC_OS)
+        objects.named(OperatingSystemFamily, OperatingSystemFamily.MACOS)
     ]
 }

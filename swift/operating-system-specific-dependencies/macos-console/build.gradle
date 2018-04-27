@@ -5,6 +5,6 @@ plugins {
 library {
     module = "MacOsConsole"
     operatingSystems = [
-        objects.named(OperatingSystemFamily, OperatingSystemFamily.MAC_OS)
+        objects.named(OperatingSystemFamily, OperatingSystemFamily.MACOS)
     ]
 }
