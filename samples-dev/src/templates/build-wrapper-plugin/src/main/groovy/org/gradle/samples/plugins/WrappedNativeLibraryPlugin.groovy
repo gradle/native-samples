@@ -17,20 +17,22 @@ package org.gradle.samples.plugins
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ModuleVersionIdentifier
 import org.gradle.api.attributes.Usage
 import org.gradle.api.component.ComponentWithVariants
+import org.gradle.api.component.PublishableComponent
 import org.gradle.api.internal.artifacts.DefaultModuleVersionIdentifier
 import org.gradle.api.internal.artifacts.publish.ArchivePublishArtifact
+import org.gradle.api.internal.component.SoftwareComponentInternal
 import org.gradle.api.internal.component.UsageContext
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.bundling.Zip
 import org.gradle.language.cpp.CppBinary
+import org.gradle.language.cpp.internal.DefaultUsageContext
 import org.gradle.language.cpp.internal.MainLibraryVariant
 import org.gradle.language.nativeplatform.internal.PublicationAwareComponent
 import org.gradle.language.plugins.NativeBasePlugin
-import org.gradle.samples.WrappedUsageContext
-import org.gradle.samples.WrappedPublishableComponent
 
 class WrappedNativeLibraryPlugin implements Plugin<Project> {
     @Override
@@ -154,64 +156,12 @@ class WrappedNativeLibraryPlugin implements Plugin<Project> {
         TODO: We need to detangle this from the built-in plugins so that external plugins can opt into this same behavior
          */
         // Create components expected by the native Gradle publication code
-        PublicationAwareComponent mainComponent = new PublicationAwareComponent() {
-            MainLibraryVariant mainVariant = new MainLibraryVariant("api", cppApiUsage, project.configurations.headers)
-            @Override
-            Provider<String> getBaseName() {
-                return project.provider { project.name }
-            }
+        PublicationAwareComponent mainComponent = new DefaultMainPublication(project.providers.provider({ project.name }), cppApiUsage, project.configurations.headers)
 
-            @Override
-            ComponentWithVariants getMainPublication() {
-                return mainVariant
-            }
-
-            @Override
-            String getName() {
-                return "main"
-            }
-        }
-        WrappedPublishableComponent debugVariant = new WrappedPublishableComponent() {
-            @Override
-            ModuleVersionIdentifier getCoordinates() {
-                return new DefaultModuleVersionIdentifier(project.group.toString(), project.name + "_" + name, project.version.toString())
-            }
-
-            @Override
-            Set<? extends UsageContext> getUsages() {
-                Set<UsageContext> result = new HashSet<UsageContext>()
-                result.add(new WrappedUsageContext('debugLink', linkUsage, project.configurations.linkDebug))
-                result.add(new WrappedUsageContext('debugRuntime', runtimeUsage, project.configurations.runtimeDebug))
-                return result;
-            }
-
-            @Override
-            String getName() {
-                return "mainDebug"
-            }
-        }
-        WrappedPublishableComponent releaseVariant = new WrappedPublishableComponent() {
-            @Override
-            ModuleVersionIdentifier getCoordinates() {
-                return new DefaultModuleVersionIdentifier(project.group.toString(), project.name + "_" + name, project.version.toString())
-            }
-
-            @Override
-            Set<? extends UsageContext> getUsages() {
-                Set<UsageContext> result = new HashSet<UsageContext>()
-                result.add(new WrappedUsageContext('releaseLink', linkUsage, project.configurations.linkRelease))
-                result.add(new WrappedUsageContext('releaseRuntime', runtimeUsage, project.configurations.runtimeRelease))
-                return result
-            }
-
-            @Override
-            String getName() {
-                return "mainRelease"
-            }
-        }
-
-        mainComponent.mainPublication.addVariant(debugVariant)
-        mainComponent.mainPublication.addVariant(releaseVariant)
+        mainComponent.mainPublication.addVariant(new DefaultWrappedPublishableComponent("debug", project.group, project.name, project.version,
+                linkUsage, project.configurations.linkDebug, runtimeUsage, project.configurations.runtimeDebug))
+        mainComponent.mainPublication.addVariant(new DefaultWrappedPublishableComponent("release", project.group, project.name, project.version,
+                linkUsage, project.configurations.linkRelease, runtimeUsage, project.configurations.runtimeRelease))
 
         Zip headersZip = project.tasks.create("cppHeaders", Zip) {
             from project.configurations.headers.artifacts.files.asFileTree
@@ -223,5 +173,71 @@ class WrappedNativeLibraryPlugin implements Plugin<Project> {
         mainComponent.mainPublication.addArtifact(new ArchivePublishArtifact(headersZip))
 
         project.components.add(mainComponent)
+    }
+
+    private static class DefaultMainPublication implements PublicationAwareComponent {
+        private final Provider<String> baseName
+        private final MainLibraryVariant mainVariant
+
+        DefaultMainPublication(Provider<String> baseName, Usage apiUsage, Configuration api) {
+            this.baseName = baseName
+            this.mainVariant = new MainLibraryVariant("api", apiUsage, api)
+        }
+        @Override
+        Provider<String> getBaseName() {
+            return baseName
+        }
+
+        @Override
+        ComponentWithVariants getMainPublication() {
+            return mainVariant
+        }
+
+        @Override
+        String getName() {
+            return "main"
+        }
+    }
+
+    private static class DefaultWrappedPublishableComponent implements PublishableComponent, SoftwareComponentInternal {
+        private final String variantName
+
+        private final Object group
+        private final String projectName
+        private final Object version
+
+        private final Usage linkUsage
+        private final Configuration link
+        private final Usage runtimeUsage
+        private final Configuration runtime
+
+        DefaultWrappedPublishableComponent(String variantName, Object group, String projectName, Object version, Usage linkUsage, Configuration link, Usage runtimeUsage, Configuration runtime) {
+            this.variantName = variantName
+            this.group = group
+            this.projectName = projectName
+            this.version = version
+            this.linkUsage = linkUsage
+            this.link = link
+            this.runtimeUsage = runtimeUsage
+            this.runtime = runtime
+        }
+
+        @Override
+        ModuleVersionIdentifier getCoordinates() {
+            return new DefaultModuleVersionIdentifier(group.toString(), projectName + "_" + variantName, version.toString())
+        }
+
+        @Override
+        Set<? extends UsageContext> getUsages() {
+            Set<UsageContext> result = new HashSet<UsageContext>()
+            result.add(new DefaultUsageContext("${variantName}Link".toString(), linkUsage, link.artifacts, link))
+            result.add(new DefaultUsageContext("${variantName}Runtime".toString(), runtimeUsage, runtime.artifacts, runtime))
+            return result
+        }
+
+        @Override
+        String getName() {
+            return variantName
+        }
     }
 }
