@@ -1,0 +1,30 @@
+buildscript {
+    dependencies {
+        classpath "org.gradle.samples:provisionable-tool-chains:latest.integration"
+    }
+    repositories {
+        mavenCentral()
+    }
+}
+
+apply plugin: 'org.gradle.samples.provisionable-tool-chains'
+
+group = 'my.toolchains.configuration'
+version = '1.0-SNAPSHOT'
+
+provisionableToolChains {
+    repositoryDirectory = new File(projectDir.parentFile, ".toolChainRepository")
+    toolChains {
+        clang {
+            String osName = System.getProperty('os.name').toLowerCase()
+            if (osName.contains('mac')) {
+                url = new URL("http://releases.llvm.org/5.0.1/clang+llvm-5.0.1-x86_64-apple-darwin.tar.xz")
+            } else if (osName.contains('linux')) {
+                url = new URL("http://releases.llvm.org/5.0.1/clang+llvm-5.0.1-x86_64-linux-gnu-ubuntu-14.04.tar.xz")
+            } else {
+                println "Clang tool chain provisioning doesn't support operating system '${System.getProperty('os.name')}'"
+            }
+            type = Clang
+        }
+    }
+}

@@ -22,6 +22,7 @@ cpp/cmake-source-dependencies/utilities
 cpp/cmake-source-dependencies/app
 cpp/library-with-tests/cmake-plugin
 cpp/library-with-tests/build-wrapper-plugin
+cpp/provisionable-tool-chains/.toolChainRepository
 swift/dependency-on-upstream-branch/list-library
 swift/dependency-on-upstream-branch/utilities-library
 swift/source-dependencies/repos/list-library
@@ -30,6 +31,7 @@ swift/injected-plugins/repos
 swift/swift-package-manager-publish/release-plugin
 swift/swift-package-manager-publish/list-library
 swift/swift-package-manager-publish/utilities-library
+swift/provisionable-tool-chains/.toolChainRepository
 
 # Swift Package Manager Files
 .build

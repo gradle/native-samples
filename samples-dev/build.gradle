@@ -279,6 +279,12 @@ task cppSwiftPackageManagerPublish(type: SourceCopyTask) {
 task cppProvisionableToolChains(type: SourceCopyTask) {
     sampleDir = file("../cpp/provisionable-tool-chains")
 
+    project("provisionable-tool-chains-plugin").buildRoot()
+    project("provisionable-tool-chains-plugin").fromTemplate("provisionable-tool-chains-plugin")
+
+    project("provisionable-tool-chains-configuration").buildRoot()
+    project("provisionable-tool-chains-configuration").fromTemplate("cpp-provisionable-tool-chains-build/provisionable-tool-chains-configuration")
+
     appProject(".").buildRoot()
     appProject(".").fromTemplate("cpp-app")
     appProject(".").fromTemplate(cppUtilsLib)
@@ -453,6 +459,12 @@ task swiftSwiftPackageManagerPublish(type: SourceCopyTask) {
 
 task swiftProvisionableToolChains(type: SourceCopyTask) {
     sampleDir = file("../swift/provisionable-tool-chains")
+
+    project("provisionable-tool-chains-plugin").buildRoot()
+    project("provisionable-tool-chains-plugin").fromTemplate("provisionable-tool-chains-plugin")
+
+    project("provisionable-tool-chains-configuration").buildRoot()
+    project("provisionable-tool-chains-configuration").fromTemplate("swift-provisionable-tool-chains-build/provisionable-tool-chains-configuration")
 
     appProject(".").buildRoot()
     appProject(".").fromTemplate("swift-app")

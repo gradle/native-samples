@@ -1,13 +1,18 @@
+buildscript {
+    dependencies {
+        classpath "my.toolchains.configuration:provisionable-tool-chains-configuration:latest.integration"
+    }
+}
+
 // Currently cannot use the plugins { } block to reference plugins with software model elements
 // Use the `apply plugin:` instead
 apply plugin: 'swift-application'
 apply plugin: 'xcode'
+apply plugin: 'my.toolchains.configuration.swiftc'
 
 model {
     toolChains {
-        provisionedSwift(Swiftc) {
-            path rootProject.file('buildSrc/build/toolChains/swift-4.0.3/usr/bin')
-
+        withType(Swiftc) {
             // Required to locate dsymutil on macOS and objcopy on Linux
             path System.getenv('PATH').split(':')
         }
