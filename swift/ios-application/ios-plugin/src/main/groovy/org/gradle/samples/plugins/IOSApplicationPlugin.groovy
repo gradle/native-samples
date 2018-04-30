@@ -12,7 +12,7 @@ class IOSApplicationPlugin implements Plugin<Project> {
             plugins.withId('swift-application') {
                 def compileStoryboardTask = tasks.create("compileStoryboard", StoryboardCompile) {
                     module = application.module
-                    outputDirectory = layout.buildDirectory.dir(project.provider { "ios/storyboards/compiled" })
+                    outputDirectory = layout.buildDirectory.dir("ios/storyboards/compiled")
                     partialPropertyListOutputDirectory = layout.buildDirectory.dir("ios/partial-plist/storyboards")
                 }
 
