@@ -12,15 +12,3 @@ plugins {
 apply plugin: 'org.gradle.samples.ios-application'
 
 group = "org.gradle.samples"
-
-// Add iOS specific resource to Xcode IDE project
-file('src/main/resources/Base.lproj').listFiles().each {
-    xcode.project.groups.sources.from it
-}
-xcode.project.groups.sources.from 'src/main/resources/Info.plist'
-xcode.project.groups.sources.from 'src/main/resources/Assets.xcassets'
-
-// Configure iOS specific task source location
-compileStoryboard.sources.from file('src/main/resources/Base.lproj').listFiles()
-compileAssetCatalog.source = layout.projectDirectory.file("src/main/resources/Assets.xcassets")
-mergePropertyList.sources.from layout.projectDirectory.file("src/main/resources/Info.plist")

@@ -22,7 +22,7 @@ class IOSApplicationPlugin implements Plugin<Project> {
                     outputDirectory = layout.buildDirectory.dir("ios/storyboards/linked")
                 }
 
-                def compileAssetCatalog = tasks.create("compileAssetCatalog", AssetCatalogCompile) {
+                def compileAssetCatalogTask = tasks.create("compileAssetCatalog", AssetCatalogCompile) {
                     identifier = provider { "${project.group}.${application.module.get()}".toString() }
                     partialPropertyListOutputDirectory = layout.buildDirectory.dir("ios/partial-plist/asset-catalogs")
                     outputDirectory = layout.buildDirectory.dir("ios/assert-catalogs")
@@ -30,7 +30,7 @@ class IOSApplicationPlugin implements Plugin<Project> {
 
                 def mergePropertyListTask = tasks.create("mergePropertyList", MergePropertyList) {
                     sources.from compileStoryboardTask.partialPropertyListOutputDirectory.asFileTree
-                    sources.from compileAssetCatalog.partialPropertyListOutputDirectory.asFileTree
+                    sources.from compileAssetCatalogTask.partialPropertyListOutputDirectory.asFileTree
                     outputFile = layout.buildDirectory.file("ios/Info.plist")
                     module = application.module
                     identifier = provider { "${project.group}.${application.module.get()}".toString() }
@@ -60,7 +60,7 @@ class IOSApplicationPlugin implements Plugin<Project> {
                     applicationBundle = layout.buildDirectory.file(provider { "ios/products/debug/${application.module.get()}.app" })
                     sources.from(mergePropertyListTask.outputFile)
                     sources.from(createPackageInformationTask.outputFile)
-                    sources.from(compileAssetCatalog.outputDirectory)
+                    sources.from(compileAssetCatalogTask.outputDirectory)
                     sources.from(linkStoryboardTask.outputDirectory)
                     tasks.matching({ it.name == 'linkDebug' }).all {
                         executableFile = it.linkedFile
@@ -76,7 +76,7 @@ class IOSApplicationPlugin implements Plugin<Project> {
                     applicationBundle = layout.buildDirectory.file(provider { "ios/products/release/${application.module.get()}.app" })
                     sources.from(mergePropertyListTask.outputFile)
                     sources.from(createPackageInformationTask.outputFile)
-                    sources.from(compileAssetCatalog.outputDirectory)
+                    sources.from(compileAssetCatalogTask.outputDirectory)
                     sources.from(linkStoryboardTask.outputDirectory)
                     tasks.matching({ it.name == 'linkRelease' }).all {
                         executableFile = it.linkedFile
@@ -86,6 +86,18 @@ class IOSApplicationPlugin implements Plugin<Project> {
                 tasks.matching({ it.name == "installRelease" }).all {
                     dependsOn installApplicationBundleReleaseTask
                     enabled = false
+                }
+
+                // Configure iOS specific task source location convention
+                mergePropertyListTask.sources.from layout.projectDirectory.file("src/main/resources/Info.plist")
+                compileStoryboardTask.sources.from fileTree(dir: 'src/main/resources', includes: ['*.lproj/*.storyboard'])
+                compileAssetCatalogTask.source = layout.projectDirectory.file("src/main/resources/Assets.xcassets")
+
+                plugins.withId('xcode') {
+                    // Add iOS specific resource to Xcode IDE project
+                    xcode.project.groups.sources.from compileStoryboardTask.sources
+                    xcode.project.groups.sources.from 'src/main/resources/Info.plist'
+                    xcode.project.groups.sources.from compileAssetCatalogTask.source
                 }
             }
         }
