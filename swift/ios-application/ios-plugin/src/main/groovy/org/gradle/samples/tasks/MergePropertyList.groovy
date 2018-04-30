@@ -41,7 +41,7 @@ class MergePropertyList extends DefaultTask {
             args "-c", "Save"
             args xmlPlist.absolutePath
             standardOutput = new FileOutputStream(project.file("$temporaryDir/outputs.txt"))
-        }.assertNormalExitValue()
+        }
 
         // Add information automatically added by Xcode, part 1
         project.exec {
@@ -57,7 +57,7 @@ class MergePropertyList extends DefaultTask {
             args "-c", "Save"
             args xmlPlist.getAbsolutePath()
             standardOutput = new FileOutputStream(project.file("$temporaryDir/outputs.txt"), true)
-        }.assertNormalExitValue()
+        }
 
         // Add information automatically added by Xcode, part 2
         project.exec {
@@ -72,7 +72,7 @@ class MergePropertyList extends DefaultTask {
             args "-c", "Save"
             args xmlPlist.getAbsolutePath()
             standardOutput = new FileOutputStream(project.file("$temporaryDir/outputs.txt"), true)
-        }.assertNormalExitValue()
+        }
 
         xmlPlist.text = xmlPlist.text.replace('$(PRODUCT_NAME)', module.get()).replace('$(EXECUTABLE_NAME)', module.get()).replace('$(PRODUCT_BUNDLE_IDENTIFIER)', identifier.get()).replace('$(DEVELOPMENT_LANGUAGE)', "en")
 
@@ -80,7 +80,7 @@ class MergePropertyList extends DefaultTask {
             executable plutilExecutable.absolutePath
             args "-convert", "binary1", "-o", outputFile.get().asFile.absolutePath, xmlPlist.absolutePath
             standardOutput = new FileOutputStream(project.file("$temporaryDir/outputs.txt"), true)
-        }.assertNormalExitValue()
+        }
     }
 
     @InputFile

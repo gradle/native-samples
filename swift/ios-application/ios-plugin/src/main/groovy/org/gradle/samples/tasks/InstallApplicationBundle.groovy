@@ -42,12 +42,14 @@ class InstallApplicationBundle extends DefaultTask {
                     "--scan-folder", new File(bundleDir, "PlugIns").absolutePath,
                     "--strip-bitcode",
                     "--resource-library", "libswiftRemoteMirror.dylib"
-        }.assertNormalExitValue()
+            standardOutput = new FileOutputStream(project.file("$temporaryDir/outputs.txt"))
+        }
 
         project.exec {
             executable codesignExecutable.absolutePath
             args "--force", "--sign", "-", "--timestamp=none", bundleDir.absolutePath
-        }.assertNormalExitValue()
+            standardOutput = new FileOutputStream(project.file("$temporaryDir/outputs.txt"), true)
+        }
     }
 
     @InputFile

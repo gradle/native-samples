@@ -31,7 +31,7 @@ class AssetCatalogCompile extends DefaultTask {
             executable actoolExecutable.absolutePath
             args "--output-format", "human-readable-text", "--notices", "--warnings", "--export-dependency-info", "$temporaryDir/assetcatalog_dependencies", "--output-partial-info-plist", "${partialPropertyListOutputDirectory.get().asFile.absolutePath}/assetcatalog_generated_info.plist", "--app-icon", "AppIcon", "--compress-pngs", "--enable-on-demand-resources", "YES", "--filter-for-device-model", "iPhone10,5", "--filter-for-device-os-version", "11.2", "--sticker-pack-identifier-prefix", "${identifier.get()}.sticker-pack.", "--target-device", "iphone", "--target-device", "ipad", "--minimum-deployment-target", "11.2", "--platform", "iphonesimulator", "--product-type", "com.apple.product-type.application", "--compile", outputDirectory.get().asFile.getAbsoluteFile(), source.get().asFile.absolutePath
             standardOutput = new FileOutputStream(project.file("$temporaryDir/outputs.txt"))
-        }.assertNormalExitValue()
+        }
     }
 
     @InputFile
