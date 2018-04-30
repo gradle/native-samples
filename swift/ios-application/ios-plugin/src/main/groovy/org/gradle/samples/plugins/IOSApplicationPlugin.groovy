@@ -50,7 +50,6 @@ class IOSApplicationPlugin implements Plugin<Project> {
                         ["-target", "x86_64-apple-ios11.2", "-sdk", "xcrun --sdk iphonesimulator --show-sdk-path".execute().text.trim()/*, "-enforce-exclusivity=checked"*/]
                     }
 
-                    linkTask.get().dependsOn createEntitlementTask
                     linkTask.get().inputs.file createEntitlementTask.outputFile
                     linkTask.get().linkerArgs.addAll provider {
                         ["-target", "x86_64-apple-ios11.2", "-sdk", "xcrun --sdk iphonesimulator --show-sdk-path".execute().text.trim(), "-Xlinker", "-rpath", "-Xlinker", "@executable_path/Frameworks", "-Xlinker", "-export_dynamic", "-Xlinker", "-no_deduplicate", "-Xlinker", "-objc_abi_version", "-Xlinker", "2", "-Xlinker", "-sectcreate", "-Xlinker", "__TEXT", "-Xlinker", "__entitlements", "-Xlinker", createEntitlementTask.outputFile.get().asFile.absolutePath]
