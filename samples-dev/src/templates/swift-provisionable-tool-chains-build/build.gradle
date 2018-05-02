@@ -1,6 +1,6 @@
 buildscript {
     dependencies {
-        classpath "my.toolchains.configuration:provisionable-tool-chains-configuration:latest.integration"
+        classpath "my.toolchains.configuration:provisionable-tool-chains:latest.integration"
     }
 }
 
