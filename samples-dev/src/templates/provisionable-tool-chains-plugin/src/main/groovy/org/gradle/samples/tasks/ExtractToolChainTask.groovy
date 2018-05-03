@@ -47,7 +47,7 @@ class ExtractToolChainTask extends DefaultTask {
             InputStream fileStream = new BufferedInputStream(Files.newInputStream(toolChainArchive.get().asFile.toPath()))
             ArchiveInputStream archiveStream = createArchiveStream(new BufferedInputStream(createDecompressStream(fileStream)))
 
-            File outputDir = toolChainLocation.asFile.get()
+            File outputDir = new File(temporaryDir, toolChainLocation.asFile.get().getName())
             try {
                 for (ArchiveEntry entry = archiveStream.nextEntry; entry != null; entry = archiveStream.nextEntry) {
                     String entryPath = entry.getName().split("[\\/]").drop(1).join("/")
@@ -91,6 +91,8 @@ class ExtractToolChainTask extends DefaultTask {
                 IOUtils.closeQuietly(archiveStream)
             }
 
+            toolChainLocationFile.parentFile.mkdirs()
+            outputDir.renameTo(toolChainLocationFile)
             doneFile.text = md5Hash(toolChainLocationFile)
         }
     }

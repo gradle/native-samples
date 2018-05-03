@@ -55,21 +55,23 @@ class DownloadToolChainTask extends DefaultTask {
     @TaskAction
     private void download() {
         if (fromUrl.present && !isArchiveUpToDate()) {
-            InputStream inStream = null
-            OutputStream outStream = null
-            try {
-                inStream = fromUrl.get().openStream()
-                outStream = new FileOutputStream(toolChainArchiveFile)
-                IOUtils.copy(inStream, outStream)
-            } finally {
-                IOUtils.closeQuietly(outStream)
-                IOUtils.closeQuietly(inStream)
+            doneFile.delete()
+            toolChainArchiveFile.delete()
+
+            File temporaryFile = new File(temporaryDir, toolChainArchiveFile.getName())
+            fromUrl.get().openStream().withCloseable { inStream ->
+                new FileOutputStream(temporaryFile).withCloseable { outStream ->
+                    IOUtils.copy(inStream, outStream)
+                }
             }
 
-            String archiveMd5 = md5Hash(toolChainArchiveFile)
+            String archiveMd5 = md5Hash(temporaryFile)
             if (md5.present && archiveMd5 != md5.get()) {
                 throw new IllegalStateException("MD5 doesn't match!")
             }
+
+            toolChainArchiveFile.parentFile.mkdirs()
+            temporaryFile.renameTo(toolChainArchiveFile)
             doneFile.text = archiveMd5
         }
     }
