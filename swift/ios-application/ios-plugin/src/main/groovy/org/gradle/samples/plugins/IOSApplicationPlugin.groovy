@@ -107,13 +107,6 @@ class IOSApplicationPlugin implements Plugin<Project> {
                 mergePropertyListTask.sources.from layout.projectDirectory.file("src/main/resources/Info.plist")
                 compileStoryboardTask.sources.from fileTree(dir: 'src/main/resources', includes: ['*.lproj/*.storyboard'])
                 compileAssetCatalogTask.source = layout.projectDirectory.file("src/main/resources/Assets.xcassets")
-
-                plugins.withId('xcode') {
-                    // Add iOS specific resource to Xcode IDE project
-                    xcode.project.groups.sources.from compileStoryboardTask.sources
-                    xcode.project.groups.sources.from 'src/main/resources/Info.plist'
-                    xcode.project.groups.sources.from compileAssetCatalogTask.source
-                }
             }
         }
     }
