@@ -18,7 +18,11 @@ import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.SkipWhenEmpty
 import org.gradle.api.tasks.TaskAction
+import org.gradle.workers.IsolationMode
+import org.gradle.workers.WorkerConfiguration
+import org.gradle.workers.WorkerExecutor
 
+import javax.inject.Inject
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.attribute.FileTime
@@ -33,6 +37,13 @@ class ExtractToolChainTask extends DefaultTask {
 
     final DirectoryProperty toolChainLocation = newOutputDirectory()
 
+    private final WorkerExecutor workerExecutor
+
+    @Inject
+    ExtractToolChainTask(WorkerExecutor workerExecutor) {
+        this.workerExecutor = workerExecutor
+    }
+
     @OutputFile
     protected File getDoneFile() {
         new File(toolChainLocation.get().asFile.absolutePath + ".done")
@@ -40,88 +51,107 @@ class ExtractToolChainTask extends DefaultTask {
 
     @TaskAction
     private void extract() {
-        if (!isExtractUpToDate()) {
-            doneFile.delete()
-            FileUtils.deleteDirectory(toolChainLocation.get().asFile)
+        workerExecutor.submit(Extract) { WorkerConfiguration config ->
+            config.isolationMode = IsolationMode.NONE
+            config.params(doneFile, toolChainLocation.get().asFile, toolChainArchive.get().asFile, temporaryDir)
+        }
+    }
 
-            InputStream fileStream = new BufferedInputStream(Files.newInputStream(toolChainArchive.get().asFile.toPath()))
-            ArchiveInputStream archiveStream = createArchiveStream(new BufferedInputStream(createDecompressStream(fileStream)))
+    static class Extract implements Runnable {
+        private final File doneFile
+        private final File toolChainLocationFile
+        private final File toolChainArchiveFile
+        private final File temporaryDir
 
-            File outputDir = new File(temporaryDir, toolChainLocation.asFile.get().getName())
-            try {
-                for (ArchiveEntry entry = archiveStream.nextEntry; entry != null; entry = archiveStream.nextEntry) {
-                    String entryPath = entry.getName().split("[\\/]").drop(1).join("/")
-                    final File file = new File(outputDir, entryPath)
-                    if (entry.isDirectory()) {
-                        continue
-                    }
+        @Inject
+        Extract(File doneFile, File toolChainLocationFile, File toolChainArchiveFile, File temporaryDir) {
+            this.temporaryDir = temporaryDir
+            this.toolChainArchiveFile = toolChainArchiveFile
+            this.toolChainLocationFile = toolChainLocationFile
+            this.doneFile = doneFile
+        }
 
-                    file.getParentFile().mkdirs()
-                    if (entry instanceof TarArchiveEntry && entry.isSymbolicLink()) {
-                        Files.createSymbolicLink(file.toPath(), Paths.get(entry.getLinkName()))
-                    } else if (entry instanceof TarArchiveEntry && !entry.getLinkName().isEmpty()) {
-                        OutputStream outStream = file.newOutputStream()
-                        String sourcePath = entry.getLinkName().split("[\\/]").drop(1).join("/")
-                        File sourceFile = new File(outputDir, sourcePath)
-                        InputStream inStream = sourceFile.newInputStream()
-                        IOUtils.copy(inStream, outStream)
-                        IOUtils.closeQuietly(inStream)
-                        IOUtils.closeQuietly(outStream)
+        @Override
+        void run() {
+            if (!isExtractUpToDate()) {
+                doneFile.delete()
+                FileUtils.deleteDirectory(toolChainLocationFile)
 
-                        Files.setLastModifiedTime(file.toPath(), FileTime.from(entry.getLastModifiedDate().toInstant()))
+                InputStream fileStream = new BufferedInputStream(Files.newInputStream(toolChainArchiveFile.toPath()))
+                ArchiveInputStream archiveStream = createArchiveStream(new BufferedInputStream(createDecompressStream(fileStream)))
 
-                        if (entry instanceof TarArchiveEntry) {
-                            file.setExecutable((entry.getMode() & toModeBit(PosixFilePermission.OWNER_EXECUTE)) > 0, true)
+                File outputDir = new File(temporaryDir, toolChainLocationFile.getName())
+                try {
+                    for (ArchiveEntry entry = archiveStream.nextEntry; entry != null; entry = archiveStream.nextEntry) {
+                        String entryPath = entry.getName().split("[\\/]").drop(1).join("/")
+                        final File file = new File(outputDir, entryPath)
+                        if (entry.isDirectory()) {
+                            continue
                         }
-                    } else {
-                        OutputStream outStream = file.newOutputStream()
-                        IOUtils.copy(archiveStream, outStream)
-                        IOUtils.closeQuietly(outStream)
 
-                        Files.setLastModifiedTime(file.toPath(), FileTime.from(entry.getLastModifiedDate().toInstant()))
+                        file.getParentFile().mkdirs()
+                        if (entry instanceof TarArchiveEntry && entry.isSymbolicLink()) {
+                            Files.createSymbolicLink(file.toPath(), Paths.get(entry.getLinkName()))
+                        } else if (entry instanceof TarArchiveEntry && !entry.getLinkName().isEmpty()) {
+                            OutputStream outStream = file.newOutputStream()
+                            String sourcePath = entry.getLinkName().split("[\\/]").drop(1).join("/")
+                            File sourceFile = new File(outputDir, sourcePath)
+                            InputStream inStream = sourceFile.newInputStream()
+                            IOUtils.copy(inStream, outStream)
+                            IOUtils.closeQuietly(inStream)
+                            IOUtils.closeQuietly(outStream)
 
-                        if (entry instanceof TarArchiveEntry) {
-                            file.setExecutable((entry.getMode() & toModeBit(PosixFilePermission.OWNER_EXECUTE)) > 0, true)
+                            Files.setLastModifiedTime(file.toPath(), FileTime.from(entry.getLastModifiedDate().toInstant()))
+
+                            if (entry instanceof TarArchiveEntry) {
+                                file.setExecutable((entry.getMode() & toModeBit(PosixFilePermission.OWNER_EXECUTE)) > 0, true)
+                            }
+                        } else {
+                            OutputStream outStream = file.newOutputStream()
+                            IOUtils.copy(archiveStream, outStream)
+                            IOUtils.closeQuietly(outStream)
+
+                            Files.setLastModifiedTime(file.toPath(), FileTime.from(entry.getLastModifiedDate().toInstant()))
+
+                            if (entry instanceof TarArchiveEntry) {
+                                file.setExecutable((entry.getMode() & toModeBit(PosixFilePermission.OWNER_EXECUTE)) > 0, true)
+                            }
                         }
                     }
+                } catch (EOFException ex) {
+                    // Ignore EOF exception
+                } finally {
+                    IOUtils.closeQuietly(archiveStream)
                 }
-            } catch (EOFException ex) {
-                // Ignore EOF exception
-            } finally {
-                IOUtils.closeQuietly(archiveStream)
+
+                toolChainLocationFile.parentFile.mkdirs()
+                outputDir.renameTo(toolChainLocationFile)
+                doneFile.text = md5Hash(toolChainLocationFile)
             }
-
-            toolChainLocationFile.parentFile.mkdirs()
-            outputDir.renameTo(toolChainLocationFile)
-            doneFile.text = md5Hash(toolChainLocationFile)
         }
-    }
 
-    private static CompressorInputStream createDecompressStream(InputStream inputStream) {
-        return new CompressorStreamFactory().createCompressorInputStream(inputStream)
-    }
-
-    private static ArchiveInputStream createArchiveStream(InputStream inputStream) {
-        return new ArchiveStreamFactory().createArchiveInputStream(inputStream)
-    }
-
-    private static int toModeBit(PosixFilePermission permission) {
-        return 1 << permission.ordinal()
-    }
-
-    private boolean isExtractUpToDate() {
-        return toolChainLocationFile.exists() && doneFile.exists() && doneFile.text == md5Hash(toolChainLocationFile)
-    }
-
-    private File getToolChainLocationFile() {
-        return toolChainLocation.get().asFile
-    }
-
-    private static String md5Hash(File dirToHash) {
-        MessageDigest digest = DigestUtils.getDigest("MD5")
-        dirToHash.eachFileRecurse(FileType.FILES) { File fileToHash ->
-            digest.update(fileToHash.bytes)
+        private static CompressorInputStream createDecompressStream(InputStream inputStream) {
+            return new CompressorStreamFactory().createCompressorInputStream(inputStream)
         }
-        return new String(digest.digest())
+
+        private static ArchiveInputStream createArchiveStream(InputStream inputStream) {
+            return new ArchiveStreamFactory().createArchiveInputStream(inputStream)
+        }
+
+        private static int toModeBit(PosixFilePermission permission) {
+            return 1 << permission.ordinal()
+        }
+
+        private boolean isExtractUpToDate() {
+            return toolChainLocationFile.exists() && doneFile.exists() && doneFile.text == md5Hash(toolChainLocationFile)
+        }
+
+        private static String md5Hash(File dirToHash) {
+            MessageDigest digest = DigestUtils.getDigest("MD5")
+            dirToHash.eachFileRecurse(FileType.FILES) { File fileToHash ->
+                digest.update(fileToHash.bytes)
+            }
+            return new String(digest.digest())
+        }
     }
 }
