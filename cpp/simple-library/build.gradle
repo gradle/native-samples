@@ -15,9 +15,15 @@ repositories {
     }
 }
 
+// Also, as the Gradle publishing format for C++ is not yet stable, encode the Gradle metadata version in the module as well
+// None of this will be necessarily in later releases and Gradle will take care of these things instead
 unitTest {
-    dependencies {
-        implementation "org.gradle.cpp-samples:googletest:latest.integration"
+    binaries.whenElementFinalized {
+        def metadataFormat = org.gradle.api.internal.artifacts.ivyservice.ivyresolve.parser.ModuleMetadataParser.FORMAT_VERSION
+
+        dependencies {
+            implementation "org.gradle.cpp-samples:googletest_${metadataFormat}:latest.integration"
+        }
     }
 }
 
