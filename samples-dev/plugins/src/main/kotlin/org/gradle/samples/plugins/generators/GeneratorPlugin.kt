@@ -7,11 +7,13 @@ import org.gradle.samples.plugins.GeneratorTask
 
 class GeneratorPlugin : Plugin<Project> {
     override fun apply(project: Project) {
+        val generatorTasks = project.tasks.withType(GeneratorTask::class.java)
+
         // Add a task to generate the list of samples
         val manifestTask = project.tasks.register("samplesManifest", SamplesManifestTask::class.java) { task ->
             task.manifest.set(project.file("samples-list.txt"))
             task.sampleDirs.set(project.provider {
-                project.tasks.withType(GeneratorTask::class.java).map { generator ->
+                generatorTasks.map { generator ->
                     project.projectDir.toPath().relativize(generator.sampleDir.get().asFile.toPath()).toString()
                 }
             })
@@ -23,6 +25,19 @@ class GeneratorPlugin : Plugin<Project> {
             task.manifest.set(project.provider {
                 manifestTask.get().manifest.get()
             })
+        }
+
+        generatorTasks.configureEach { task ->
+            task.templatesDir.set(project.file("src/templates"))
+            task.group = "source generation"
+        }
+
+        // Add a lifecycle task to generate everything
+        project.tasks.register("generateSource") { task ->
+            task.dependsOn(generatorTasks)
+            task.dependsOn(manifestTask)
+            task.group = "source generation"
+            task.description = "generate the source files for all samples"
         }
     }
 }

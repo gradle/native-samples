@@ -45,17 +45,6 @@ tasks.clean {
     dependsOn cleanSamples, cleanRepo
 }
 
-tasks.withType(SourceCopyTask) {
-    templatesDir = file("src/templates")
-    group = "source generation"
-}
-
-task generateSource {
-    dependsOn tasks.withType(SourceCopyTask), samplesManifest
-    group = "source generation"
-    description = "generate the source files for all samples"
-}
-
 def cppUtilsLib = CppLibraryTemplate.of("cpp-lib-with-api-dep", "utilities")
 def cppListLib = CppLibraryTemplate.of("cpp-lib", "list")
 
