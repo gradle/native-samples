@@ -1,1 +1,1 @@
-rootProject.name = "generators"
+rootProject.name = "plugins"

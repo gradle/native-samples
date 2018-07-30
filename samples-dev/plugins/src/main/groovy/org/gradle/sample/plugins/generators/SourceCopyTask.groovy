@@ -3,8 +3,9 @@ package org.gradle.sample.plugins.generators
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.tasks.TaskAction
+import org.gradle.samples.plugins.GeneratorTask
 
-class SourceCopyTask extends DefaultTask {
+class SourceCopyTask extends DefaultTask implements GeneratorTask {
     final DirectoryProperty sampleDir = project.layout.directoryProperty()
     final DirectoryProperty templatesDir = project.layout.directoryProperty()
     final Map<String, TemplateTarget> projects = [:]

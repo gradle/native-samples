@@ -5,8 +5,8 @@ includeBuild("samples-dev/plugins")
 pluginManagement {
     resolutionStrategy {
         eachPlugin {
-            if (requested.id.id == "org.gradle.samples.wrapper") {
-                useModule("org.gradle.samples.plugins:generators:1.0")
+            if (requested.id.id.startsWith("org.gradle.samples.")) {
+                useModule("org.gradle.samples.plugins:plugins:1.0")
             }
         }
     }

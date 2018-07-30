@@ -28,5 +28,9 @@ gradlePlugin {
             id = "org.gradle.samples.wrapper"
             implementationClass = "org.gradle.samples.plugins.wrapper.WrapperPlugin"
         }
+        create("generator") {
+            id = "org.gradle.samples.generators"
+            implementationClass = "org.gradle.samples.plugins.generators.GeneratorPlugin"
+        }
     }
 }

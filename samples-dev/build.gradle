@@ -1,15 +1,12 @@
-import groovy.io.FileType
-import org.gradle.sample.plugins.generators.*
-
-buildscript {
-    dependencies {
-        classpath "org.gradle.samples.plugins:generators"
-    }
-}
+import org.gradle.sample.plugins.generators.CppLibraryTemplate
+import org.gradle.sample.plugins.generators.GitRepoTask
+import org.gradle.sample.plugins.generators.SourceCopyTask
+import org.gradle.sample.plugins.generators.SwiftLibraryTemplate
 
 plugins {
     id "groovy"
     id "idea"
+    id "org.gradle.samples.generators"
 }
 
 sourceCompatibility = 1.8
@@ -40,48 +37,13 @@ task cleanRepo(type: Delete) {
     delete file("../cpp/repo")
 }
 
-task cleanSamples {
+tasks.cleanSamples {
     dependsOn cleanRepo
-    doLast {
-        def toDelete = [
-            file('../cpp/source-dependencies/repos'),
-            file('../swift/source-dependencies/repos'),
-            file('../swift/swift-package-manager-publish/release-plugin'),
-            file('../swift/swift-package-manager-publish/list-library'),
-            file('../swift/swift-package-manager-publish/utilities-library'),
-            file('../cpp/swift-package-manager-publish/release-plugin'),
-            file('../cpp/swift-package-manager-publish/list-library'),
-            file('../cpp/swift-package-manager-publish/utilities-library'),
-            file('../cpp/autotools-library/cmake-plugin'),
-            file('../cpp/autotools-library/build-wrapper-plugin'),
-            file('../cpp/library-with-tests/cmake-plugin'),
-            file('../cpp/library-with-tests/build-wrapper-plugin'),
-            file('../cpp/cmake-library/cmake-plugin'),
-            file('../cpp/cmake-library/build-wrapper-plugin'),
-            file('../cpp/cmake-library/custom-publication-plugin'),
-            file('../cpp/cmake-source-dependencies/cmake-plugin'),
-            file('../cpp/cmake-source-dependencies/build-wrapper-plugin'),
-            file('../cpp/cmake-source-dependencies/app'),
-            file('../cpp/cmake-source-dependencies/utilities'),
-            file('../cpp/cmake-source-dependencies/list')
-        ]
-        supportedLanguages*.eachFileRecurse(FileType.DIRECTORIES) { def dir ->
-            if ([/repo/, /build/, /\.gradle/, /\.build/, /.+\.xcworkspace/, /.+\.xcodeproj/, /\.vs/].any { dir.name ==~ it }) {
-                toDelete << dir
-            }
-        }
-        toDelete.each { it.deleteDir() }
-        toDelete.clear()
-        supportedLanguages*.eachFileRecurse(FileType.FILES) { def file ->
-            if ([/.+\.sln/, /.+\.vcxproj/, /.+\.vcxproj.filters/, /.+\.vcxproj.user/].any { file.name ==~ it }) {
-                toDelete << file
-            }
-        }
-        toDelete.each { it.delete() }
-    }
 }
 
-clean.dependsOn cleanSamples, cleanRepo
+tasks.clean {
+    dependsOn cleanSamples, cleanRepo
+}
 
 tasks.withType(SourceCopyTask) {
     templatesDir = file("src/templates")
@@ -89,7 +51,7 @@ tasks.withType(SourceCopyTask) {
 }
 
 task generateSource {
-    dependsOn tasks.withType(SourceCopyTask)
+    dependsOn tasks.withType(SourceCopyTask), samplesManifest
     group = "source generation"
     description = "generate the source files for all samples"
 }
