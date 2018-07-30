@@ -5,33 +5,6 @@ build
 # Local repository
 cpp/repo
 cpp/cmake-library/repo
-cpp/dependency-on-upstream-branch/list-library
-cpp/dependency-on-upstream-branch/utilities-library
-cpp/source-dependencies/repos/list-library
-cpp/source-dependencies/repos/utilities-library
-cpp/swift-package-manager-publish/release-plugin
-cpp/swift-package-manager-publish/list-library
-cpp/swift-package-manager-publish/utilities-library
-cpp/autotools-library/cmake-plugin
-cpp/autotools-library/build-wrapper-plugin
-cpp/cmake-library/cmake-plugin
-cpp/cmake-library/build-wrapper-plugin
-cpp/cmake-library/custom-publication-plugin
-cpp/cmake-source-dependencies/cmake-plugin
-cpp/cmake-source-dependencies/build-wrapper-plugin
-cpp/cmake-source-dependencies/list
-cpp/cmake-source-dependencies/utilities
-cpp/cmake-source-dependencies/app
-cpp/library-with-tests/cmake-plugin
-cpp/library-with-tests/build-wrapper-plugin
-swift/dependency-on-upstream-branch/list-library
-swift/dependency-on-upstream-branch/utilities-library
-swift/source-dependencies/repos/list-library
-swift/source-dependencies/repos/utilities-library
-swift/injected-plugins/repos
-swift/swift-package-manager-publish/release-plugin
-swift/swift-package-manager-publish/list-library
-swift/swift-package-manager-publish/utilities-library
 
 # Swift Package Manager Files
 .build

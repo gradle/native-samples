@@ -18,6 +18,11 @@ class GitRepoTask extends DefaultTask implements RepoGeneratorTask {
     @TaskAction
     def go() {
         def destDir = sampleDir.get().asFile
+        def parentIgnoreFile = new File(destDir.parentFile, ".gitignore")
+        def parentIgnore = "$destDir.name/\n"
+        if (!parentIgnoreFile.isFile() || !parentIgnoreFile.text.contains(parentIgnore)) {
+            parentIgnoreFile << parentIgnore
+        }
         project.delete(new File(destDir, ".git"))
         InitCommand init = Git.init();
         def git = init.setDirectory(destDir).call()
