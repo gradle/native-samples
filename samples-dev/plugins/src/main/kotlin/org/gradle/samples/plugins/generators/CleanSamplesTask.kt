@@ -11,7 +11,7 @@ import javax.inject.Inject
  * Cleans each of the generated samples listed in the samples manifest.
  */
 open class CleanSamplesTask @Inject constructor() : DefaultTask() {
-    private val names = setOf("repo", "build", ".gradle", ".build")
+    private val names = setOf("repo", "build", ".gradle", ".build", "Package.resolved")
     private val extensions = setOf("xcworkspace", "xcodeproj", "vs", "sln", "vcxproj", "vcxproj.filters", "vcxproj.user")
 
     @InputFile
