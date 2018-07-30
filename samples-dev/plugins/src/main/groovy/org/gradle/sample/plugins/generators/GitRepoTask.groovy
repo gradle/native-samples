@@ -5,8 +5,9 @@ import org.eclipse.jgit.api.InitCommand
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.tasks.TaskAction
+import org.gradle.samples.plugins.RepoGeneratorTask
 
-class GitRepoTask extends DefaultTask {
+class GitRepoTask extends DefaultTask implements RepoGeneratorTask {
     final DirectoryProperty sampleDir = project.layout.directoryProperty()
     private final List<Closure> changes = []
 
