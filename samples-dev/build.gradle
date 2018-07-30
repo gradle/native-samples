@@ -757,7 +757,6 @@ task generateCppAutotoolsLibraryPluginRepo(type: GitRepoTask) {
     }
 }
 
-
 task generateCppLibraryWithTestsPluginRepo(type: GitRepoTask) {
     dependsOn cppLibraryWithTests
     sampleDir = file("../cpp/library-with-tests/build-wrapper-plugin")

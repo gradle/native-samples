@@ -195,10 +195,10 @@ class SourceCopyTask extends DefaultTask {
             }
             def destDir = sampleDir.dir(targetDirName).get().asFile
             if (recursive && cleaned.add(destDir)) {
-                // TODO - generate the test main.swift
+                // TODO - generate the test LinuxMain.swift
                 // TODO - generate the CMake build
                 project.delete project.fileTree(destDir, {
-                    exclude '**/main.swift'
+                    exclude '**/LinuxMain.swift'
                     exclude 'CMakeLists.txt'
                 })
             }
