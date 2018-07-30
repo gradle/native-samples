@@ -33,7 +33,7 @@ class Samples {
 
     static File getRootSampleDir() {
         File result = new File(Samples.getProtectionDomain().getCodeSource().getLocation().getPath())
-        while (!new File(result, 'settings.gradle').exists()) {
+        while (!new File(result, 'settings.gradle.kts').exists()) {
             result = result.parentFile
         }
         return result
