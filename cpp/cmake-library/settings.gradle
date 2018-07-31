@@ -3,16 +3,10 @@ rootProject.name = 'cmake'
 include ":app", ":utilities", ":list"
 
 sourceControl {
-    vcsMappings {
-        withModule("org.gradle.samples:build-wrapper") {
-            from(GitVersionControlSpec) {
-                url = uri("build-wrapper-plugin")
-            }
-        }
-        withModule("org.gradle.samples:custom-publication") {
-            from(GitVersionControlSpec) {
-                url = uri("custom-publication-plugin")
-            }
-        }
+    gitRepository("build-wrapper-plugin") {
+        producesModule("org.gradle.samples:build-wrapper")
+    }
+    gitRepository("custom-publication-plugin") {
+        producesModule("org.gradle.samples:custom-publication")
     }
 }

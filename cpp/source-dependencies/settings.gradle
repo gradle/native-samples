@@ -1,16 +1,10 @@
 rootProject.name = 'app'
 
 sourceControl {
-    vcsMappings {
-        withModule('org.gradle.cpp-samples:utilities') {
-            from(GitVersionControlSpec) {
-                url = file('repos/utilities-library').toURI()
-            }
-        }
-        withModule('org.gradle.cpp-samples:list') {
-            from(GitVersionControlSpec) {
-                url = file('repos/list-library').toURI()
-            }
-        }
+    gitRepository("repos/utilities-library") {
+        producesModule("org.gradle.cpp-samples:utilities")
+    }
+    gitRepository("repos/list-library") {
+        producesModule("org.gradle.cpp-samples:list")
     }
 }

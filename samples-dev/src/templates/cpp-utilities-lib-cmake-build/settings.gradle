@@ -1,16 +1,10 @@
 rootProject.name = 'utilities'
 
 sourceControl {
-    vcsMappings {
-        withModule("org.gradle.samples:build-wrapper") {
-            from(GitVersionControlSpec) {
-                url = uri("../build-wrapper-plugin")
-            }
-        }
-        withModule("org.gradle.cpp-samples:list") {
-            from(GitVersionControlSpec) {
-                url = uri("../list")
-            }
-        }
+    gitRepository("../build-wrapper-plugin") {
+        producesModule("org.gradle.samples:build-wrapper")
+    }
+    gitRepository("../list") {
+        producesModule("org.gradle.cpp-samples:list")
     }
 }

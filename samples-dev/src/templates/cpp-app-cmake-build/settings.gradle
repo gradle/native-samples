@@ -1,22 +1,14 @@
 rootProject.name = 'app'
 
 sourceControl {
-    vcsMappings {
-        withModule("org.gradle.samples:build-wrapper") {
-            from(GitVersionControlSpec) {
-                url = uri("../build-wrapper-plugin")
-            }
-        }
-        withModule("org.gradle.cpp-samples:utilities") {
-            from(GitVersionControlSpec) {
-                url = uri("../utilities")
-            }
-        }
-        // This should not be required
-        withModule("org.gradle.cpp-samples:list") {
-            from(GitVersionControlSpec) {
-                url = uri("../list")
-            }
-        }
+    gitRepository("../build-wrapper-plugin") {
+        producesModule("org.gradle.samples:build-wrapper")
+    }
+    gitRepository("../utilities") {
+        producesModule("org.gradle.cpp-samples:utilities")
+    }
+    // This should not be required
+    gitRepository("../list") {
+        producesModule("org.gradle.cpp-samples:list")
     }
 }

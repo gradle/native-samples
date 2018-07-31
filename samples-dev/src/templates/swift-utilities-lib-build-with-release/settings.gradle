@@ -1,16 +1,10 @@
 rootProject.name = 'utilities'
 
 sourceControl {
-    vcsMappings {
-        withModule('org.gradle.swift-samples:list') {
-            from(GitVersionControlSpec) {
-                url = uri('../list-library')
-            }
-        }
-        withModule('org.gradle.samples:release') {
-            from(GitVersionControlSpec) {
-                url = uri('../release-plugin')
-            }
-        }
+    gitRepository("../release-plugin") {
+        producesModule("org.gradle.samples:release")
+    }
+    gitRepository("../list-library") {
+        producesModule("org.gradle.swift-samples:list")
     }
 }
