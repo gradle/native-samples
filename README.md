@@ -430,7 +430,7 @@ Edit the source of the utilities library to fix the bug and release a new versio
 
 ```
 > cd repos/utilities-library
-> edit src/main/swift/Util.swift # follow the instructions in the source file to fix the bug
+> edit src/main/swift/Util.swift # follow the instructions in the source file to fix the bug in function join()
 > git commit -a -m 'fixed bug'
 > git tag 1.1
 ```
@@ -486,23 +486,29 @@ Now you can build the application:
 BUILD SUCCESSFUL in 1s
 
 > ./build/install/main/debug/App
-Hello, World!
+World!
 ```
 
-The build is configured to use the most recent changes from the 'release' branch of the utilities library. Try changing the source of the library:
+You can see the application's output is incorrect. The build is configured to use the most recent changes from the 'release' branch of the utilities library and this branch contains a bug. Let's fix this.
+
+Edit the source of the utilities library to fix the bug:
 
 ```
-> cd ../utilities-library
+> cd repos/utilities-library
 > git checkout release
-> edit src/main/swift/Util.swift # add to split() function: print("split: " + s)
-> git commit -a -m 'added some logging'
-> cd ../app
+> edit src/main/swift/Util.swift # follow the instructions in the source file to fix the bug
+> git commit -a -m 'fixed bug'
+```
+
+Now build and run the application:
+
+```
+> cd ../..
 > ./gradlew assemble
 
 BUILD SUCCESSFUL in 1s
 
 > ./build/install/main/debug/App
-split:   Hello,      World!
 Hello, World!
 ```
 
@@ -521,7 +527,7 @@ To use this sample, create the Git repositories containing the libraries:
 BUILD SUCCESSFUL in 1s
 
 > ./build/install/main/debug/app
-Hello, World!
+World!
 ```
 
 Try the same experiments as for the Swift sample above.

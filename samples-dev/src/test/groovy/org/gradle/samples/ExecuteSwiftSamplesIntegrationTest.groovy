@@ -24,7 +24,7 @@ class ExecuteSwiftSamplesIntegrationTest extends ExecuteSamplesIntegrationTest {
         Assume.assumeFalse(sample.sampleName == 'ios-application' && !OperatingSystem.current().macOsX)
 
         // TODO - extract this from the documentation
-        boolean testsBroken = sample.sampleName == 'source-dependencies'
+        boolean testsBroken = sample.sampleName == 'source-dependencies' || sample.sampleName == 'dependency-on-upstream-branch'
 
         given:
         sample.clean()

@@ -156,8 +156,10 @@ task cppSourceDependencies(type: SourceCopyTask) {
 
     appProject(".").buildRoot()
     appProject(".").fromTemplate("cpp-app")
+    libProject("repos/utilities-library").buildRoot()
     libProject("repos/utilities-library").fromTemplate(cppUtilsLib)
     libProject("repos/utilities-library").fromTemplate("cpp-utilities-lib-build")
+    libProject("repos/list-library").buildRoot()
     libProject("repos/list-library").fromTemplate(cppListLib)
     libProject("repos/list-library").fromTemplate("cpp-list-lib-build")
 }
@@ -335,8 +337,10 @@ task swiftSourceDependencies(type: SourceCopyTask) {
 
     appProject(".").buildRoot()
     appProject(".").fromTemplate("swift-app")
+    libProject("repos/utilities-library").buildRoot()
     libProject("repos/utilities-library").fromTemplate(swiftUtilsLib)
     libProject("repos/utilities-library").fromTemplate("swift-utilities-lib-build")
+    libProject("repos/list-library").buildRoot()
     libProject("repos/list-library").fromTemplate(swiftListLib)
     libProject("repos/list-library").fromTemplate("swift-list-lib-build")
 }
@@ -460,7 +464,7 @@ task generateCppUtilitiesRepo(type: GitRepoTask) {
     dependsOn cppSourceDependencies
     sampleDir = file("../cpp/source-dependencies/repos/utilities-library")
     change { ch ->
-        changeContent("src/main/cpp/join.cpp", 'for (int i = 0; i < source.size(); ++i) {', """// Bug: i = 1 should be i = 0
+        changeContent("src/main/cpp/join.cpp", 'for (int i = 0; i < source.size(); ++i) {', """// BUG: i = 1 should be i = 0
     for (int i = 1; i < source.size(); ++i) {""")
         tag("1.0")
         "initial version"
@@ -494,8 +498,8 @@ task generateSwiftUtilitiesRepo(type: GitRepoTask) {
     dependsOn swiftSourceDependencies
     sampleDir = file("../swift/source-dependencies/repos/utilities-library")
     change { ch ->
-        changeContent("src/main/swift/Util.swift", "var i = 0", """// Bug: i = 1 should be i = 0
-    var i = 1""")
+        changeContent("src/main/swift/Util.swift", "var i = 0", """// BUG: i = 1 should be i = 0
+        var i = 1""")
         tag("1.0")
         "initial version"
     }
@@ -570,6 +574,8 @@ task generateBranchCppUtilitiesRepo(type: GitRepoTask) {
     dependsOn cppBranchDependencies
     sampleDir = file("../cpp/dependency-on-upstream-branch/utilities-library")
     change { ch ->
+        changeContent("src/main/cpp/join.cpp", 'for (int i = 0; i < source.size(); ++i) {', """// BUG: i = 1 should be i = 0
+    for (int i = 1; i < source.size(); ++i) {""")
         tag("1.0")
         "initial version"
     }
@@ -580,7 +586,7 @@ task generateBranchCppUtilitiesRepo(type: GitRepoTask) {
     }
     change { ch ->
         checkout("master")
-        changeContent("build.gradle", "version = '1.0'", "version = '2.0'")
+        changeContent("build.gradle", "version = '1.0'", "version = '2.0-SNAPSHOT'")
         "prepare next version"
     }
 }
@@ -598,6 +604,8 @@ task generateBranchSwiftUtilitiesRepo(type: GitRepoTask) {
     dependsOn swiftBranchDependencies
     sampleDir = file("../swift/dependency-on-upstream-branch/utilities-library")
     change { ch ->
+        changeContent("src/main/swift/Util.swift", "var i = 0", """// BUG: i = 1 should be i = 0
+        var i = 1""")
         tag("1.0")
         "initial version"
     }
