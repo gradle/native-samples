@@ -116,6 +116,20 @@ class SourceCopyTask extends DefaultTask implements SampleGeneratorTask {
                     builder.copyDirTree("${template.templateName}/${src}", "${projectDir}/${dest}", lineFilter)
                 }
             }
+            def testDir = builder.targetFile("${projectDir}/src/test/swift")
+            if (testDir.directory) {
+                def testNames = testDir.listFiles()
+                        .findAll { it.name.endsWith(".swift") && it.name != "LinuxMain.swift" }
+                        .collect {
+                            def name = it.name.replace(".swift", "")
+                            "testCase(${name}.allTests)"
+                        }.sort()
+                        .join(", ")
+                new File(testDir, "LinuxMain.swift").text = """import XCTest
+
+XCTMain([${testNames}])
+"""
+            }
         }
 
         Closure addDllExportToPublicHeader(Template template) {
@@ -175,10 +189,15 @@ class SourceCopyTask extends DefaultTask implements SampleGeneratorTask {
         }
 
         File writeTargetFile(String targetFileName, String content) {
-            def file = sampleDir.file(targetFileName).get().asFile
+            File file = targetFile(targetFileName)
             file.parentFile.mkdirs()
             file.text = content
             return file
+        }
+
+        File targetFile(String targetFileName) {
+            def file = sampleDir.file(targetFileName).get().asFile
+            file
         }
 
         void copyDir(String templateDirName, String targetDirName) {
