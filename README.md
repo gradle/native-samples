@@ -72,7 +72,7 @@ Gradle enables Swift incremental compilation by default, so no extra configurati
 
 ### Debug and release variants
 
-The Swift/C++ plugins add a 'debug' and 'release' variant for each library or application. By default, the `assemble` task will build the debug variant only.
+The Swift and C++ plugins add a 'debug' and 'release' variant for each library or application. By default, the `assemble` task will build the debug variant only.
 
 You can also use the `assembleDebug` and `assembleRelease` tasks to build a specific variant, or both variants.
 
@@ -421,38 +421,34 @@ Next, build and run the sample:
 BUILD SUCCESSFUL in 1s
 
 > ./build/install/main/debug/App
-Hello, World!
+World!
 ```
 
-The build is configured to use the most recent revision from the 'utilities-library' Git repository. To see this in action, you can edit a library source file and commit the change:
+You can see the application's output is incorrect. The build is configured to use version '1.0' from the 'utilities-library' Git repository and this version contains a bug. Let's fix this.
+
+Edit the source of the utilities library to fix the bug and release a new version of the library:
 
 ```
 > cd repos/utilities-library
-> edit src/main/swift/Util.swift # add to split() function: print("split: " + s)
-> git commit -a -m 'added some logging'
+> edit src/main/swift/Util.swift # follow the instructions in the source file to fix the bug
+> git commit -a -m 'fixed bug'
+> git tag 1.1
+```
+
+Update the application to use the new version:
+
+```
 > cd ../..
+> edit build.gradle # change dependency on org.gradle.swift-samples:utilities:1.0 to org.gradle.swift-samples:utilities:1.1
 > ./gradlew assemble
 
 BUILD SUCCESSFUL in 1s
 
 > ./build/install/main/debug/App
-split:   Hello,      World!
 Hello, World!
 ```
 
-You can also depend on specific versions of the libraries. For example, version 1.0 of the utilities library contains a bug.
-
-```
-> edit build.gradle # change dependency on utilities:latest.integration to utilities:1.0
-> ./gradlew assemble
-
-BUILD SUCCESSFUL in 1s
-
-> ./build/install/main/debug/App
-Hello, Hello,
-```
-
-Change to version 1.1 to use a version with a fix for the bug. Dynamic dependencies are also supported, so you could also use `1.+`, `[1.1,2.0]` or `latest.integration`. Gradle matches the tags of the Git repository. Branches are also supported, but use a different syntax. See the following sample.
+Dynamic dependencies are also supported, so you could also use `1.+`, `[1.1,2.0]` or `latest.integration`. Gradle matches the tags of the Git repository. Branches are also supported, but use a different syntax. See the following sample.
 
 ### C++
 
@@ -464,7 +460,7 @@ Change to version 1.1 to use a version with a fix for the bug. Dynamic dependenc
 BUILD SUCCESSFUL in 1s
 
 > ./build/install/main/debug/app
-Hello, World!
+World!
 ```
 
 Try the same experiments as for the Swift sample above.

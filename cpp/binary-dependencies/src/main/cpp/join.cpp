@@ -6,7 +6,7 @@
 UTILITIES_API std::string join(const linked_list & source) {
     std::string result;
     for (int i = 0; i < source.size(); ++i) {
-        if (i > 0) {
+        if (!result.empty()) {
             result.append(" ");
         }
         result.append(source.get(i));

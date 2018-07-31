@@ -37,7 +37,7 @@ public class Util {
         var i = 0
         var formatted = ""
         while (i < l.size()) {
-            if (i > 0) {
+            if (formatted.count > 0) {
                 formatted.append(" ")
             }
             formatted.append(l.get(i))

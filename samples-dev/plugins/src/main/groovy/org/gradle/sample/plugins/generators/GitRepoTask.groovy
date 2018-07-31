@@ -86,7 +86,7 @@ class Changes {
     void changeContent(String srcFileName, String pattern, String replacement) {
         def srcFile = new File(workDir, srcFileName)
         def original = srcFile.text
-        if (!original.find(pattern)) {
+        if (!original.contains(pattern)) {
             throw new IllegalArgumentException("Source file ${srcFile} does not contain anything that matches '${pattern}'.")
         }
         srcFile.text = original.replace(pattern, replacement)

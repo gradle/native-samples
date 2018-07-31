@@ -4,6 +4,7 @@ import org.gradle.internal.os.OperatingSystem
 import org.gradle.samples.fixtures.Samples
 import org.gradle.samples.fixtures.SwiftPmRunner
 import org.gradle.testkit.runner.GradleRunner
+import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Assume
 import spock.lang.Requires
 import spock.lang.Unroll
@@ -22,15 +23,23 @@ class ExecuteSwiftSamplesIntegrationTest extends ExecuteSamplesIntegrationTest {
         // iOS application can only build on macOS
         Assume.assumeFalse(sample.sampleName == 'ios-application' && !OperatingSystem.current().macOsX)
 
+        // TODO - extract this from the documentation
+        boolean testsBroken = sample.sampleName == 'source-dependencies'
+
         given:
         sample.clean()
         runSetupFor(sample)
 
         expect:
-        GradleRunner.create()
+        def runner = GradleRunner.create()
                 .withProjectDir(sample.workingDir)
                 .withArguments("build")
-                .build()
+        if (testsBroken) {
+            def result = runner.buildAndFail()
+            assert result.taskPaths(TaskOutcome.FAILED) == [":xcTest"]
+        } else {
+            runner.build()
+        }
 
         GradleRunner.create()
                 .withProjectDir(sample.workingDir)

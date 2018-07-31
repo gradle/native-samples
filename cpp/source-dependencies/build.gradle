@@ -8,6 +8,6 @@ group = 'org.gradle.cpp-samples'
 
 application {
     dependencies {
-        implementation 'org.gradle.cpp-samples:utilities:latest.integration'
+        implementation 'org.gradle.cpp-samples:utilities:1.0'
     }
 }

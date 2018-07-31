@@ -437,15 +437,13 @@ task generateCppListRepo(type: GitRepoTask) {
     dependsOn cppSourceDependencies
     sampleDir = file("../cpp/source-dependencies/repos/list-library")
     change { ch ->
-        changeContent("src/main/cpp/get.cpp", "index > 0", "index > 1")
         tag("1.0")
-        "introduce bug in get.cpp"
+        "initial version"
     }
     change { ch ->
         changeContent("build.gradle", "version = '1.0'", "version = '1.1'")
-        changeContent("src/main/cpp/get.cpp", "index > 1", "index > 0")
         tag("1.1")
-        "fix bug in get.cpp"
+        "minor release"
     }
     change { ch ->
         changeContent("build.gradle", "version = '1.1'", "version = '2.0'")
@@ -462,24 +460,10 @@ task generateCppUtilitiesRepo(type: GitRepoTask) {
     dependsOn cppSourceDependencies
     sampleDir = file("../cpp/source-dependencies/repos/utilities-library")
     change { ch ->
+        changeContent("src/main/cpp/join.cpp", 'for (int i = 0; i < source.size(); ++i) {', """// Bug: i = 1 should be i = 0
+    for (int i = 1; i < source.size(); ++i) {""")
         tag("1.0")
         "initial version"
-    }
-    change { ch ->
-        changeContent("build.gradle", "version = '1.0'", "version = '1.1'")
-        changeContent("build.gradle", "list:1.0", "list:1.+")
-        tag("1.1")
-        "use latest list 1.x library"
-    }
-    change { ch ->
-        changeContent("build.gradle", "version = '1.1'", "version = '2.0'")
-        changeContent("build.gradle", "list:1.+", "list:2.+")
-        tag("2.0")
-        "require list 2.0"
-    }
-    change { ch ->
-        changeContent("build.gradle", "version = '2.0'", "version = '2.0-SNAPSHOT'")
-        "work in progress"
     }
 }
 
@@ -487,15 +471,13 @@ task generateSwiftListRepo(type: GitRepoTask) {
     dependsOn swiftSourceDependencies
     sampleDir = file("../swift/source-dependencies/repos/list-library")
     change { ch ->
-        changeContent("src/main/swift/LinkedList.swift", "c > 0", "c > 1")
         tag("1.0")
-        "introduce bug in LinkedList"
+        "initial version"
     }
     change { ch ->
         changeContent("build.gradle", "version = '1.0'", "version = '1.1'")
-        changeContent("src/main/swift/LinkedList.swift", "c > 1", "c > 0")
         tag("1.1")
-        "fix bug in LinkedList"
+        "minor release"
     }
     change { ch ->
         changeContent("build.gradle", "version = '1.1'", "version = '2.0'")
@@ -512,24 +494,10 @@ task generateSwiftUtilitiesRepo(type: GitRepoTask) {
     dependsOn swiftSourceDependencies
     sampleDir = file("../swift/source-dependencies/repos/utilities-library")
     change { ch ->
+        changeContent("src/main/swift/Util.swift", "var i = 0", """// Bug: i = 1 should be i = 0
+    var i = 1""")
         tag("1.0")
         "initial version"
-    }
-    change { ch ->
-        changeContent("build.gradle", "version = '1.0'", "version = '1.1'")
-        changeContent("build.gradle", "list:1.0", "list:1.+")
-        tag("1.1")
-        "use latest list 1.x library"
-    }
-    change { ch ->
-        changeContent("build.gradle", "version = '1.1'", "version = '2.0'")
-        changeContent("build.gradle", "list:1.+", "list:2.+")
-        tag("2.0")
-        "require list 2.0"
-    }
-    change { ch ->
-        changeContent("build.gradle", "version = '2.0'", "version = '2.0-SNAPSHOT'")
-        "work in progress"
     }
 }
 
