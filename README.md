@@ -28,7 +28,7 @@ If you have a use case that isn't covered by an existing sample, open an issue f
 
 ### Visual Studio support
 
-All of the C++ sample have Visual Studio support, added by applying the `visual-studio` plugin. To open a sample build in Visual Studio:
+All of the C++ samples have Visual Studio support, added by applying the `visual-studio` plugin. To open a sample build in Visual Studio:
 
 ```
 > cd <sample-dir>
@@ -94,7 +94,7 @@ This will build and publish the debug and release binaries. The binaries are pub
 
 This sample shows how a simple Swift or C++ application can be built with Gradle. The application has no dependencies and the build has minimal configuration.
 
-Although there is currently no direct support for building applications and libraries from C, there is also a sample build that shows how the C++ support can be configured to build a C application.
+Although there is currently no out-of-the-box support for building applications and libraries from C, there is also a sample build that shows how the C++ support can be configured to build a C application.
 
 ### C++
 
@@ -261,7 +261,7 @@ Hello, World!
 
 ## Application with prebuilt library dependencies in a Maven repository (binary-dependencies)
 
-This sample shows how to publish C++ libraries to a Maven repository and use them from another build. This is currently only supported for C++.
+This sample shows how to publish C++ libraries to a Maven repository and use them from another build. This is currently not supported for Swift.
 
 ### C++
 
@@ -285,6 +285,14 @@ BUILD SUCCESSFUL in 1s
 
 > ./build/install/main/debug/app
 Hello, World!
+```
+
+The build is also configured to download the Google test binaries from a Maven repository to build and run the unit tests:
+
+```
+> ./gradlew test
+
+BUILD SUCCESSFUL in 1s
 ```
 
 ## Application with prebuilt library dependencies (prebuilt-binaries)
@@ -337,7 +345,7 @@ Hello, World!
 
 ## Application with Swift package manager conventions (swift-package-manager)
 
-This sample shows how to configure Gradle to use the typical layout for a Swift Package Manager package.
+This sample shows how to configure Gradle to use a source layout that is different to its conventions. In this case, the sample uses the typical layout for a Swift Package Manager package.
 It contains an application and a single library. The source files for the application and libraries are all under a single `Sources` directory.
 
 This sample also includes a Swift Package Manager build file, so the same source can be built using Swift Package Manager
@@ -413,7 +421,7 @@ To use this sample, first create the Git repositories for the libraries:
 
 The repositories are created in the `repos` directory. Each repository is set up to contain some source files and includes several commits and tags.
 
-Next, build and run the sample:
+Next, build and run the application:
 
 ```
 > ./gradlew assemble
@@ -430,7 +438,7 @@ Edit the source of the utilities library to fix the bug and release a new versio
 
 ```
 > cd repos/utilities-library
-> edit src/main/swift/Util.swift # follow the instructions in the source file to fix the bug in function join()
+> edit src/main/swift/Util.swift # follow the instructions to fix the bug in function join()
 > git commit -a -m 'fixed bug'
 > git tag 1.1
 ```
@@ -452,9 +460,16 @@ Dynamic dependencies are also supported, so you could also use `1.+`, `[1.1,2.0]
 
 ### C++
 
+To use this sample, first create the Git repositories for the libraries:
+
 ```
 > cd cpp/source-dependencies
 > ./gradlew -p ../.. generateCppRepos
+```
+
+Next, build and run the application:
+
+```
 > ./gradlew assemble
 
 BUILD SUCCESSFUL in 1s
@@ -463,7 +478,29 @@ BUILD SUCCESSFUL in 1s
 World!
 ```
 
-Try the same experiments as for the Swift sample above.
+This is the wrong output because of a bug in utilities library.
+
+Edit the source of the utilities library to fix the bug and release a new version of the library:
+
+```
+> cd repos/utilities-library
+> edit src/main/cpp/join.cpp # follow the instructions to fix the bug in function join()
+> git commit -a -m 'fixed bug'
+> git tag 1.1
+```
+
+Update the application to use the new version:
+
+```
+> cd ../..
+> edit build.gradle # change dependency on org.gradle.cpp-samples:utilities:1.0 to org.gradle.cpp-samples:utilities:1.1
+> ./gradlew assemble
+
+BUILD SUCCESSFUL in 1s
+
+> ./build/install/main/debug/app
+Hello, World!
+```
 
 ## Application with dependency on upstream branch (dependency-on-upstream-branch)
 
@@ -478,7 +515,7 @@ To use this sample, create the Git repositories containing the libraries:
 > ./gradlew -p ../../.. generateSwiftRepos
 ```
 
-Now you can build the application:
+Now you can build and run the application:
 
 ```
 > ./gradlew assemble
@@ -496,9 +533,11 @@ Edit the source of the utilities library to fix the bug:
 ```
 > cd repos/utilities-library
 > git checkout release
-> edit src/main/swift/Util.swift # follow the instructions in the source file to fix the bug
+> edit src/main/swift/Util.swift # follow the instructions to fix the bug in function join()
 > git commit -a -m 'fixed bug'
 ```
+
+There's no need to create a tag, as Gradle will take care of checking out the new branch tip.
 
 Now build and run the application:
 
@@ -521,6 +560,8 @@ To use this sample, create the Git repositories containing the libraries:
 > ./gradlew -p ../../.. generateCppRepos
 ```
 
+Build and run the application:
+
 ```
 > ./gradlew assemble
 
@@ -530,7 +571,26 @@ BUILD SUCCESSFUL in 1s
 World!
 ```
 
-Try the same experiments as for the Swift sample above.
+Edit the source of the utilities library to fix the bug:
+
+```
+> cd repos/utilities-library
+> git checkout release
+> edit src/main/cpp/join.cpp # follow the instructions to fix the bug in function join()
+> git commit -a -m 'fixed bug'
+```
+
+Now build the application:
+
+```
+> cd ../..
+> ./gradlew assemble
+
+BUILD SUCCESSFUL in 1s
+
+> ./build/install/main/debug/app
+Hello, World!
+```
 
 ## Application with static library dependencies (static-library)
 
@@ -896,8 +956,8 @@ To use the sample, build the application:
 
 Now install the application into an iOS simulator running iOS 11.2 by drag and dropping the app into a running simulator.
 
-Finally, you can develop the application using Xcode IDE to edit the storyboard and asset catalog. Note that the sample don't allow running the iOS application from the IDE.
+Finally, you can develop the application using Xcode IDE to edit the storyboard and asset catalog. Note that the sample doesn't allow running the iOS application from the IDE.
 
 ```
-> ./gradlew xcode
+> ./gradlew openXcode
 ```
