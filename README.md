@@ -2,7 +2,7 @@
 # Swift and C++ Sample Projects
 
 This repository holds several sample Gradle builds which demonstrate how to
-use Gradle to build Swift/C++ libraries and applications.
+use Gradle to build Swift/C++ libraries and applications as [introduced in our blog post](https://blog.gradle.org/introducing-the-new-cpp-plugins).
 
 Each sample build is listed below with a bit of information related to the
 features of Gradle that are demonstrated in that build. Each sample is functionally
