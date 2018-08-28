@@ -1,2 +1,2 @@
-include 'app', 'app-static', 'common'
+include 'app', 'app-static', 'single-component', 'multiple-components'
 includeBuild 'software-model-bridge-plugin'

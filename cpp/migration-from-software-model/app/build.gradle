@@ -1,7 +1,9 @@
 apply plugin: 'cpp-application'
+apply plugin: 'org.gradle.samples.software-model-bridge'
 
 application {
     dependencies {
-        implementation project(':common')
+        implementation project(':single-component')
+        implementation component.from(':multiple-components', 'libraryFoo')
     }
 }
