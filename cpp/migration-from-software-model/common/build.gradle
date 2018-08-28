@@ -1,0 +1,12 @@
+apply plugin: 'cpp'
+apply plugin: 'org.gradle.samples.software-model-bridge'
+
+model {
+    buildTypes {
+        debug
+        release
+    }
+    components {
+        main(NativeLibrarySpec)
+    }
+}

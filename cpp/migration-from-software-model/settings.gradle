@@ -1,0 +1,2 @@
+include 'app', 'app-static', 'common'
+includeBuild 'software-model-bridge-plugin'

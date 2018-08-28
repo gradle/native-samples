@@ -1,0 +1,7 @@
+apply plugin: 'cpp-application'
+
+application {
+    dependencies {
+        implementation project(':common')
+    }
+}

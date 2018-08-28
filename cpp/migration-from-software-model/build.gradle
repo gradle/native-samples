@@ -1,0 +1,7 @@
+// Currently cannot use the plugins { } block to reference plugins in included builds
+// Use the buildscript { } block instead
+buildscript {
+    dependencies {
+        classpath "org.gradle.samples:software-model-bridge:1.0"
+    }
+}

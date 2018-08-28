@@ -1,0 +1,11 @@
+apply plugin: 'cpp-application'
+
+application {
+    dependencies {
+        implementation project(':common')
+    }
+}
+
+configurations.matching { it.name.startsWith("native") }.all {
+    attributes.attribute(CppBinary.LINKAGE_ATTRIBUTE, Linkage.STATIC)
+}
