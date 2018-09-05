@@ -19,11 +19,14 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.FileCollection
+import org.gradle.api.model.ObjectFactory
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputFiles
 import org.gradle.api.tasks.TaskAction
+
+import javax.inject.Inject
 
 /**
  * Task types to execute CMake
@@ -35,10 +38,12 @@ class CMake extends DefaultTask {
     @InputFiles ConfigurableFileCollection includeDirs
     @InputFiles ConfigurableFileCollection linkFiles
 
-
-    CMake() {
-        variantDirectory = newOutputDirectory()
-        projectDirectory = newInputDirectory()
+    @Inject
+    CMake(ObjectFactory objectFactory) {
+        variantDirectory = objectFactory.directoryProperty()
+        dependsOn(variantDirectory)
+        projectDirectory = objectFactory.directoryProperty()
+        dependsOn(projectDirectory)
 
         includeDirs = project.files()
         linkFiles = project.files()

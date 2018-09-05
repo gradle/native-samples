@@ -1,13 +1,12 @@
 package org.gradle.samples.tasks
 
 import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.InputDirectory
-import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.Internal
-import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.TaskAction
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
+import org.gradle.api.tasks.*
+
+import javax.inject.Inject
 
 class ConfigureTask extends DefaultTask {
     @InputDirectory
@@ -22,11 +21,12 @@ class ConfigureTask extends DefaultTask {
     @Input
     ListProperty<String> arguments
 
-    public ConfigureTask() {
-        sourceDirectory = newInputDirectory()
-        makeDirectory = newOutputDirectory()
-        prefixDirectory = newInputDirectory()
-        arguments = getProject().getObjects().listProperty(String.class)
+    @Inject
+    ConfigureTask(ObjectFactory objectFactory) {
+        sourceDirectory = objectFactory.directoryProperty()
+        makeDirectory = objectFactory.directoryProperty()
+        prefixDirectory = objectFactory.directoryProperty()
+        arguments = objectFactory.listProperty(String.class)
     }
 
     @TaskAction

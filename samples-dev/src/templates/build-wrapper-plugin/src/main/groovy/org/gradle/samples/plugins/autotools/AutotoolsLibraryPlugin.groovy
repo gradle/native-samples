@@ -11,7 +11,7 @@ class AutotoolsLibraryPlugin implements Plugin<Project> {
         project.pluginManager.apply("lifecycle-base")
         project.pluginManager.apply("org.gradle.samples.wrapped-native-library")
 
-        def extension = project.extensions.create("autotools", AutotoolsExtension.class, project.layout, project.objects)
+        def extension = project.extensions.create("autotools", AutotoolsExtension.class, project.objects)
 
         def configureDebug = project.tasks.create('configureDebug', ConfigureTask) {
             sourceDirectory.set extension.sourceDirectory

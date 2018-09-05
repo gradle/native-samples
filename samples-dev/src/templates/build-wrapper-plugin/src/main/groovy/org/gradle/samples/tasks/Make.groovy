@@ -18,26 +18,32 @@ package org.gradle.samples.tasks
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.file.FileCollection
+import org.gradle.api.model.ObjectFactory
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ListProperty
+
+import javax.inject.Inject
 
 class Make extends DefaultTask {
     @Internal DirectoryProperty variantDirectory
     @InputFiles FileCollection makeFiles
     @OutputDirectory DirectoryProperty outputDirectory
-    Provider<File> binary
+    @OutputFile RegularFileProperty binary
     ListProperty<String> arguments
 
-    Make() {
-        variantDirectory = newInputDirectory()
-        outputDirectory = newInputDirectory()
-        binary = newOutputFile()
-        arguments = getProject().getObjects().listProperty(String.class)
+    @Inject
+    Make(ObjectFactory objectFactory) {
+        variantDirectory = objectFactory.directoryProperty()
+        outputDirectory = objectFactory.directoryProperty()
+        binary = objectFactory.fileProperty()
+        arguments = objectFactory.listProperty(String.class)
     }
 
     @TaskAction
@@ -55,12 +61,14 @@ class Make extends DefaultTask {
     void generatedBy(CMake cmake) {
         variantDirectory.set(cmake.variantDirectory)
         outputDirectory.set(cmake.variantDirectory)
+        dependsOn(cmake)
         makeFiles = cmake.cmakeFiles
     }
 
     void generatedBy(ConfigureTask configureTask) {
         variantDirectory.set(configureTask.makeDirectory)
         outputDirectory.set(configureTask.prefixDirectory)
+        dependsOn(configureTask)
         makeFiles = configureTask.outputs.files
     }
 

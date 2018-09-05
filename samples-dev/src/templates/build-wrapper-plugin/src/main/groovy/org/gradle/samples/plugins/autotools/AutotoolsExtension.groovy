@@ -16,10 +16,10 @@ class AutotoolsExtension {
     final ListProperty<String> makeArguments
 
     @Inject
-    AutotoolsExtension(ProjectLayout projectLayout, ObjectFactory objectFactory) {
+    AutotoolsExtension(ObjectFactory objectFactory) {
         binary = objectFactory.property(String.class)
-        includeDirectory = projectLayout.directoryProperty()
-        sourceDirectory = projectLayout.directoryProperty()
+        includeDirectory = objectFactory.directoryProperty()
+        sourceDirectory = objectFactory.directoryProperty()
         configureArguments = objectFactory.listProperty(String)
         makeArguments = objectFactory.listProperty(String)
     }

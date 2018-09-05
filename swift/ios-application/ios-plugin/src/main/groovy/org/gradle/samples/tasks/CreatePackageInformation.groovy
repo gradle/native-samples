@@ -24,7 +24,7 @@ import org.gradle.api.tasks.TaskAction
 @CacheableTask
 class CreatePackageInformation extends DefaultTask {
     @OutputFile
-    final RegularFileProperty outputFile = newOutputFile()
+    final RegularFileProperty outputFile = project.objects.fileProperty()
 
     @TaskAction
     private void doCreate() {

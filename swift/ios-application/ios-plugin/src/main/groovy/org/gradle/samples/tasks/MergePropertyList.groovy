@@ -38,7 +38,7 @@ class MergePropertyList extends DefaultTask {
     final Property<String> identifier = project.objects.property(String)
 
     @OutputFile
-    final RegularFileProperty outputFile = newOutputFile()
+    final RegularFileProperty outputFile = project.objects.fileProperty()
 
     @TaskAction
     private void doMerge() {

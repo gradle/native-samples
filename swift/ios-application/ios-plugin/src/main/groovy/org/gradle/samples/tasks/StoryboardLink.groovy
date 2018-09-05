@@ -37,7 +37,7 @@ class StoryboardLink extends DefaultTask {
     final ConfigurableFileCollection sources = project.files()
 
     @OutputDirectory
-    final DirectoryProperty outputDirectory = newOutputDirectory()
+    final DirectoryProperty outputDirectory = project.objects.directoryProperty()
 
     @TaskAction
     private void doLink() {

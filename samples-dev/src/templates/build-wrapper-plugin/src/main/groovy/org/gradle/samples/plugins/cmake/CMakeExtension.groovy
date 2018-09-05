@@ -31,8 +31,8 @@ class CMakeExtension {
     @Inject
     CMakeExtension(ProjectLayout projectLayout, ObjectFactory objectFactory) {
         binary = objectFactory.property(String)
-        includeDirectory = projectLayout.directoryProperty()
-        projectDirectory = projectLayout.directoryProperty()
+        includeDirectory = objectFactory.directoryProperty()
+        projectDirectory = objectFactory.directoryProperty()
         projectDirectory.set(projectLayout.projectDirectory)
         includeDirectory.set(projectDirectory.dir("include"))
     }

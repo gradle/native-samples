@@ -1,6 +1,7 @@
 package org.gradle.samples.plugins.generators
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.model.ObjectFactory
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.TaskAction
 import java.io.File
@@ -9,12 +10,12 @@ import javax.inject.Inject
 /**
  * Cleans each of the generated samples listed in the samples manifest.
  */
-open class CleanSamplesTask @Inject constructor() : DefaultTask() {
+open class CleanSamplesTask @Inject constructor(objectFactory: ObjectFactory) : DefaultTask() {
     private val names = setOf("repo", "build", ".gradle", ".build", "Package.resolved")
     private val extensions = setOf("xcworkspace", "xcodeproj", "vs", "sln", "vcxproj", "vcxproj.filters", "vcxproj.user")
 
     @InputFile
-    val manifest = newInputFile()
+    val manifest = objectFactory.fileProperty()
 
     @TaskAction
     fun clean() {

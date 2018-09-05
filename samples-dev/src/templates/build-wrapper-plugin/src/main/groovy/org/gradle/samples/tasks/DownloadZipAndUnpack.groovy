@@ -18,18 +18,22 @@ package org.gradle.samples.tasks
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.model.ObjectFactory
 import org.gradle.api.tasks.Input
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 
+import javax.inject.Inject
+
 class DownloadZipAndUnpack extends DefaultTask {
     @Input Property<String> url
     @OutputDirectory final DirectoryProperty outputDirectory
 
-    DownloadZipAndUnpack() {
-        url = project.objects.property(String)
-        outputDirectory = newOutputDirectory()
+    @Inject
+    DownloadZipAndUnpack(ObjectFactory objectFactory) {
+        url = objectFactory.property(String)
+        outputDirectory = objectFactory.directoryProperty()
         outputDirectory.set(project.layout.buildDirectory.dir(project.name))
         onlyIf { url.isPresent() }
     }
@@ -37,7 +41,7 @@ class DownloadZipAndUnpack extends DefaultTask {
     @TaskAction
     void doDownloadZipAndUnpack() {
         def downloadUrl = new URL(url.get())
-        logger.warn("Downloading $url")
+        logger.warn("Downloading $downloadUrl")
         def zipDestination = new File(temporaryDir, "zip.zip")
         downloadUrl.withInputStream { zipBytes ->
             zipDestination.withOutputStream { it << zipBytes }
