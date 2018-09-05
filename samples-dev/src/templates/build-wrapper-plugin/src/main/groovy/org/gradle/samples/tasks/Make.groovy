@@ -24,6 +24,7 @@ import org.gradle.api.model.ObjectFactory
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ListProperty
@@ -34,7 +35,7 @@ class Make extends DefaultTask {
     @Internal DirectoryProperty variantDirectory
     @InputFiles FileCollection makeFiles
     @OutputDirectory DirectoryProperty outputDirectory
-    RegularFileProperty binary
+    @OutputFile RegularFileProperty binary
     ListProperty<String> arguments
 
     @Inject

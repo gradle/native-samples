@@ -41,7 +41,7 @@ class DownloadZipAndUnpack extends DefaultTask {
     @TaskAction
     void doDownloadZipAndUnpack() {
         def downloadUrl = new URL(url.get())
-        logger.warn("Downloading $url")
+        logger.warn("Downloading $downloadUrl")
         def zipDestination = new File(temporaryDir, "zip.zip")
         downloadUrl.withInputStream { zipBytes ->
             zipDestination.withOutputStream { it << zipBytes }

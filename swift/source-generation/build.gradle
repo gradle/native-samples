@@ -14,7 +14,7 @@ application {
 // Code generation implementation could be in another plugin or buildSrc
 class CodeGenerator extends DefaultTask {
     @OutputDirectory
-    DirectoryProperty generatedDir = newOutputDirectory()
+    DirectoryProperty generatedDir = project.objects.directoryProperty()
 
     @TaskAction
     public void generate() {

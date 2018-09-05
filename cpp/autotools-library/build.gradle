@@ -20,10 +20,12 @@ project(':curl') {
         url.set "https://curl.haxx.se/download/curl-${curlVersion}.zip".toString()
         outputDirectory.set layout.buildDirectory.dir("curl-source")
 
-        ext.headerDir = newOutputDirectory()
+        ext.headerDir = project.objects.directoryProperty()
+        outputs.dir(headerDir)
         headerDir.set outputDirectory.dir("curl-source/curl-${curlVersion}/include")
 
-        ext.sourceBase = newOutputDirectory()
+        ext.sourceBase = project.objects.directoryProperty()
+        outputs.dir(sourceBase)
         sourceBase.set outputDirectory.dir("curl-${curlVersion}")
     }
 
