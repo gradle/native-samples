@@ -41,7 +41,9 @@ class CMake extends DefaultTask {
     @Inject
     CMake(ObjectFactory objectFactory) {
         variantDirectory = objectFactory.directoryProperty()
+        dependsOn(variantDirectory)
         projectDirectory = objectFactory.directoryProperty()
+        dependsOn(projectDirectory)
 
         includeDirs = project.files()
         linkFiles = project.files()

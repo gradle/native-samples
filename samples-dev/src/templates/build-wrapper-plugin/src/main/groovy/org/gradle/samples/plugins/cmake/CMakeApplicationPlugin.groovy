@@ -51,12 +51,14 @@ class CMakeApplicationPlugin implements Plugin<Project> {
             group = "Build"
             description = "Builds the debug binaries"
             generatedBy cmakeDebug
+            binary project.provider { project.name }
         }
 
         def assembleRelease = tasks.create("assembleRelease", Make) {
             group = "Build"
             description = "Builds the release binaries"
             generatedBy cmakeRelease
+            binary project.provider { project.name }
         }
 
         tasks.assemble.dependsOn assembleDebug

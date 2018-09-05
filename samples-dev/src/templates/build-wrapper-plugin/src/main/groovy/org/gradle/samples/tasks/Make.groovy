@@ -61,12 +61,14 @@ class Make extends DefaultTask {
     void generatedBy(CMake cmake) {
         variantDirectory.set(cmake.variantDirectory)
         outputDirectory.set(cmake.variantDirectory)
+        dependsOn(cmake)
         makeFiles = cmake.cmakeFiles
     }
 
     void generatedBy(ConfigureTask configureTask) {
         variantDirectory.set(configureTask.makeDirectory)
         outputDirectory.set(configureTask.prefixDirectory)
+        dependsOn(configureTask)
         makeFiles = configureTask.outputs.files
     }
 
