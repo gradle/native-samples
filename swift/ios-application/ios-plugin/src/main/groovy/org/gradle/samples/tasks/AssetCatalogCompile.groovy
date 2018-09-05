@@ -29,16 +29,16 @@ import org.gradle.api.tasks.TaskAction
 @CacheableTask
 class AssetCatalogCompile extends DefaultTask {
     @InputDirectory
-    final RegularFileProperty source = newInputFile()
+    final RegularFileProperty source = project.objects.fileProperty()
 
     @Input
     final Property<String> identifier = project.objects.property(String)
 
     @OutputDirectory
-    final DirectoryProperty partialPropertyListOutputDirectory = newOutputDirectory()
+    final DirectoryProperty partialPropertyListOutputDirectory = project.objects.directoryProperty()
 
     @OutputDirectory
-    final DirectoryProperty outputDirectory = newOutputDirectory()
+    final DirectoryProperty outputDirectory = project.objects.directoryProperty()
 
     @TaskAction
     private void doCompile() {

@@ -27,10 +27,10 @@ class InstallApplicationBundle extends DefaultTask {
     final ConfigurableFileCollection sources = project.files()
 
     @InputFile
-    final RegularFileProperty executableFile = newInputFile()
+    final RegularFileProperty executableFile = project.objects.fileProperty()
 
     @OutputDirectory
-    final RegularFileProperty applicationBundle = newOutputFile()
+    final RegularFileProperty applicationBundle = project.objects.fileProperty()
 
     @TaskAction
     private void doInstall() {

@@ -13,7 +13,7 @@ import javax.inject.Inject
  */
 open class SamplesManifestTask @Inject constructor(objectFactory: ObjectFactory) : DefaultTask() {
     @OutputFile
-    val manifest = newOutputFile()
+    val manifest = objectFactory.fileProperty()
 
     @Input
     val sampleDirs = objectFactory.setProperty(String::class.java)

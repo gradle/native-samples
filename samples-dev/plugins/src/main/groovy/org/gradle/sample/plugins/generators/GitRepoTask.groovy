@@ -8,7 +8,7 @@ import org.gradle.api.tasks.TaskAction
 import org.gradle.samples.plugins.RepoGeneratorTask
 
 class GitRepoTask extends DefaultTask implements RepoGeneratorTask {
-    final DirectoryProperty sampleDir = project.layout.directoryProperty()
+    final DirectoryProperty sampleDir = project.objects.directoryProperty()
     private final List<Closure> changes = []
 
     void change(Closure cl) {

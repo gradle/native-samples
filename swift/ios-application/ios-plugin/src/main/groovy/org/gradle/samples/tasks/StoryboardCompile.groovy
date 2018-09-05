@@ -31,10 +31,10 @@ class StoryboardCompile extends DefaultTask {
     final ConfigurableFileCollection sources = project.files()
 
     @OutputDirectory
-    final DirectoryProperty partialPropertyListOutputDirectory = newOutputDirectory()
+    final DirectoryProperty partialPropertyListOutputDirectory = project.objects.directoryProperty()
 
     @OutputDirectory
-    final DirectoryProperty outputDirectory = newOutputDirectory()
+    final DirectoryProperty outputDirectory = project.objects.directoryProperty()
 
     @TaskAction
     private void doCompile() {

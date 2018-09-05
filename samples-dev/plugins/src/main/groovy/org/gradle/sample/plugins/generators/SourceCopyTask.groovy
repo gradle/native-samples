@@ -6,8 +6,8 @@ import org.gradle.api.tasks.TaskAction
 import org.gradle.samples.plugins.SampleGeneratorTask
 
 class SourceCopyTask extends DefaultTask implements SampleGeneratorTask {
-    final DirectoryProperty sampleDir = project.layout.directoryProperty()
-    final DirectoryProperty templatesDir = project.layout.directoryProperty()
+    final DirectoryProperty sampleDir = project.objects.directoryProperty()
+    final DirectoryProperty templatesDir = project.objects.directoryProperty()
     final Map<String, TemplateTarget> projects = [:]
 
     @TaskAction
