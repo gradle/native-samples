@@ -24,27 +24,27 @@ version = "1.0"
 
 gradlePlugin {
     (plugins) {
-        "cmakeLibrary" {
+        register("cmakeLibrary") {
             id = "org.gradle.samples.cmake-library"
             implementationClass = "org.gradle.samples.plugins.cmake.CMakeLibraryPlugin"
         }
-        "cmakeApplication" {
+        register("cmakeApplication") {
             id = "org.gradle.samples.cmake-application"
             implementationClass = "org.gradle.samples.plugins.cmake.CMakeApplicationPlugin"
         }
-        "wrappedBase" {
+        register("wrappedBase") {
             id = "org.gradle.samples.wrapped-native-base"
             implementationClass = "org.gradle.samples.plugins.WrappedNativeBasePlugin"
         }
-        "wrappedApplication" {
+        register("wrappedApplication") {
             id = "org.gradle.samples.wrapped-native-application"
             implementationClass = "org.gradle.samples.plugins.WrappedNativeApplicationPlugin"
         }
-        "wrappedLibrary" {
+        register("wrappedLibrary") {
             id = "org.gradle.samples.wrapped-native-library"
             implementationClass = "org.gradle.samples.plugins.WrappedNativeLibraryPlugin"
         }
-        "autotoolsLibrary" {
+        register("autotoolsLibrary") {
             id = "org.gradle.samples.autotools-library"
             implementationClass = "org.gradle.samples.plugins.autotools.AutotoolsLibraryPlugin"
         }

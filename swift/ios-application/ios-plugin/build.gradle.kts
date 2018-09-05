@@ -33,7 +33,7 @@ repositories {
 
 gradlePlugin {
     (plugins) {
-        "ios-application" {
+        register("ios-application") {
             id = "org.gradle.samples.ios-application"
             implementationClass = "org.gradle.samples.plugins.IOSApplicationPlugin"
         }

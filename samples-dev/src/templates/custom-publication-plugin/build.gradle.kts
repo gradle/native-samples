@@ -24,7 +24,7 @@ version = "1.0"
 
 gradlePlugin {
     (plugins) {
-        "customPublication" {
+        register("customPublication") {
             id = "org.gradle.samples.custom-publication"
             implementationClass = "org.gradle.samples.plugins.CustomPublicationPlugin"
         }
