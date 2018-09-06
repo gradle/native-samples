@@ -419,24 +419,6 @@ task swiftProvisionableToolChains(type: SourceCopyTask) {
     appProject(".").fromTemplate("swift-provisionable-tool-chains-build")
 }
 
-task generateCppRepos {
-    dependsOn tasks.withType(GitRepoTask).matching { it.name.contains("Cpp") }
-    group = "sample setup"
-    description = "generate the Git repositories for C++ samples"
-}
-
-task generateSwiftRepos {
-    dependsOn tasks.withType(GitRepoTask).matching { it.name.contains("Swift") }
-    group = "sample setup"
-    description = "generate the Git repositories for Swift samples"
-}
-
-task generateRepos {
-    dependsOn generateSwiftRepos, generateCppRepos
-    group = "sample setup"
-    description = "generate the Git repositories for all samples"
-}
-
 task generateCppListRepo(type: GitRepoTask) {
     dependsOn cppSourceDependencies
     sampleDir = file("../cpp/source-dependencies/repos/list-library")

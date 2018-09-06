@@ -36,7 +36,6 @@ class GeneratorPlugin : Plugin<Project> {
 
         generatorTasks.configureEach { task ->
             task.templatesDir.set(project.file("src/templates"))
-            task.group = "source generation"
         }
 
         // Add a lifecycle task to generate everything
@@ -45,6 +44,13 @@ class GeneratorPlugin : Plugin<Project> {
             task.dependsOn(manifestTask)
             task.group = "source generation"
             task.description = "generate the source files for all samples"
+        }
+
+        // Add a lifecycle task to generate the repositories
+        project.tasks.register("generateRepos") { task ->
+            task.dependsOn(repoTasks)
+            task.group = "source generation"
+            task.description = "generate the Git repositories for all samples"
         }
     }
 }
