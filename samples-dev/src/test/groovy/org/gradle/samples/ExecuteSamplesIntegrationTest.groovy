@@ -11,13 +11,31 @@ import spock.lang.Unroll
 abstract class ExecuteSamplesIntegrationTest extends Specification {
 
     def runSetupFor(NativeSample sample) {
-        def docs = sample.documentation
-        docs.setupSteps.each { command ->
-            println "Running setup step " + command + " in " + docs.workingDir
-            GradleRunner.create()
-            .withProjectDir(sample.workingDir)
-            .withArguments(command.split().drop(1))
-            .build()
+        // Ensure only one test process is running the setup steps
+        withFileLock {
+            def docs = sample.documentation
+            docs.setupSteps.each { command ->
+                println "Running setup step " + command + " in " + docs.workingDir
+                GradleRunner.create()
+                        .withProjectDir(sample.workingDir)
+                        .withArguments((command.split().drop(1) as List) + ["-S"])
+                        .build()
+            }
+        }
+    }
+
+    def withFileLock(Closure cl) {
+        def lockFile = new File(Samples.rootSampleDir, "build/test.lock")
+        if (!lockFile.isFile()) {
+            lockFile.parentFile.mkdirs()
+            lockFile.createNewFile()
+        }
+        def fileAccess = new RandomAccessFile(lockFile, "rw")
+        def lock = fileAccess.channel.lock()
+        try {
+            cl.call()
+        } finally {
+            lock.close()
         }
     }
 
