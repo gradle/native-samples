@@ -446,6 +446,19 @@ task swiftProvisionableToolChains(type: SourceCopyTask) {
     appProject(".").fromTemplate("swift-provisionable-tool-chains-build")
 }
 
+task swiftSystemLibrary(type: SourceCopyTask) {
+    sampleDir = file("../swift/system-library-as-module")
+
+    project(".").buildRoot()
+}
+
+task swiftIosApplication(type: SourceCopyTask) {
+    sampleDir = file("../swift/ios-application")
+
+    project(".").buildRoot()
+    project("ios-plugin").buildRoot()
+}
+
 task generateCppListRepo(type: GitRepoTask) {
     dependsOn cppSourceDependencies
     sampleDir = file("../cpp/source-dependencies/repos/list-library")
