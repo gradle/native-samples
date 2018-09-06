@@ -1,0 +1,4 @@
+allprojects {
+    group = 'org.gradle.cpp-samples'
+    version = '1.0'
+}

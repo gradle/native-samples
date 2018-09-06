@@ -55,8 +55,25 @@ samples {
     externalRepos.register("nativeSamplesCppLibrary") {
         repoUrl = "git@github.com:gradle/native-samples-cpp-library.git"
         copySource {
-            libProject(".").fromTemplate(cppListLib)
-            libProject(".").fromTemplate("cpp-list-lib-build")
+            project(".").fromTemplate("cpp-build-with-list-and-utilities-libraries")
+            libProject("list").fromTemplate(cppListLib)
+            libProject("utilities").fromTemplate(cppUtilsLib)
+        }
+
+        def brokenCode = """// BUG: i = 1 should be i = 0
+    for (int i = 1; i < source.size(); ++i) {"""
+        def goodCode = 'for (int i = 0; i < source.size(); ++i) {'
+
+        change { ch ->
+            changeContent("utilities/src/main/cpp/join.cpp", goodCode, brokenCode)
+            tag("1.0")
+            message("initial version")
+        }
+        change { ch ->
+            changeContent("utilities/src/main/cpp/join.cpp", brokenCode, goodCode)
+            changeContent("build.gradle", "version = '1.0'", "version = '1.1'")
+            tag("1.1")
+            message("fixed bug")
         }
     }
 }

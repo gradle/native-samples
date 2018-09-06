@@ -2,6 +2,8 @@ package org.gradle.samples.plugins.generators
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.samples.plugins.SampleGeneratorTask
 
 
@@ -12,9 +14,6 @@ class GeneratorPlugin : Plugin<Project> {
 
         // Add project extension
         val extension = project.extensions.create("samples", SamplesExtension::class.java, project)
-        extension.externalRepos.all {
-            addTasksForRepo(it, project)
-        }
 
         // Add a task to generate the list of samples
         val manifestTask = project.tasks.register("samplesManifest", SamplesManifestTask::class.java) { task ->
@@ -45,12 +44,17 @@ class GeneratorPlugin : Plugin<Project> {
         }
 
         // Add a lifecycle task to generate the source files for the samples
-        project.tasks.register("generateSource") { task ->
+        val generateSource = project.tasks.register("generateSource") { task ->
             task.dependsOn(generatorTasks)
             task.dependsOn(manifestTask)
             task.group = "source generation"
             task.description = "generate the source files for all samples"
         }
+
+        extension.externalRepos.all {
+            addTasksForRepo(it, generateSource, project)
+        }
+
 
         // Add a lifecycle task to generate the repositories
         project.tasks.register("generateRepos") { task ->
@@ -60,13 +64,13 @@ class GeneratorPlugin : Plugin<Project> {
         }
     }
 
-    private fun addTasksForRepo(repo: ExternalRepo, project: Project) {
+    private fun addTasksForRepo(repo: ExternalRepo, generateSource: TaskProvider<Task>, project: Project) {
         val syncTask = project.tasks.register("sync${repo.name.capitalize()}", SyncExternalRepoTask::class.java) { task ->
             task.repoUrl.set(repo.repoUrl)
             task.checkoutDirectory.set(project.file("repos/${repo.name}"))
         }
         val groovyTaskType = javaClass.classLoader.loadClass("org.gradle.sample.plugins.generators.SourceCopyTask").asSubclass(SampleGeneratorTask::class.java)
-        project.tasks.register(repo.name, groovyTaskType) { task ->
+        val setupTask = project.tasks.register("copy${repo.name.capitalize()}", groovyTaskType) { task ->
             task.dependsOn(syncTask)
             task.sampleDir.set(syncTask.get().checkoutDirectory)
             task.doFirst {
@@ -74,6 +78,16 @@ class GeneratorPlugin : Plugin<Project> {
                     it.execute(task)
                 }
             }
+        }
+        val updateTask = project.tasks.register("update${repo.name.capitalize()}", UpdateRepoTask::class.java) { task ->
+            task.dependsOn(setupTask)
+            task.sampleDir.set(syncTask.get().checkoutDirectory)
+            repo.repoActions.forEach {
+                task.change(it)
+            }
+        }
+        generateSource.configure { task ->
+            task.dependsOn(updateTask)
         }
     }
 }

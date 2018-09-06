@@ -1,0 +1,9 @@
+plugins {
+    id 'cpp-library'
+}
+
+library {
+    dependencies {
+        api project(':list')
+    }
+}
