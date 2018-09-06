@@ -1,7 +1,8 @@
 import org.gradle.sample.plugins.generators.CppLibraryTemplate
-import org.gradle.sample.plugins.generators.GitRepoTask
+import org.gradle.samples.plugins.generators.GitRepoTask
 import org.gradle.sample.plugins.generators.SourceCopyTask
 import org.gradle.sample.plugins.generators.SwiftLibraryTemplate
+import org.gradle.samples.plugins.generators.SyncExternalRepoTask
 
 plugins {
     id "groovy"
@@ -33,16 +34,16 @@ test {
     }
 }
 
-task cleanRepo(type: Delete) {
+task cleanMavenRepo(type: Delete) {
     delete file("../cpp/repo")
 }
 
 tasks.cleanSamples {
-    dependsOn cleanRepo
+    dependsOn cleanMavenRepo
 }
 
 tasks.clean {
-    dependsOn cleanSamples, cleanRepo
+    dependsOn cleanSamples, cleanMavenRepo
 }
 
 def cppUtilsLib = CppLibraryTemplate.of("cpp-lib-with-api-dep", "utilities")
@@ -673,4 +674,15 @@ task generateCppLibraryWithTestsPluginRepo(type: GitRepoTask) {
         tag("1.0")
         "initial version"
     }
+}
+
+task syncCppLibraryRepo(type: SyncExternalRepoTask) {
+    repoUrl = "git@github.com:gradle/native-samples-cpp-library.git"
+    checkoutDirectory = file("repos/native-samples-cpp-library")
+}
+
+task externalCppLibrary(type: SourceCopyTask) {
+    dependsOn syncCppLibraryRepo
+    sampleDir = syncCppLibraryRepo.checkoutDirectory
+    appProject(".").fromTemplate(cppUtilsLib)
 }

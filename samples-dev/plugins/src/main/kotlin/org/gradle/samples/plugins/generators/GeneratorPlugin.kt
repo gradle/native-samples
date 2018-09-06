@@ -2,14 +2,13 @@ package org.gradle.samples.plugins.generators
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.samples.plugins.RepoGeneratorTask
 import org.gradle.samples.plugins.SampleGeneratorTask
 
 
 class GeneratorPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         val generatorTasks = project.tasks.withType(SampleGeneratorTask::class.java)
-        val repoTasks = project.tasks.withType(RepoGeneratorTask::class.java)
+        val repoTasks = project.tasks.withType(GitRepoTask::class.java)
 
         // Add a task to generate the list of samples
         val manifestTask = project.tasks.register("samplesManifest", SamplesManifestTask::class.java) { task ->
