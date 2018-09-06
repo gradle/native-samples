@@ -107,16 +107,12 @@ class SourceCopyTask extends DefaultTask implements SampleGeneratorTask {
                 batContent = batContent.replace("REL_PATH", relPath.replace("/", "\\"))
                 builder.writeTargetFile("${projectDir}/gradlew.bat", batContent)
             }
-            templates.each { template ->
-                if (rootDir) {
-                    builder.copyDir("${template.templateName}/buildSrc", "${projectDir}/buildSrc")
-                }
-                builder.copyDir(template.templateName, projectDir)
-                visitDirMappings(template) { src, dest, lineFilter ->
-                    builder.copyDirTree("${template.templateName}/${src}", "${projectDir}/${dest}", lineFilter)
+            templates.each { Template template ->
+                builder.copyDir(template.templateName, projectDir) { TemplateDirectory dir ->
+                    mapDir(template, dir)
                 }
             }
-            def testDir = builder.targetFile("${projectDir}/src/test/swift")
+            def testDir = builder.targetFile("${projectDir}/${swiftTestDirName}")
             if (testDir.directory) {
                 def testNames = testDir.listFiles()
                         .findAll { it.name.endsWith(".swift") && it.name != "LinuxMain.swift" }
@@ -158,10 +154,14 @@ XCTMain([${testNames}])
             return null
         }
 
+        String getSwiftTestDirName() {
+            return "src/test/swift"
+        }
+
         /**
-         * Visits each candidate src, dest directory pair for this project and the given template.
+         * Visits each source directory for the template, allowing this target to map the destination dir and apply filtering.
          */
-        abstract void visitDirMappings(Template template, Closure cl)
+        abstract void mapDir(Template template, TemplateDirectory directory)
     }
 
     class SourceBuilder {
@@ -200,27 +200,33 @@ XCTMain([${testNames}])
             file
         }
 
-        void copyDir(String templateDirName, String targetDirName) {
-            copy(templateDirName, targetDirName, null, false)
+        void copyDir(String templateDirName, String targetDir, Closure dirAction) {
+            doCopyDir(templateDirName, "", targetDir, dirAction)
         }
 
-        void copyDirTree(String templateDirName, String targetDirName, Closure lineFilter) {
-            copy(templateDirName, targetDirName, lineFilter, true)
-        }
-
-        private void copy(String templateDirName, String targetDirName, Closure lineFilter, boolean recursive) {
-            def srcDir = templatesDir.dir(templateDirName).get().asFile
+        void doCopyDir(String templateDirName, String srcName, String targetDir, Closure dirAction) {
+            def srcFileName = "${templateDirName}/${srcName}"
+            def srcDir = templatesDir.dir(srcFileName).get().asFile
             if (!srcDir.directory || srcDir.list().length == 0) {
                 return
             }
-            def destDir = sampleDir.dir(targetDirName).get().asFile
-            if (recursive && cleaned.add(destDir)) {
-                // TODO - generate the test LinuxMain.swift
-                // TODO - generate the CMake build
-                project.delete project.fileTree(destDir, {
-                    exclude '**/LinuxMain.swift'
-                    exclude 'CMakeLists.txt'
-                })
+            def dirDetails = new TemplateDirectory(srcName)
+            dirAction.call(dirDetails)
+            def destDir = sampleDir.dir("${targetDir}/${dirDetails.targetDirName}").get().asFile
+            copy(srcDir, destDir, dirDetails.lineFilter, dirDetails.recursive)
+            if (dirDetails.recursive) {
+                return
+            }
+            srcDir.listFiles().each { f ->
+                if (f.directory) {
+                    doCopyDir(templateDirName, srcName ? "$srcName/$f.name" : f.name, targetDir, dirAction)
+                }
+            }
+        }
+
+        private void copy(File srcDir, File destDir, Closure lineFilter, boolean recursive) {
+            if (recursive) {
+                cleanDir(destDir)
             }
             project.copy {
                 from srcDir
@@ -243,6 +249,39 @@ XCTMain([${testNames}])
                 }
             }
         }
+
+        private void cleanDir(File destDir) {
+            if (cleaned.add(destDir)) {
+                destDir.listFiles().each { f ->
+                    if (f.directory) {
+                        cleanDir(f)
+                    } else if (f.name != 'CMakeLists.txt') {
+                        f.delete()
+                    }
+                }
+                destDir.delete()
+            }
+        }
+    }
+
+    static class TemplateDirectory {
+        final String sourceDirName
+        String targetDirName
+        Closure lineFilter
+        boolean recursive
+
+        TemplateDirectory(String sourceDirName) {
+            this.sourceDirName = sourceDirName
+            this.targetDirName = sourceDirName
+        }
+
+        void map(String srcDir, String destDir, Closure lineFilter) {
+            if (sourceDirName == srcDir) {
+                targetDirName = destDir
+                this.lineFilter = lineFilter
+                recursive = true
+            }
+        }
     }
 
     static class GradleTarget extends TemplateTarget {
@@ -257,9 +296,9 @@ XCTMain([${testNames}])
         }
 
         @Override
-        void visitDirMappings(Template template, Closure cl) {
-            cl.call("src/main/java", "src/main/java", null)
-            cl.call("src/main/groovy", "src/main/groovy", null)
+        void mapDir(Template template, TemplateDirectory directory) {
+            directory.map("src/main/java", "src/main/java", null)
+            directory.map("src/main/groovy", "src/main/groovy", null)
         }
     }
 
@@ -274,13 +313,13 @@ XCTMain([${testNames}])
         }
 
         @Override
-        void visitDirMappings(Template template, Closure cl) {
-            cl.call("src/main/cpp", "src/main/cpp", null)
-            cl.call("src/main/c", "src/main/c", null)
-            cl.call("src/main/headers", "src/main/headers", null)
-            cl.call("src/main/public", "src/main/headers", null)
-            cl.call("src/main/swift", "src/main/swift", null)
-            cl.call("src/test/swift", "src/test/swift", null)
+        void mapDir(Template template, TemplateDirectory directory) {
+            directory.map("src/main/cpp", "src/main/cpp", null)
+            directory.map("src/main/c", "src/main/c", null)
+            directory.map("src/main/headers", "src/main/headers", null)
+            directory.map("src/main/public", "src/main/headers", null)
+            directory.map("src/main/swift", "src/main/swift", null)
+            directory.map("src/test/swift", "src/test/swift", null)
         }
     }
 
@@ -297,17 +336,17 @@ XCTMain([${testNames}])
         }
 
         @Override
-        void visitDirMappings(Template template, Closure cl) {
-            cl.call("src/main/cpp", "src/main/cpp", null)
-            cl.call("src/main/c", "src/main/c", null)
+        void mapDir(Template template, TemplateDirectory directory) {
+            directory.map("src/main/cpp", "src/main/cpp", null)
+            directory.map("src/main/c", "src/main/c", null)
             if (privateHeaderDir) {
-                cl.call("src/main/headers", "src/main/headers", null)
+                directory.map("src/main/headers", "src/main/headers", null)
             } else {
-                cl.call("src/main/headers", "src/main/cpp", null)
+                directory.map("src/main/headers", "src/main/cpp", null)
             }
-            cl.call("src/main/public", "src/main/public", addDllExportToPublicHeader(template))
-            cl.call("src/main/swift", "src/main/swift", null)
-            cl.call("src/test/swift", "src/test/swift", null)
+            directory.map("src/main/public", "src/main/public", addDllExportToPublicHeader(template))
+            directory.map("src/main/swift", "src/main/swift", null)
+            directory.map("src/test/swift", "src/test/swift", null)
         }
     }
 
@@ -317,13 +356,13 @@ XCTMain([${testNames}])
         }
 
         @Override
-        void visitDirMappings(Template template, Closure cl) {
-            cl.call("src/main/cpp", "src/main/cpp", null)
-            cl.call("src/main/c", "src/main/c", null)
-            cl.call("src/main/headers", "src/main/headers", null)
-            cl.call("src/main/public", "src/main/public", null)
-            cl.call("src/main/swift", "src/main/swift", null)
-            cl.call("src/test/swift", "src/test/swift", null)
+        void mapDir(Template template, TemplateDirectory directory) {
+            directory.map("src/main/cpp", "src/main/cpp", null)
+            directory.map("src/main/c", "src/main/c", null)
+            directory.map("src/main/headers", "src/main/headers", null)
+            directory.map("src/main/public", "src/main/public", null)
+            directory.map("src/main/swift", "src/main/swift", null)
+            directory.map("src/test/swift", "src/test/swift", null)
         }
     }
 
@@ -346,13 +385,18 @@ XCTMain([${testNames}])
         }
 
         @Override
-        void visitDirMappings(Template template, Closure cl) {
-            cl.call("src/main/cpp", "Sources/${targetName}", null)
-            cl.call("src/main/c", "Sources/${targetName}", null)
-            cl.call("src/main/headers", "Sources/${targetName}/include", null)
-            cl.call("src/main/public", "Sources/${targetName}/include", addDllExportToPublicHeader(template))
-            cl.call("src/main/swift", "Sources/${targetName}", null)
-            cl.call("src/test/swift", "Tests/${targetName}Tests", null)
+        String getSwiftTestDirName() {
+            return "Tests/${targetName}Tests"
+        }
+
+        @Override
+        void mapDir(Template template, TemplateDirectory directory) {
+            directory.map("src/main/cpp", "Sources/${targetName}", null)
+            directory.map("src/main/c", "Sources/${targetName}", null)
+            directory.map("src/main/headers", "Sources/${targetName}/include", null)
+            directory.map("src/main/public", "Sources/${targetName}/include", addDllExportToPublicHeader(template))
+            directory.map("src/main/swift", "Sources/${targetName}", null)
+            directory.map("src/test/swift", "Tests/${targetName}Tests", null)
         }
     }
 
@@ -375,11 +419,11 @@ XCTMain([${testNames}])
         }
 
         @Override
-        void visitDirMappings(Template template, Closure cl) {
-            cl.call("src/main/cpp", "src/${targetName}", null)
-            cl.call("src/main/c", "src/${targetName}", null)
-            cl.call("src/main/headers", "src/${targetName}/include", null)
-            cl.call("src/main/public", "src/${targetName}/include", addDllExportToPublicHeader(template))
+        void mapDir(Template template, TemplateDirectory directory) {
+            directory.map("src/main/cpp", "src/${targetName}", null)
+            directory.map("src/main/c", "src/${targetName}", null)
+            directory.map("src/main/headers", "src/${targetName}/include", null)
+            directory.map("src/main/public", "src/${targetName}/include", addDllExportToPublicHeader(template))
         }
     }
 }
