@@ -17,7 +17,7 @@ repositories {
 dependencies {
     implementation(gradleApi())
     implementation(localGroovy())
-    implementation("org.eclipse.jgit:org.eclipse.jgit:4.9.1.201712030800-r")
+    implementation("org.eclipse.jgit:org.eclipse.jgit:5.0.2.201807311906-r")
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 }
