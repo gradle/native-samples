@@ -410,20 +410,14 @@ Generated sources will be under `build/generated`.
 
 This sample demonstrates using external source dependencies to build Swift and C++ applications that require two libraries. The source for the libraries are hosted in separate Git repositories and declared as 'source dependencies' of the application. When Gradle builds the application, it first checks out a revision of the library source and uses this to build the binaries for the library.
 
+The Git repositories to use are declared in the build's `settings.gradle` and then the libraries are referenced in the same way as binary dependencies in the build files.
+
 ### Swift
 
-To use this sample, first create the Git repositories for the libraries:
+To use this sample, build and run the application:
 
 ```
 > cd swift/source-dependencies
-> ./gradlew -p ../.. generateRepos
-```
-
-The repositories are created in the `repos` directory. Each repository is set up to contain some source files and includes several commits and tags.
-
-Next, build and run the application:
-
-```
 > ./gradlew assemble
 
 BUILD SUCCESSFUL in 1s
@@ -432,18 +426,11 @@ BUILD SUCCESSFUL in 1s
 World!
 ```
 
-You can see the application's output is incorrect. The build is configured to use version '1.0' from the 'utilities-library' Git repository and this version contains a bug. Let's fix this.
+This will clone version `1.0` of the Git repository at `https://github.com/gradle/native-samples-swift-library` and build the library binaries.
 
-Edit the source of the utilities library to fix the bug and release a new version of the library:
+You can see the application's output is incorrect. The build is configured to use version `1.0` of the utilities library from this repository and this version contains a bug. Let's fix this.
 
-```
-> cd repos/utilities-library
-> edit src/main/swift/Util.swift # follow the instructions to fix the bug in function join()
-> git commit -a -m 'fixed bug'
-> git tag 1.1
-```
-
-Update the application to use the new version:
+Version `1.1` of the library contains a bug fix. Update the application to use the new version:
 
 ```
 > cd ../..
@@ -456,20 +443,14 @@ BUILD SUCCESSFUL in 1s
 Hello, World!
 ```
 
-Dynamic dependencies are also supported, so you could also use `1.+`, `[1.1,2.0]` or `latest.integration`. Gradle matches the tags of the Git repository. Branches are also supported, but use a different syntax. See the following sample.
+Dynamic dependencies are also supported, so you could also use `1.+`, `[1.1,2.0]` or `latest.release`. Gradle matches the tags of the Git repository to determine which Git revision to use. Branches are also supported, but use a different syntax. See the following sample.
 
 ### C++
 
-To use this sample, first create the Git repositories for the libraries:
+To use this sample, build and run the application:
 
 ```
 > cd cpp/source-dependencies
-> ./gradlew -p ../.. generateRepos
-```
-
-Next, build and run the application:
-
-```
 > ./gradlew assemble
 
 BUILD SUCCESSFUL in 1s
@@ -478,18 +459,11 @@ BUILD SUCCESSFUL in 1s
 World!
 ```
 
-This is the wrong output because of a bug in utilities library.
+This will clone version `1.0` of the Git repository at `https://github.com/gradle/native-samples-cpp-library` and build the library binaries.
 
-Edit the source of the utilities library to fix the bug and release a new version of the library:
+The application output is incorrect because of a bug in the utilities library.
 
-```
-> cd repos/utilities-library
-> edit src/main/cpp/join.cpp # follow the instructions to fix the bug in function join()
-> git commit -a -m 'fixed bug'
-> git tag 1.1
-```
-
-Update the application to use the new version:
+Update the application to use a new version that contains a fix:
 
 ```
 > cd ../..
