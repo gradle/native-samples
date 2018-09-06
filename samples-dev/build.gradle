@@ -1,8 +1,7 @@
 import org.gradle.sample.plugins.generators.CppLibraryTemplate
-import org.gradle.samples.plugins.generators.GitRepoTask
 import org.gradle.sample.plugins.generators.SourceCopyTask
 import org.gradle.sample.plugins.generators.SwiftLibraryTemplate
-import org.gradle.samples.plugins.generators.SyncExternalRepoTask
+import org.gradle.samples.plugins.generators.GitRepoTask
 
 plugins {
     id "groovy"
@@ -51,6 +50,16 @@ def cppListLib = CppLibraryTemplate.of("cpp-lib", "list")
 
 def swiftUtilsLib = SwiftLibraryTemplate.of("swift-lib-with-api-dep", "Utilities")
 def swiftListLib = SwiftLibraryTemplate.of("swift-lib", "List")
+
+samples {
+    externalRepos.register("nativeSamplesCppLibrary") {
+        repoUrl = "git@github.com:gradle/native-samples-cpp-library.git"
+        copySource {
+            libProject(".").fromTemplate(cppListLib)
+            libProject(".").fromTemplate("cpp-list-lib-build")
+        }
+    }
+}
 
 task cppTransitiveDependencies(type: SourceCopyTask) {
     sampleDir = file("../cpp/transitive-dependencies")
@@ -425,21 +434,21 @@ task generateCppListRepo(type: GitRepoTask) {
     sampleDir = file("../cpp/source-dependencies/repos/list-library")
     change { ch ->
         tag("1.0")
-        "initial version"
+        message("initial version")
     }
     change { ch ->
         changeContent("build.gradle", "version = '1.0'", "version = '1.1'")
         tag("1.1")
-        "minor release"
+        message("minor release")
     }
     change { ch ->
         changeContent("build.gradle", "version = '1.1'", "version = '2.0'")
         tag("2.0")
-        "major release"
+        message("major release")
     }
     change { ch ->
         changeContent("build.gradle", "version = '2.0'", "version = '2.0-SNAPSHOT'")
-        "work in progress"
+        message("work in progress")
     }
 }
 
@@ -450,7 +459,7 @@ task generateCppUtilitiesRepo(type: GitRepoTask) {
         changeContent("src/main/cpp/join.cpp", 'for (int i = 0; i < source.size(); ++i) {', """// BUG: i = 1 should be i = 0
     for (int i = 1; i < source.size(); ++i) {""")
         tag("1.0")
-        "initial version"
+        message("initial version")
     }
 }
 
@@ -459,21 +468,21 @@ task generateSwiftListRepo(type: GitRepoTask) {
     sampleDir = file("../swift/source-dependencies/repos/list-library")
     change { ch ->
         tag("1.0")
-        "initial version"
+        message("initial version")
     }
     change { ch ->
         changeContent("build.gradle", "version = '1.0'", "version = '1.1'")
         tag("1.1")
-        "minor release"
+        message("minor release")
     }
     change { ch ->
         changeContent("build.gradle", "version = '1.1'", "version = '2.0'")
         tag("2.0")
-        "major release"
+        message("major release")
     }
     change { ch ->
         changeContent("build.gradle", "version = '2.0'", "version = '2.0-SNAPSHOT'")
-        "work in progress"
+        message("work in progress")
     }
 }
 
@@ -484,7 +493,7 @@ task generateSwiftUtilitiesRepo(type: GitRepoTask) {
         changeContent("src/main/swift/Util.swift", "var i = 0", """// BUG: i = 1 should be i = 0
         var i = 1""")
         tag("1.0")
-        "initial version"
+        message("initial version")
     }
 }
 
@@ -493,7 +502,7 @@ task generateMinimalSwiftListRepo(type: GitRepoTask) {
     sampleDir = file("../swift/injected-plugins/repos/list-library")
     change { ch ->
         tag("1.0")
-        "initial version"
+        message("initial version")
     }
 }
 
@@ -502,7 +511,7 @@ task generateMinimalSwiftUtilitiesRepo(type: GitRepoTask) {
     sampleDir = file("../swift/injected-plugins/repos/utilities-library")
     change { ch ->
         tag("1.0")
-        "initial version"
+        message("initial version")
     }
 }
 
@@ -511,7 +520,7 @@ task generatePublishCppReleasePluginRepo(type: GitRepoTask) {
     sampleDir = file("../cpp/swift-package-manager-publish/release-plugin")
     change { ch ->
         tag("1.0")
-        "initial version"
+        message("initial version")
     }
 }
 
@@ -530,7 +539,7 @@ task generatePublishSwiftReleasePluginRepo(type: GitRepoTask) {
     sampleDir = file("../swift/swift-package-manager-publish/release-plugin")
     change { ch ->
         tag("1.0")
-        "initial version"
+        message("initial version")
     }
 }
 
@@ -549,7 +558,7 @@ task generateBranchCppListRepo(type: GitRepoTask) {
     sampleDir = file("../cpp/dependency-on-upstream-branch/list-library")
     change { ch ->
         tag("1.0")
-        "initial version"
+        message("initial version")
     }
 }
 
@@ -560,17 +569,17 @@ task generateBranchCppUtilitiesRepo(type: GitRepoTask) {
         changeContent("src/main/cpp/join.cpp", 'for (int i = 0; i < source.size(); ++i) {', """// BUG: i = 1 should be i = 0
     for (int i = 1; i < source.size(); ++i) {""")
         tag("1.0")
-        "initial version"
+        message("initial version")
     }
     change { ch ->
         branch("release")
         changeContent("build.gradle", "version = '1.0'", "version = '1.1'")
-        "branch for release"
+        message("branch for release")
     }
     change { ch ->
         checkout("master")
         changeContent("build.gradle", "version = '1.0'", "version = '2.0-SNAPSHOT'")
-        "prepare next version"
+        message("prepare next version")
     }
 }
 
@@ -579,7 +588,7 @@ task generateBranchSwiftListRepo(type: GitRepoTask) {
     sampleDir = file("../swift/dependency-on-upstream-branch/list-library")
     change { ch ->
         tag("1.0")
-        "initial version"
+        message("initial version")
     }
 }
 
@@ -590,17 +599,17 @@ task generateBranchSwiftUtilitiesRepo(type: GitRepoTask) {
         changeContent("src/main/swift/Util.swift", "var i = 0", """// BUG: i = 1 should be i = 0
         var i = 1""")
         tag("1.0")
-        "initial version"
+        message("initial version")
     }
     change { ch ->
         branch("release")
         changeContent("build.gradle", "version = '1.0'", "version = '1.1'")
-        "branch for release"
+        message("branch for release")
     }
     change { ch ->
         checkout("master")
         changeContent("build.gradle", "version = '1.0'", "version = '2.0'")
-        "prepare next version"
+        message("prepare next version")
     }
 }
 
@@ -609,7 +618,7 @@ task generateCppCmakeLibraryBuildWrapperPluginRepo(type: GitRepoTask) {
     sampleDir = file("../cpp/cmake-library/build-wrapper-plugin")
     change {
         tag("1.0")
-        "initial version"
+        message("initial version")
     }
 }
 
@@ -618,7 +627,7 @@ task generateCppCmakeLibraryCustomPublicationPluginRepo(type: GitRepoTask) {
     sampleDir = file("../cpp/cmake-library/custom-publication-plugin")
     change {
         tag("1.0")
-        "initial version"
+        message("initial version")
     }
 }
 
@@ -627,7 +636,7 @@ task generateCppCmakeSourceDependenciesPluginRepo(type: GitRepoTask) {
     sampleDir = file("../cpp/cmake-source-dependencies/build-wrapper-plugin")
     change {
         tag("1.0")
-        "initial version"
+        message("initial version")
     }
 }
 
@@ -636,7 +645,7 @@ task generateCppCmakeSourceDependenciesListLibraryRepo(type: GitRepoTask) {
     sampleDir = file("../cpp/cmake-source-dependencies/list")
     change {
         tag("1.0")
-        "initial version"
+        message("initial version")
     }
 }
 
@@ -645,7 +654,7 @@ task generateCppCmakeSourceDependenciesUtilityLibraryRepo(type: GitRepoTask) {
     sampleDir = file("../cpp/cmake-source-dependencies/utilities")
     change {
         tag("1.0")
-        "initial version"
+        message("initial version")
     }
 }
 
@@ -654,7 +663,7 @@ task generateCppCmakeSourceDependenciesUtilityAppRepo(type: GitRepoTask) {
     sampleDir = file("../cpp/cmake-source-dependencies/app")
     change {
         tag("1.0")
-        "initial version"
+        message("initial version")
     }
 }
 
@@ -663,7 +672,7 @@ task generateCppAutotoolsLibraryPluginRepo(type: GitRepoTask) {
     sampleDir = file("../cpp/autotools-library/build-wrapper-plugin")
     change {
         tag("1.0")
-        "initial version"
+        message("initial version")
     }
 }
 
@@ -672,17 +681,6 @@ task generateCppLibraryWithTestsPluginRepo(type: GitRepoTask) {
     sampleDir = file("../cpp/library-with-tests/build-wrapper-plugin")
     change {
         tag("1.0")
-        "initial version"
+        message("initial version")
     }
-}
-
-task syncCppLibraryRepo(type: SyncExternalRepoTask) {
-    repoUrl = "git@github.com:gradle/native-samples-cpp-library.git"
-    checkoutDirectory = file("repos/native-samples-cpp-library")
-}
-
-task externalCppLibrary(type: SourceCopyTask) {
-    dependsOn syncCppLibraryRepo
-    sampleDir = syncCppLibraryRepo.checkoutDirectory
-    appProject(".").fromTemplate(cppUtilsLib)
 }

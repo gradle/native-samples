@@ -4,9 +4,10 @@ import org.eclipse.jgit.api.Git
 import java.io.File
 
 
-class Changes(val workDir: File, val git:Git) {
+class Changes(val workDir: File, val git: Git) {
     var tag: String? = null
     var branch: String? = null
+    var message: String? = null
 
     fun file(name: String): File {
         return File(workDir, name)
@@ -27,6 +28,10 @@ class Changes(val workDir: File, val git:Git) {
 
     fun branch(branch: String) {
         this.branch = branch
+    }
+
+    fun message(message: String) {
+        this.message = message
     }
 
     fun checkout(branch: String) {

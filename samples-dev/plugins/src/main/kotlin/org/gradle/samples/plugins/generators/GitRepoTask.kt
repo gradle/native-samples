@@ -1,7 +1,7 @@
 package org.gradle.samples.plugins.generators
 
-import groovy.lang.Closure
 import org.eclipse.jgit.api.Git
+import org.gradle.api.Action
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RelativePath
 import org.gradle.api.tasks.TaskAction
@@ -10,9 +10,9 @@ import java.io.File
 
 open class GitRepoTask : DefaultTask() {
     val sampleDir = project.objects.directoryProperty()
-    val changes = ArrayList<Closure<String>>()
+    val changes = ArrayList<Action<in Changes>>()
 
-    fun change(cl: Closure<String>) {
+    fun change(cl: Action<in Changes>) {
         changes.add(cl)
     }
 
@@ -48,14 +48,12 @@ build
 
             changes.forEach { change ->
                 val changes = Changes(destDir, git)
-                change.resolveStrategy = Closure.DELEGATE_FIRST
-                change.delegate = changes
-                val message = change.call(changes)
+                change.execute(changes)
                 if (changes.branch != null) {
                     git.branchCreate().setName(changes.branch).call()
                     git.checkout().setName(changes.branch).call()
                 }
-                git.commit().setAll(true).setMessage(message).call()
+                git.commit().setAll(true).setMessage(changes.message).call()
                 if (changes.tag != null) {
                     git.tag().setName(changes.tag).call()
                 }

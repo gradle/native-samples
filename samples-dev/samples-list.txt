@@ -17,6 +17,7 @@ sample=../cpp/static-library
 sample=../cpp/swift-package-manager
 sample=../cpp/swift-package-manager-publish
 sample=../cpp/transitive-dependencies
+sample=repos/nativeSamplesCppLibrary
 sample=../swift/application
 sample=../swift/operating-system-specific-dependencies
 sample=../swift/dependency-on-upstream-branch
