@@ -1,0 +1,4 @@
+allprojects {
+    group = 'org.gradle.swift-samples'
+    version = '1.0'
+}

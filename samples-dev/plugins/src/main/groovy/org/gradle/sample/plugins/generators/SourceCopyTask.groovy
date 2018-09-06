@@ -201,6 +201,10 @@ XCTMain([${testNames}])
         }
 
         void copyDir(String templateDirName, String targetDir, Closure dirAction) {
+            def templateDir = templatesDir.dir(templateDirName).get().asFile
+            if (!templateDir.exists()) {
+                throw new IllegalArgumentException("Template directory ${templateDir} does not exist")
+            }
             doCopyDir(templateDirName, "", targetDir, dirAction)
         }
 

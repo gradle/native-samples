@@ -1,5 +1,6 @@
 sample=../c/application
 sample=repos/nativeSamplesCppLibrary
+sample=repos/nativeSamplesSwiftLibrary
 sample=../cpp/application
 sample=../cpp/autotools-library
 sample=../cpp/binary-dependencies
