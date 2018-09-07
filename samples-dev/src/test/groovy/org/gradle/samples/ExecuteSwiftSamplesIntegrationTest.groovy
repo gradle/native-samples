@@ -36,7 +36,7 @@ class ExecuteSwiftSamplesIntegrationTest extends ExecuteSamplesIntegrationTest {
                 .withArguments("build")
         if (testsBroken) {
             def result = runner.buildAndFail()
-            assert result.taskPaths(TaskOutcome.FAILED) == [":xcTest"]
+            assert result.taskPaths(TaskOutcome.FAILED) == [":xcTest"] : "Expected tests to fail:\n${result.output}"
         } else {
             runner.build()
         }
