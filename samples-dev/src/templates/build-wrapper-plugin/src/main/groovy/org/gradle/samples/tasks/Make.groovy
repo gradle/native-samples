@@ -43,7 +43,7 @@ class Make extends DefaultTask {
         variantDirectory = objectFactory.directoryProperty()
         outputDirectory = objectFactory.directoryProperty()
         binary = objectFactory.fileProperty()
-        arguments = objectFactory.listProperty(String.class)
+        arguments = objectFactory.listProperty(String.class).empty()
     }
 
     @TaskAction

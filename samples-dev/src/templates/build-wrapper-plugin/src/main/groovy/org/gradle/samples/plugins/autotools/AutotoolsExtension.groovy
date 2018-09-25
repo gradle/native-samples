@@ -20,7 +20,7 @@ class AutotoolsExtension {
         binary = objectFactory.property(String.class)
         includeDirectory = objectFactory.directoryProperty()
         sourceDirectory = objectFactory.directoryProperty()
-        configureArguments = objectFactory.listProperty(String)
-        makeArguments = objectFactory.listProperty(String)
+        configureArguments = objectFactory.listProperty(String).empty()
+        makeArguments = objectFactory.listProperty(String).empty()
     }
 }

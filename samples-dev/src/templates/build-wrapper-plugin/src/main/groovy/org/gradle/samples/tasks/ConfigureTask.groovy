@@ -26,7 +26,7 @@ class ConfigureTask extends DefaultTask {
         sourceDirectory = objectFactory.directoryProperty()
         makeDirectory = objectFactory.directoryProperty()
         prefixDirectory = objectFactory.directoryProperty()
-        arguments = objectFactory.listProperty(String.class)
+        arguments = objectFactory.listProperty(String.class).empty()
     }
 
     @TaskAction
