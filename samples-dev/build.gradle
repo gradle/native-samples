@@ -27,7 +27,7 @@ dependencies {
 def supportedLanguages = [file("../swift"), file("../cpp"), file("../c")]
 
 test {
-    maxParallelForks = gradle.startParameter.maxWorkerCount
+    // maxParallelForks = gradle.startParameter.maxWorkerCount
     inputs.files files(supportedLanguages).asFileTree.matching { PatternFilterable pattern ->
         pattern.exclude "**/build", "**/.gradle", "**/*.xcworkspace", "**/*.xcodeproj", "**/repo"
     }
