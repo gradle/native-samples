@@ -1,0 +1,17 @@
+plugins {
+    id 'groovy'
+    id 'java-gradle-plugin'
+}
+
+gradlePlugin {
+    plugins {
+        "utilities-build" {
+            id = "utilities-build"
+            implementationClass = "org.gradle.cpp.samples.UtilitiesBuildPlugin"
+        }
+        "list-build" {
+            id = "list-build"
+            implementationClass = "org.gradle.cpp.samples.ListBuildPlugin"
+        }
+    }
+}

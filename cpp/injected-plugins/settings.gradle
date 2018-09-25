@@ -1,0 +1,16 @@
+rootProject.name = 'app'
+
+sourceControl {
+    gitRepository("repos/utilities-library") {
+        producesModule("org.gradle.cpp-samples:utilities")
+        plugins {
+            id "utilities-build"
+        }
+    }
+    gitRepository("repos/list-library") {
+        producesModule("org.gradle.cpp-samples:list")
+        plugins {
+            id "list-build"
+        }
+    }
+}

@@ -208,6 +208,15 @@ task cppSourceDependencies(type: SourceCopyTask) {
     appProject(".").fromTemplate("cpp-app")
 }
 
+task cppInjectedPlugins(type: SourceCopyTask) {
+    sampleDir = file("../cpp/injected-plugins")
+
+    appProject(".").buildRoot()
+    appProject(".").fromTemplate("cpp-app")
+    libProject("repos/utilities-library").fromTemplate(cppUtilsLib)
+    libProject("repos/list-library").fromTemplate(cppListLib)
+}
+
 task cppBranchDependencies(type: SourceCopyTask) {
     sampleDir = file("../cpp/dependency-on-upstream-branch")
 
@@ -468,6 +477,24 @@ task swiftIosApplication(type: SourceCopyTask) {
 
     project(".").buildRoot()
     project("ios-plugin").buildRoot()
+}
+
+task generateMinimalCppListRepo(type: GitRepoTask) {
+    dependsOn swiftInjectedPlugins
+    sampleDir = file("../cpp/injected-plugins/repos/list-library")
+    change { ch ->
+        tag("1.0")
+        message("initial version")
+    }
+}
+
+task generateMinimalCppUtilitiesRepo(type: GitRepoTask) {
+    dependsOn swiftInjectedPlugins
+    sampleDir = file("../cpp/injected-plugins/repos/utilities-library")
+    change { ch ->
+        tag("1.0")
+        message("initial version")
+    }
 }
 
 task generateMinimalSwiftListRepo(type: GitRepoTask) {

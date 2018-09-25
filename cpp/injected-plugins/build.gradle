@@ -1,0 +1,13 @@
+plugins {
+    id 'cpp-application'
+    id 'xcode'
+    id 'visual-studio'
+}
+
+group = 'org.gradle.cpp-samples'
+
+application {
+    dependencies {
+        implementation 'org.gradle.cpp-samples:utilities:latest.integration'
+    }
+}
