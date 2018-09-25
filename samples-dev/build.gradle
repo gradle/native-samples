@@ -480,7 +480,7 @@ task swiftIosApplication(type: SourceCopyTask) {
 }
 
 task generateMinimalCppListRepo(type: GitRepoTask) {
-    dependsOn swiftInjectedPlugins
+    dependsOn cppInjectedPlugins
     sampleDir = file("../cpp/injected-plugins/repos/list-library")
     change { ch ->
         tag("1.0")
@@ -489,7 +489,7 @@ task generateMinimalCppListRepo(type: GitRepoTask) {
 }
 
 task generateMinimalCppUtilitiesRepo(type: GitRepoTask) {
-    dependsOn swiftInjectedPlugins
+    dependsOn cppInjectedPlugins
     sampleDir = file("../cpp/injected-plugins/repos/utilities-library")
     change { ch ->
         tag("1.0")
