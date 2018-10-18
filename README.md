@@ -226,6 +226,22 @@ BUILD SUCCESSFUL in 1s
 > ./app/build/install/main/debug/App
 Hello, World!
 ```
+## Windows Resource Compile
+This sample shows how Gradle is able to compile Window Resource (`rc`) files and link them into a native binary.  This sample applies the `'cpp-application'` plugin.  This sample requires you have VisualCpp 
+toolchain installed
+
+### C++
+To build and run the application: (Note we are using gradlew.bat since the sample is running from Windows cmd.exe)
+
+```
+> cd cpp\windows-resources
+> gradlew.bat assemble
+
+BUILD SUCCESSFUL in 1s
+
+> .\build\exe\main\debug\windows-resources.exe
+Hello, World!
+```
 
 ## Application with library dependencies in a composite build (composite-build)
 

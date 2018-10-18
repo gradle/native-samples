@@ -1,0 +1,49 @@
+plugins {
+    id 'cpp-application'
+}
+
+
+application {
+   //source tree for CppCompile
+    source.from project.fileTree(dir: 'src', include: '**/*.cpp')
+    privateHeaders.from project.file('src/hello/headers')
+    
+    
+    binaries.whenElementFinalized { binary ->
+        if (binary.targetPlatform.operatingSystemFamily.isWindows()) {
+            //Register WindowsResourceCompile
+            def linkerTask = binary.linkTask.get()
+            def resourceTaskName = "compileResources" + binary.name.capitalize()
+            def compileResources = project.tasks.register(resourceTaskName, WindowsResourceCompile) {
+                
+                targetPlatform = binary.targetPlatform
+                toolChain = binary.toolChain
+                includes.from project.file('src/hello/headers')
+                source.from project.fileTree(dir: 'src/hello/rc' )
+                macros.put('_MYMACRO', null)
+                compilerArgs.addAll toolChain.map { NativeToolChain toolChain ->
+                    List<String> compilerSpecificArgs = []
+                    if (toolChain instanceof VisualCpp) {
+                        compilerSpecificArgs << '/v'
+                    }
+                    return compilerSpecificArgs
+                }
+                outputDir = new File(project.buildDir, "windows-resources/${binary.name}")
+            }
+
+            FileTree resourceOutputs = compileResources.get().getOutputs().getFiles().getAsFileTree().matching(new PatternSet().include(["**/*.res","**/*.obj"]));
+            linkerTask.source(resourceOutputs)
+        }
+    }
+}
+
+tasks.withType(LinkExecutable) {
+    linkerArgs.addAll toolChain.map { NativeToolChain toolChain ->
+        List<String> linkerSpecificArgs = []
+        if (toolChain instanceof VisualCpp) {
+            linkerSpecificArgs << 'user32.lib'
+        }
+        return linkerSpecificArgs
+    }
+}
+

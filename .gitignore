@@ -23,12 +23,14 @@ Package.resolved
 *.vcxproj.filters
 *.vcxproj.user
 
-# AppCode/IDEA Files
+# AppCode/IDEA/Eclipse Files
 .idea
 *.iml
 *.ipr
 *.iws
 out/
+.project
+.classpath
 
 # Mac OS Junk
 .DS_Store
