@@ -1,0 +1,95 @@
+import org.gradle.nativeplatform.toolchain.internal.PCHUtils
+import com.google.common.collect.Lists
+
+buildscript {
+    dependencies { classpath 'com.google.guava:guava:23.0' }
+}
+
+plugins { id 'cpp-application' }
+
+task prefixGen(type: PrefixHeaderGen) {
+    header = 'pch.h'
+    prefixHeaderFile = project.file('build/tmp/hello/cpp/prefixHeaders/prefix-headers.h')
+}
+
+def pchTask = null
+
+application {
+    source.from project.file('src/hello/cpp')
+    source.from project.file('src/main/cpp')
+    privateHeaders.from project.file('src/hello/headers')
+//    pchObjects.from pchTask.objectFileDir
+//    headerFile.from prefixGen.prefixHeaderFile
+//    includeString ='pch.h'
+
+    binaries.whenElementFinalized { binary ->
+
+        if (binary.targetPlatform.operatingSystemFamily.isWindows()) {
+
+            def pchTaskName = "preCompileHeader" + binary.name.capitalize()
+            pchTask = project.tasks.register(pchTaskName, CppPreCompiledHeaderCompile) {
+                targetPlatform = binary.targetPlatform
+                toolChain = binary.toolChain
+
+                objectFileDir = new File(project.buildDir, "pch/${binary.name}PCH")
+                macros.put('DLL_EXPORT', null)
+                includes.from project.file ('src/hello/headers')
+                includes.from project.file ('src/hello/cpp')
+                includes.from project.file ('C:/Program Files (x86)/Microsoft Visual Studio/2017/Professional/VC/Tools/MSVC/14.13.26128/include')
+                includes.from project.file ('C:/Program Files (x86)/Windows Kits/10/Include/10.0.16299.0/um')
+                includes.from project.file ('C:/Program Files (x86)/Windows Kits/10/Include/10.0.16299.0/shared')
+                includes.from project.file ('C:/Program Files (x86)/Windows Kits/10/Include/10.0.16299.0/ucrt')
+                source.from prefixGen.prefixHeaderFile
+                dependsOn prefixGen
+            }
+
+            FileTree pchOutput = pchTask.get().getOutputs().getFiles().getAsFileTree().matching(new PatternSet().include("**/*.obj"));
+            binary.linkTask.get().source(pchOutput)
+        }
+    }
+}
+
+
+/*
+ * It would be nice to declare the CppPreCompiledHeaderCompile task this way
+ * but there is no visibility to targetPlatform & toolchain
+ */
+task pchGen(type: CppPreCompiledHeaderCompile) {
+    source.from project.file('src/hello/headers')
+    includes.from prefixGen.prefixHeaderFile
+    objectFileDir = new File(project.buildDir, "pchOut")
+    dependsOn prefixGen
+}
+
+//tasks.withType(CppCompile) {
+//    pchObjects.from pchTask.objectFileDir
+//    headerFile.from prefixGen.prefixHeaderFile
+//    includeString = 'pch.h'
+//}
+
+
+tasks.withType(LinkExecutable) {
+
+    linkerArgs.addAll toolChain.map { NativeToolChain toolChain ->
+        List<String> linkerSpecificArgs = []
+        if (toolChain instanceof VisualCpp) {
+            linkerSpecificArgs << 'user32.lib'
+        }
+        return linkerSpecificArgs
+    }
+}
+
+class PrefixHeaderGen extends DefaultTask {
+
+    @OutputFile
+    final RegularFileProperty prefixHeaderFile = project.objects.fileProperty()
+
+    @Input
+    final Property<String> header = project.objects.property(String)
+
+
+    @TaskAction
+    void generatePrefixHeaderFile() {
+        PCHUtils.generatePrefixHeaderFile(Lists.newArrayList(header.get()), prefixHeaderFile.getAsFile().get());
+    }
+}
