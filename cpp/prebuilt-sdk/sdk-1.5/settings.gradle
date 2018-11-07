@@ -1,0 +1,4 @@
+rootProject.name = "sdk"
+
+// Namespace the prebuilt libraries
+include "list"

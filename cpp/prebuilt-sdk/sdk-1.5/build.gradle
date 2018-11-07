@@ -1,0 +1,128 @@
+import org.gradle.internal.os.OperatingSystem
+
+allprojects {
+    group = "org.gradle.cpp-sample"
+    version = "1.5"
+}
+
+// Note: The zip could be fetch from a remote location
+def sdkZip = file("../../simple-library/build/${name}-${version}.zip")
+
+def sdkDir = layout.buildDirectory.dir("${name}-${version}")
+def unzipSdkTask = tasks.register("unzipSdk", Copy) {
+    from zipTree(sdkZip)
+    into sdkDir
+    doFirst {
+        if (!sdkZip.exists()) {
+            throw new GradleException("Please build project at ${file('../../simple-library')} with: './gradlew -p ../simple-library assembleSdkZip'")
+        }
+    }
+}
+
+OperatingSystemFamily getCurrentOperatingSystemFamily() {
+    String os = System.getProperty("os.name").toLowerCase()
+
+    if (os.contains("win")) {
+        return objects.named(OperatingSystemFamily, OperatingSystemFamily.WINDOWS)
+    } else if (os.contains("mac")) {
+        return objects.named(OperatingSystemFamily, OperatingSystemFamily.MACOS)
+    } else if (os.contains("linux")) {
+        return objects.named(OperatingSystemFamily, OperatingSystemFamily.LINUX)
+    } else {
+        throw new IllegalStateException("Current host not supported")
+    }
+}
+
+subprojects {
+    configurations {
+        cppApiElements {
+            canBeConsumed = true
+            canBeResolved = false
+            attributes.attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.C_PLUS_PLUS_API))
+            outgoing.artifact(sdkDir.get().dir("inc").asFile) {
+                builtBy unzipSdkTask
+            }
+        }
+
+        debugLinkElements {
+            canBeConsumed = true
+            canBeResolved = false
+            attributes {
+                attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.NATIVE_LINK))
+                attribute(CppBinary.DEBUGGABLE_ATTRIBUTE, true)
+                attribute(CppBinary.OPTIMIZED_ATTRIBUTE, false)
+                attribute(OperatingSystemFamily.OPERATING_SYSTEM_ATTRIBUTE, currentOperatingSystemFamily)
+            }
+            outgoing.artifact(file(OperatingSystem.current().getLinkLibraryName(sdkDir.get().file("lib/list-debug").asFile.path))) {
+                builtBy unzipSdkTask
+            }
+        }
+
+        debugRuntimeElements {
+            canBeConsumed = true
+            canBeResolved = false
+            attributes {
+                attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.NATIVE_RUNTIME))
+                attribute(CppBinary.DEBUGGABLE_ATTRIBUTE, true)
+                attribute(CppBinary.OPTIMIZED_ATTRIBUTE, false)
+                attribute(OperatingSystemFamily.OPERATING_SYSTEM_ATTRIBUTE, currentOperatingSystemFamily)
+            }
+            outgoing.artifact(file(OperatingSystem.current().getSharedLibraryName(sdkDir.get().file("lib/list-debug").asFile.path))) {
+                builtBy unzipSdkTask
+            }
+        }
+
+        releaseLinkElements {
+            canBeConsumed = true
+            canBeResolved = false
+            attributes {
+                attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.NATIVE_LINK))
+                attribute(CppBinary.DEBUGGABLE_ATTRIBUTE, true)
+                attribute(CppBinary.OPTIMIZED_ATTRIBUTE, true)
+                attribute(OperatingSystemFamily.OPERATING_SYSTEM_ATTRIBUTE, currentOperatingSystemFamily)
+            }
+            outgoing.artifact(file(OperatingSystem.current().getLinkLibraryName(sdkDir.get().file("lib/list-release").asFile.path))) {
+                builtBy unzipSdkTask
+            }
+        }
+
+        releaseRuntimeElements {
+            canBeConsumed = true
+            canBeResolved = false
+            attributes {
+                attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.NATIVE_RUNTIME))
+                attribute(CppBinary.DEBUGGABLE_ATTRIBUTE, true)
+                attribute(CppBinary.OPTIMIZED_ATTRIBUTE, true)
+                attribute(OperatingSystemFamily.OPERATING_SYSTEM_ATTRIBUTE, currentOperatingSystemFamily)
+            }
+            outgoing.artifact(file(OperatingSystem.current().getSharedLibraryName(sdkDir.get().file("lib/list-release").asFile.path))) {
+                builtBy unzipSdkTask
+            }
+        }
+    }
+}
+
+// Configure prebuilt library
+project(":list") {
+    configurations {
+        cppApiElements.outgoing.artifact(sdkDir.get().dir("inc").asFile) {
+            builtBy unzipSdkTask
+        }
+
+        debugLinkElements.outgoing.artifact(file(OperatingSystem.current().getLinkLibraryName(sdkDir.get().file("lib/list-debug").asFile.path))) {
+            builtBy unzipSdkTask
+        }
+
+        debugRuntimeElements.outgoing.artifact(file(OperatingSystem.current().getSharedLibraryName(sdkDir.get().file("lib/list-debug").asFile.path))) {
+            builtBy unzipSdkTask
+        }
+
+        releaseLinkElements.outgoing.artifact(file(OperatingSystem.current().getLinkLibraryName(sdkDir.get().file("lib/list-release").asFile.path))) {
+            builtBy unzipSdkTask
+        }
+
+        releaseRuntimeElements.outgoing.artifact(file(OperatingSystem.current().getSharedLibraryName(sdkDir.get().file("lib/list-release").asFile.path))) {
+            builtBy unzipSdkTask
+        }
+    }
+}

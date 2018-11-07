@@ -51,6 +51,28 @@ tasks.withType(LinkSharedLibrary) {
     }
 }
 
+tasks.register("assembleSdkZip", Zip) {
+    version = project.version
+    archiveName = "sdk-${version}.zip"
+    destinationDir = buildDir
+    from(file("src/main/public")) {
+        into("inc")
+    }
+    library.binaries.get().each { binary ->
+        if (binary instanceof CppSharedLibrary) {
+            from(binary.linkTask.get().destinationDirectory.get().asFileTree) {
+                into("lib")
+
+                String suffix = "debug"
+                if (binary.debuggable && binary.optimized) {
+                    suffix = "release"
+                }
+                rename("(.*)\\.(.*)", '$1-' + suffix + '.$2')
+            }
+        }
+    }
+}
+
 publishing {
     repositories {
         maven {
