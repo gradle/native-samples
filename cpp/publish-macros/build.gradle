@@ -1,0 +1,21 @@
+buildscript {
+    dependencies {
+        classpath "org.gradle.samples:cpp-public-macros-plugin:latest.integration"
+    }
+}
+
+allprojects {
+    apply plugin: "maven-publish"
+
+    group = "org.gradle.cpp-samples"
+    version = "1.6"
+
+    publishing {
+        repositories {
+            maven {
+                url = '../repo'
+            }
+        }
+    }
+}
+

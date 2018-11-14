@@ -1,0 +1,11 @@
+plugins {
+    id 'cpp-library'
+}
+
+apply plugin: "org.gradle.samples.cpp-public-macros"
+
+library {
+    dependencies {
+        api project(':list')
+    }
+}
