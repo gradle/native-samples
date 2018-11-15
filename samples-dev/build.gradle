@@ -124,6 +124,18 @@ task cppApplication(type: SourceCopyTask) {
     appProject(".").fromTemplate(cppListLib)
 }
 
+task cppWindowsResources(type: SourceCopyTask) {
+    sampleDir = file("../cpp/windows-resources")
+
+    appProject(".").buildRoot()
+    appProject(".").fromTemplate("cpp-app-with-windows-resources-build")
+    appProject(".").fromTemplate("cpp-app")
+    appProject(".").fromTemplate(cppMessageLib)
+    appProject(".").fromTemplate("cpp-message-resources")
+    appProject(".").fromTemplate(cppUtilsLib)
+    appProject(".").fromTemplate(cppListLib)
+}
+
 task cppLibrary(type: SourceCopyTask) {
     sampleDir = file("../cpp/simple-library")
 
