@@ -23,6 +23,10 @@ class ExecuteCppSamplesIntegrationTest extends ExecuteSamplesIntegrationTest {
             Assume.assumeTrue(notWindows())
         }
 
+        if (sample.name == "cpp/windows-resources") {
+            Assume.assumeTrue(isWindows())
+        }
+
         // Tool chains can only be provision on Linux and macOS for C++
         Assume.assumeFalse(sample.sampleName == 'provisionable-tool-chains' && OperatingSystem.current().windows)
 

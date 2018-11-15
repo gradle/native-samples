@@ -1,0 +1,6 @@
+#include "resources.h"
+
+STRINGTABLE
+{
+    IDS_MESSAGE,   "Hello,      World!"
+}

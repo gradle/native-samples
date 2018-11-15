@@ -9,6 +9,7 @@ subprojects { subproject ->
     components.withType(ProductionCppComponent) {
         // By convention, source files are located in the root directory/Sources/<module>
         source.from rootProject.file("Sources/${subproject.name.capitalize()}")
+        privateHeaders.from rootProject.file("Sources/${subproject.name.capitalize()}/include")
     }
     components.withType(CppLibrary) {
         // By convention, public header files are located in the root directory/Sources/<module>/include

@@ -47,6 +47,10 @@ abstract class ExecuteSamplesIntegrationTest extends Specification {
         return !OperatingSystem.current().isWindows()
     }
 
+    boolean isWindows() {
+        return OperatingSystem.current().isWindows()
+    }
+
     @Unroll
     def "can run help for '#sample.name' without running any setup steps"() {
         // TODO - remove this when instruction parsing is smarter

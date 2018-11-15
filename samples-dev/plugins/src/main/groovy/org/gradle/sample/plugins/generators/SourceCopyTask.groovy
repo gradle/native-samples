@@ -41,12 +41,16 @@ class SourceCopyTask extends DefaultTask implements SampleGeneratorTask {
         return add(new SwiftPmTarget(projectDir, targetName))
     }
 
+    CmakeTarget cmakeAppProject(String projectDir) {
+        return add(new CmakeTarget(projectDir, projectDir, false));
+    }
+
     CmakeTarget cmakeProject(String projectDir) {
-        return add(new CmakeTarget(projectDir, projectDir))
+        return add(new CmakeTarget(projectDir, projectDir, true))
     }
 
     CmakeTarget cmakeProject(String projectDir, String targetName) {
-        return add(new CmakeTarget(projectDir, targetName))
+        return add(new CmakeTarget(projectDir, targetName,true))
     }
 
     private def add(TemplateTarget target) {
@@ -406,9 +410,11 @@ XCTMain([${testNames}])
 
     static class CmakeTarget extends TemplateTarget {
         final String targetName
+        private final boolean isLibrary
 
-        CmakeTarget(String projectDir, String targetName) {
+        CmakeTarget(String projectDir, String targetName, boolean isLibrary) {
             super(projectDir)
+            this.isLibrary = isLibrary
             this.targetName = targetName
         }
 
@@ -427,7 +433,7 @@ XCTMain([${testNames}])
             directory.map("src/main/cpp", "src/${targetName}", null)
             directory.map("src/main/c", "src/${targetName}", null)
             directory.map("src/main/headers", "src/${targetName}/include", null)
-            directory.map("src/main/public", "src/${targetName}/include", addDllExportToPublicHeader(template))
+            directory.map("src/main/public", "src/${targetName}/include", isLibrary ? addDllExportToPublicHeader(template) : null)
         }
     }
 }
