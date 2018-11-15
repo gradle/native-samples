@@ -201,7 +201,7 @@ task cppAutotoolsLibrary(type: SourceCopyTask) {
     project("build-wrapper-plugin").fromTemplate("build-wrapper-plugin")
 }
 
-task cppCmakeSourceDepedencies(type: SourceCopyTask) {
+task cppCmakeSourceDependencies(type: SourceCopyTask) {
     sampleDir = file("../cpp/cmake-source-dependencies")
 
     cmakeAppProject("app").buildRoot()
@@ -675,7 +675,7 @@ task generateCppCmakeLibraryCustomPublicationPluginRepo(type: GitRepoTask) {
 }
 
 task generateCppCmakeSourceDependenciesPluginRepo(type: GitRepoTask) {
-    dependsOn cppCmakeSourceDepedencies
+    dependsOn cppCmakeSourceDependencies
     sampleDir = file("../cpp/cmake-source-dependencies/build-wrapper-plugin")
     change {
         tag("1.0")
@@ -684,7 +684,7 @@ task generateCppCmakeSourceDependenciesPluginRepo(type: GitRepoTask) {
 }
 
 task generateCppCmakeSourceDependenciesListLibraryRepo(type: GitRepoTask) {
-    dependsOn cppCmakeSourceDepedencies
+    dependsOn cppCmakeSourceDependencies
     sampleDir = file("../cpp/cmake-source-dependencies/list")
     change {
         tag("1.0")
@@ -693,7 +693,7 @@ task generateCppCmakeSourceDependenciesListLibraryRepo(type: GitRepoTask) {
 }
 
 task generateCppCmakeSourceDependenciesUtilityLibraryRepo(type: GitRepoTask) {
-    dependsOn cppCmakeSourceDepedencies
+    dependsOn cppCmakeSourceDependencies
     sampleDir = file("../cpp/cmake-source-dependencies/utilities")
     change {
         tag("1.0")
@@ -702,7 +702,7 @@ task generateCppCmakeSourceDependenciesUtilityLibraryRepo(type: GitRepoTask) {
 }
 
 task generateCppCmakeSourceDependenciesUtilityAppRepo(type: GitRepoTask) {
-    dependsOn cppCmakeSourceDepedencies
+    dependsOn cppCmakeSourceDependencies
     sampleDir = file("../cpp/cmake-source-dependencies/app")
     change {
         tag("1.0")
