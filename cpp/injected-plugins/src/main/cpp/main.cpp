@@ -5,10 +5,11 @@
 
 #include "string_utils.h"
 #include "linked_list.h"
+#include "message.h"
 
 int main() {
     linked_list tokens;
-    tokens = split("Hello,      World!");
+    tokens = split(get_message());
     std::cout << join(tokens) << std::endl;
     return 0;
 }

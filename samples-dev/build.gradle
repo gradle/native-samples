@@ -47,6 +47,7 @@ tasks.clean {
 
 def cppUtilsLib = CppLibraryTemplate.of("cpp-lib-with-api-dep", "utilities")
 def cppListLib = CppLibraryTemplate.of("cpp-lib", "list")
+def cppMessageLib = CppLibraryTemplate.of("cpp-message-api", "message")
 
 def swiftUtilsLib = SwiftLibraryTemplate.of("swift-lib-with-api-dep", "Utilities")
 def swiftListLib = SwiftLibraryTemplate.of("swift-lib", "List")
@@ -106,6 +107,8 @@ task cppTransitiveDependencies(type: SourceCopyTask) {
 
     project(".").buildRoot()
     appProject("app").fromTemplate("cpp-app")
+    appProject("app").fromTemplate(cppMessageLib)
+    appProject("app").fromTemplate("cpp-message-static")
     libProject("utilities").fromTemplate(cppUtilsLib)
     libProject("list").fromTemplate(cppListLib)
 }
@@ -115,6 +118,8 @@ task cppApplication(type: SourceCopyTask) {
 
     appProject(".").buildRoot()
     appProject(".").fromTemplate("cpp-app")
+    appProject(".").fromTemplate(cppMessageLib)
+    appProject(".").fromTemplate("cpp-message-static")
     appProject(".").fromTemplate(cppUtilsLib)
     appProject(".").fromTemplate(cppListLib)
 }
@@ -141,6 +146,8 @@ task cppBinaryDependencies(type: SourceCopyTask) {
 
     appProject(".").buildRoot()
     appProject(".").fromTemplate("cpp-app")
+    appProject(".").fromTemplate(cppMessageLib)
+    appProject(".").fromTemplate("cpp-message-static")
     appProject(".").fromTemplate(cppUtilsLib)
 }
 
@@ -149,6 +156,8 @@ task cppPrebuiltBinaries(type: SourceCopyTask) {
 
     appProject(".").buildRoot()
     appProject(".").fromTemplate("cpp-app")
+    appProject(".").fromTemplate(cppMessageLib)
+    appProject(".").fromTemplate("cpp-message-static")
     appProject(".").fromTemplate(cppUtilsLib)
 }
 
@@ -157,6 +166,8 @@ task cppCmakeLibrary(type: SourceCopyTask) {
 
     project(".").buildRoot()
     appProject("app").fromTemplate("cpp-app")
+    appProject("app").fromTemplate(cppMessageLib)
+    appProject("app").fromTemplate("cpp-message-static")
     libProject("utilities").fromTemplate(cppUtilsLib)
     cmakeProject("list", "list").fromTemplate(cppListLib)
     project("build-wrapper-plugin").buildRoot()
@@ -172,6 +183,8 @@ task cppAutotoolsLibrary(type: SourceCopyTask) {
     appProject("app").fromTemplate("cpp-app-with-curl")
     appProject("app").fromTemplate(cppUtilsLib)
     appProject("app").fromTemplate(cppListLib)
+    appProject("app").fromTemplate(cppMessageLib)
+    appProject("app").fromTemplate("cpp-message-static")
     project("build-wrapper-plugin").buildRoot()
     project("build-wrapper-plugin").fromTemplate("build-wrapper-plugin")
 }
@@ -179,9 +192,11 @@ task cppAutotoolsLibrary(type: SourceCopyTask) {
 task cppCmakeSourceDepedencies(type: SourceCopyTask) {
     sampleDir = file("../cpp/cmake-source-dependencies")
 
-    cmakeProject("app").buildRoot()
-    cmakeProject("app").fromTemplate("cpp-app-cmake-build")
-    cmakeProject("app").fromTemplate("cpp-app")
+    cmakeAppProject("app").buildRoot()
+    cmakeAppProject("app").fromTemplate("cpp-app-cmake-build")
+    cmakeAppProject("app").fromTemplate("cpp-app")
+    cmakeAppProject("app").fromTemplate(cppMessageLib)
+    cmakeAppProject("app").fromTemplate("cpp-message-static")
     cmakeProject("utilities").buildRoot()
     cmakeProject("utilities").fromTemplate("cpp-utilities-lib-cmake-build")
     cmakeProject("utilities").fromTemplate(cppUtilsLib)
@@ -197,6 +212,8 @@ task cppCompositeBuild(type: SourceCopyTask) {
 
     appProject(".").buildRoot()
     appProject(".").fromTemplate("cpp-app")
+    appProject(".").fromTemplate(cppMessageLib)
+    appProject(".").fromTemplate("cpp-message-static")
     libProject("utilities-library").fromTemplate(cppUtilsLib)
     libProject("list-library").fromTemplate(cppListLib)
 }
@@ -206,6 +223,8 @@ task cppSourceDependencies(type: SourceCopyTask) {
 
     appProject(".").buildRoot()
     appProject(".").fromTemplate("cpp-app")
+    appProject(".").fromTemplate(cppMessageLib)
+    appProject(".").fromTemplate("cpp-message-static")
 }
 
 task cppInjectedPlugins(type: SourceCopyTask) {
@@ -213,6 +232,8 @@ task cppInjectedPlugins(type: SourceCopyTask) {
 
     appProject(".").buildRoot()
     appProject(".").fromTemplate("cpp-app")
+    appProject(".").fromTemplate(cppMessageLib)
+    appProject(".").fromTemplate("cpp-message-static")
     libProject("repos/utilities-library").fromTemplate(cppUtilsLib)
     libProject("repos/list-library").fromTemplate(cppListLib)
 }
@@ -222,6 +243,8 @@ task cppBranchDependencies(type: SourceCopyTask) {
 
     appProject("app").buildRoot()
     appProject("app").fromTemplate("cpp-app")
+    appProject("app").fromTemplate(cppMessageLib)
+    appProject("app").fromTemplate("cpp-message-static")
     libProject("utilities-library").buildRoot()
     libProject("utilities-library").fromTemplate(cppUtilsLib)
     libProject("utilities-library").fromTemplate("cpp-utilities-lib-build")
@@ -253,6 +276,8 @@ task cppStaticLibrary(type: SourceCopyTask) {
 
     project(".").buildRoot()
     appProject("app").fromTemplate("cpp-app")
+    appProject("app").fromTemplate(cppMessageLib)
+    appProject("app").fromTemplate("cpp-message-static")
     staticLibProject("utilities").fromTemplate(cppUtilsLib)
     libProject("list").fromTemplate(cppListLib)
 }
@@ -262,6 +287,8 @@ task cppSwiftPackageManager(type: SourceCopyTask) {
 
     project(".").buildRoot()
     swiftPMProject(".", "App").fromTemplate("cpp-app")
+    swiftPMProject(".", "App").fromTemplate(cppMessageLib)
+    swiftPMProject(".", "App").fromTemplate("cpp-message-static")
     swiftPMProject(".", "Utilities").fromTemplate(cppUtilsLib)
     swiftPMProject(".", "List").fromTemplate(cppListLib)
 }
@@ -270,6 +297,8 @@ task cppSwiftPackageManagerPublish(type: SourceCopyTask) {
     sampleDir = file("../cpp/swift-package-manager-publish")
 
     swiftPMProject("app", "App").fromTemplate("cpp-app")
+    swiftPMProject("app", "App").fromTemplate(cppMessageLib)
+    swiftPMProject("app", "App").fromTemplate("cpp-message-static")
 
     project("release-plugin").buildRoot()
     project("release-plugin").fromTemplate("release-plugin")
@@ -292,6 +321,8 @@ task cppProvisionableToolChains(type: SourceCopyTask) {
     appProject(".").fromTemplate("cpp-app")
     appProject(".").fromTemplate(cppUtilsLib)
     appProject(".").fromTemplate(cppListLib)
+    appProject(".").fromTemplate(cppMessageLib)
+    appProject(".").fromTemplate("cpp-message-static")
     appProject(".").fromTemplate("cpp-provisionable-tool-chains-build")
 }
 
