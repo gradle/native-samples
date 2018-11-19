@@ -10,7 +10,5 @@ int main() {
     linked_list tokens;
     tokens = split("Hello,      World!");
     std::cout << join(tokens) << std::endl;
-
-
     return 0;
 }
