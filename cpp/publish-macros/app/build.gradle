@@ -1,0 +1,13 @@
+plugins {
+    id "cpp-application"
+}
+
+apply plugin: "org.gradle.samples.cpp-public-macros"
+
+application {
+    binaries.configureEach {
+        dependencies {
+            implementation project(":utilities")
+        }
+    }
+}

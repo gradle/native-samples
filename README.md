@@ -992,3 +992,21 @@ Finally, you can develop the application using Xcode IDE to edit the storyboard 
 ```
 > ./gradlew openXcode
 ```
+
+## Publishing macros for transitive consumption by downstream projects (publish-macros)
+
+This sample demonstrates how to publish macros to downstream projects. 
+
+### C++
+
+To build and run the application:
+
+```
+> cd cpp/publish-macros
+> ./gradlew assemble
+
+BUILD SUCCESSFUL in 1s
+
+> ./app/build/install/main/debug/app
+Hello, World!
+```
