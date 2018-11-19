@@ -4,8 +4,6 @@
 
 #pragma once
 
-#define LIST_API
-
 template<typename T>
 class node {
   public:
@@ -30,7 +28,7 @@ static void unlink(node<T> ** head, node<T> * previous_it, node<T> * current_it)
 }
 
 template<typename T>
-class LIST_API linked_list {
+class linked_list {
   public:
     linked_list() : head_(NULL) {}
     

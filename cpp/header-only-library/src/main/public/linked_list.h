@@ -4,16 +4,6 @@
 
 #pragma once
 
-#ifdef _WIN32
-#  ifdef LIST_MODULE_EXPORT
-#    define LIST_API __declspec(dllexport)
-#  else
-#    define LIST_API __declspec(dllimport)
-#  endif
-#else
-#  define LIST_API
-#endif
-
 template<typename T>
 class node {
   public:
@@ -38,7 +28,7 @@ static void unlink(node<T> ** head, node<T> * previous_it, node<T> * current_it)
 }
 
 template<typename T>
-class LIST_API linked_list {
+class linked_list {
   public:
     linked_list() : head_(NULL) {}
     
