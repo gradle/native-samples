@@ -1,0 +1,3 @@
+rootProject.name = "list-header"
+
+includeBuild "header-gradle-plugin"

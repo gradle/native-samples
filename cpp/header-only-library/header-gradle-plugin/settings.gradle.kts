@@ -1,0 +1,1 @@
+rootProject.name = "header-gradle-plugin"
