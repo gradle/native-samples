@@ -22,7 +22,7 @@ application {
 
         binary.linkTask.get().configure {
             dependsOn compileResources
-            source.from compileResources.map({ return project.fileTree(dir: it.outputDir, includes: ["**/*.res","**/*.obj"]) })
+            source.from compileResources.map({ return fileTree(dir: it.outputDir, includes: ["**/*.res","**/*.obj"]) })
 
             linkerArgs.addAll toolChain.map { NativeToolChain toolChain ->
                 if (toolChain instanceof VisualCpp) {
