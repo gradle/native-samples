@@ -955,6 +955,19 @@ To run the tests from the command line:
 > ./gradlew test
 ```
 
+## Header-only libraries (header-only-library)
+
+This sample demonstrates header-only libraries. 
+
+### C++
+
+To use the sample, run the tests from the command line:
+
+```
+> cd cpp/header-only-library
+> ./gradlew test
+```
+
 ## iOS Application (ios-application)
 
 This sample demonstrates a iOS 11.2 application build for the iPhone simulator, allowing editing of the iOS specific files inside Xcode.
