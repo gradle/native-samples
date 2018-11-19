@@ -153,6 +153,13 @@ task cppLibraryWithTests(type: SourceCopyTask) {
     project("build-wrapper-plugin").fromTemplate("build-wrapper-plugin")
 }
 
+task cppHeaderOnlyLibrary(type: SourceCopyTask) {
+    sampleDir = file("../cpp/header-only-library")
+
+    libProject(".").buildRoot()
+    libProject(".").fromTemplate(CppLibraryTemplate.of("cpp-lib-header-only", "list"))
+}
+
 task cppBinaryDependencies(type: SourceCopyTask) {
     sampleDir = file("../cpp/binary-dependencies")
 
