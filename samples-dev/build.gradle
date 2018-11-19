@@ -128,7 +128,6 @@ task cppPrecompiledHeaders(type: SourceCopyTask) {
     sampleDir = file("../cpp/precompiled-headers")
 
     appProject(".").buildRoot()
-    appProject(".").fromTemplate("cpp-app-with-precompiled-headers-build")
     appProject(".").fromTemplate("cpp-app")
     appProject(".").fromTemplate("cpp-app-precompiled-header")
     appProject(".").fromTemplate(cppMessageLib)
