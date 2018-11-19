@@ -37,7 +37,7 @@ application {
                 } else if (it instanceof Gcc) {
                     return ['-include', generatePrefixHeaderFileTask.get().prefixHeaderFile.absolutePath, '-I', findPchFile(pchTask.get().objectFileDir.get()).parentFile.absolutePath]
                 } else if (it instanceof VisualCpp) {
-                    return ['/forceInclude', generatePrefixHeaderFileTask.get().prefixHeaderFile.absolutePath, '/Yu', '/Fp', findPchFile(pchTask.get().objectFileDir.get()).absolutePath]
+                    return ['/I', generatePrefixHeaderFileTask.get().prefixHeaderFile.parentFile.absolutePath, '/FI', generatePrefixHeaderFileTask.get().prefixHeaderFile.name, '/Yu', '/Fp', findPchFile(pchTask.get().objectFileDir.get()).absolutePath]
 
                 }
                 logger.warning("The tool chain type is not supported for precompiled header support.")
