@@ -11,8 +11,6 @@ int main() {
     tokens = split("Hello,      World!");
     std::cout << join(tokens) << std::endl;
 
-#   ifndef FOOBAR
-#       error "Macro not existing"
-#   endif
+
     return 0;
 }

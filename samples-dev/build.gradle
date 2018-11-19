@@ -110,6 +110,15 @@ task cppTransitiveDependencies(type: SourceCopyTask) {
     libProject("list").fromTemplate(cppListLib)
 }
 
+task cppPublishMacros(type: SourceCopyTask) {
+    sampleDir = file("../cpp/publish-macros")
+
+    project(".").buildRoot()
+    appProject("app").fromTemplate("cpp-app")
+    libProject("utilities").fromTemplate(cppUtilsLib)
+    libProject("list").fromTemplate(cppListLib)
+}
+
 task cppApplication(type: SourceCopyTask) {
     sampleDir = file("../cpp/application")
 
