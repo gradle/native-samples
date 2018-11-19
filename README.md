@@ -965,6 +965,7 @@ To use the sample, run the tests from the command line:
 
 ```
 > cd cpp/header-only-library
+> ./gradlew assemble
 > ./gradlew test
 ```
 
