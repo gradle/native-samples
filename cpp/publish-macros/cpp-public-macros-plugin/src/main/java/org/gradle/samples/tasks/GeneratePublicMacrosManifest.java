@@ -13,8 +13,8 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 public class GeneratePublicMacrosManifest extends DefaultTask {
-    private final ListProperty<Macro> macros = getProject().getObjects().listProperty(Macro.class);
-    private final RegularFileProperty outputFile = newOutputFile();
+    private final ListProperty<Macro> macros = getProject().getObjects().listProperty(Macro.class).empty();
+    private final RegularFileProperty outputFile = getProject().getObjects().fileProperty();
 
     @TaskAction
     private void doGenerate() throws FileNotFoundException {
