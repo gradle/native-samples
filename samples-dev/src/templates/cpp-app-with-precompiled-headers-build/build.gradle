@@ -64,5 +64,11 @@ application {
                 return []
             }
         }
+
+        if (binary.toolChain instanceof VisualCpp) {
+            binary.linkTask.get().configure {
+                source.from pchTask.map { it.objectFileDir.get().asFileTree.matching { it.include "**/*.obj" } }
+            }
+        }
     }
 }
