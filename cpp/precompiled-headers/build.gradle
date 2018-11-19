@@ -1,3 +1,5 @@
+import org.gradle.nativeplatform.toolchain.internal.PreCompiledHeader
+
 plugins {
     id "cpp-application"
     id "xcode"
@@ -21,9 +23,16 @@ application {
             toolChain = binary.toolChain
             objectFileDir = layout.buildDirectory.dir("pch/${binary.name}").get().asFile
             optimized = binary.optimized
-            debuggable = binary.debuggable
             includes.from binary.compileTask.get().includes
             systemIncludes.from binary.compileTask.get().systemIncludes
+
+            // TODO: /Zi and /ZI requires the intermediate PDB to be shared between compilation task (precompiled and compilation)
+            if (binary.targetPlatform.operatingSystemFamily.windows) {
+                debuggable = false
+                if (binary.debuggable) {
+                    compilerArgs.add("/Z7")
+                }
+            }
 
             // TODO: Change to flatMap and remove dependsOn when prefixHeaderFile is converted to RegularFileProperty
             dependsOn generatePrefixHeaderFileTask
@@ -33,13 +42,23 @@ application {
 
         binary.compileTask.get().configure {
             dependsOn pchTask
+
+            // TODO: /Zi and /ZI requires the intermediate PDB to be shared between compilation task (precompiled and compilation)
+            if (binary.targetPlatform.operatingSystemFamily.windows) {
+                debuggable = false
+                if (binary.debuggable) {
+                    compilerArgs.add("/Z7")
+                }
+            }
+
             compilerArgs.addAll toolChain.map {
                 if (it instanceof Clang) {
                     return ['-include', generatePrefixHeaderFileTask.get().prefixHeaderFile.absolutePath, '-include-pch', findPchFile(pchTask.get().objectFileDir.get()).absolutePath]
                 } else if (it instanceof Gcc) {
                     return ['-include', generatePrefixHeaderFileTask.get().prefixHeaderFile.absolutePath, '-I', findPchFile(pchTask.get().objectFileDir.get()).parentFile.absolutePath]
                 } else if (it instanceof VisualCpp) {
-                    return ['/I', generatePrefixHeaderFileTask.get().prefixHeaderFile.parentFile.absolutePath, '/FI', generatePrefixHeaderFileTask.get().prefixHeaderFile.name, '/Yu', '/Fp', findPchFile(pchTask.get().objectFileDir.get()).absolutePath]
+                    println generatePrefixHeaderFileTask.get().prefixHeaderFile.absolutePath
+                    return ["/FI${generatePrefixHeaderFileTask.get().prefixHeaderFile.absolutePath}", "/Yu${generatePrefixHeaderFileTask.get().prefixHeaderFile.absolutePath}", "/Fp${findPchFile(pchTask.get().objectFileDir.get()).absolutePath}", "/showIncludes"]
 
                 }
                 logger.warning("The tool chain type is not supported for precompiled header support.")
