@@ -124,6 +124,19 @@ task cppApplication(type: SourceCopyTask) {
     appProject(".").fromTemplate(cppListLib)
 }
 
+task cppPrecompiledHeaders(type: SourceCopyTask) {
+    sampleDir = file("../cpp/precompiled-headers")
+
+    appProject(".").buildRoot()
+    appProject(".").fromTemplate("cpp-app-with-precompiled-headers-build")
+    appProject(".").fromTemplate("cpp-app")
+    appProject(".").fromTemplate("cpp-app-precompiled-header")
+    appProject(".").fromTemplate(cppMessageLib)
+    appProject(".").fromTemplate("cpp-message-static")
+    appProject(".").fromTemplate(cppUtilsLib)
+    appProject(".").fromTemplate(cppListLib)
+}
+
 task cppWindowsResources(type: SourceCopyTask) {
     sampleDir = file("../cpp/windows-resources")
 
