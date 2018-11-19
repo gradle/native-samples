@@ -20,6 +20,8 @@ application {
             targetPlatform = binary.targetPlatform
             toolChain = binary.toolChain
             objectFileDir = layout.buildDirectory.dir("pch/${binary.name}").get().asFile
+            optimized = binary.optimized
+            debuggable = binary.debuggable
             includes.from binary.compileTask.get().includes
             systemIncludes.from binary.compileTask.get().systemIncludes
 
