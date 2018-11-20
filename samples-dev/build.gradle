@@ -704,24 +704,6 @@ task generateBranchSwiftUtilitiesRepo(type: GitRepoTask) {
     }
 }
 
-task generateCppCmakeLibraryBuildWrapperPluginRepo(type: GitRepoTask) {
-    dependsOn cppCmakeLibrary
-    sampleDir = file("../cpp/cmake-library/build-wrapper-plugin")
-    change {
-        tag("1.0")
-        message("initial version")
-    }
-}
-
-task generateCppCmakeLibraryCustomPublicationPluginRepo(type: GitRepoTask) {
-    dependsOn cppCmakeLibrary
-    sampleDir = file("../cpp/cmake-library/custom-publication-plugin")
-    change {
-        tag("1.0")
-        message("initial version")
-    }
-}
-
 task generateCppCmakeSourceDependenciesPluginRepo(type: GitRepoTask) {
     dependsOn cppCmakeSourceDependencies
     sampleDir = file("../cpp/cmake-source-dependencies/build-wrapper-plugin")
