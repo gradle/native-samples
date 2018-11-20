@@ -22,13 +22,11 @@ repositories {
     }
 }
 
-// Also, as the Gradle publishing format for C++ is not yet stable, encode the Gradle metadata version in the module as well
-// None of this will be necessarily in later releases and Gradle will take care of these things instead
+// Because the Gradle publishing format for C++ is not yet stable, encode the Gradle metadata version in the version as well
+// This will not be necessarily in later releases and Gradle will take care of this instead
 unitTest {
-    binaries.whenElementFinalized {
-        dependencies {
-            implementation "org.gradle.cpp-samples:googletest:1.9.0-gr1-SNAPSHOT"
-        }
+    dependencies {
+        implementation "org.gradle.cpp-samples:googletest:1.9.0-gr1-SNAPSHOT"
     }
 }
 
