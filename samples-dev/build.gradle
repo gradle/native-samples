@@ -134,6 +134,17 @@ task cppApplication(type: SourceCopyTask) {
     appProject(".").fromTemplate(cppListLib)
 }
 
+task cppMultipleTargetMachines(type: SourceCopyTask) {
+    sampleDir = file("../cpp/multiple-target-machines")
+
+    appProject(".").buildRoot()
+    appProject(".").fromTemplate("cpp-app")
+    appProject(".").fromTemplate(cppMessageLib)
+    appProject(".").fromTemplate("cpp-message-static")
+    appProject(".").fromTemplate(cppUtilsLib)
+    appProject(".").fromTemplate(cppListLib)
+}
+
 task cppPrecompiledHeaders(type: SourceCopyTask) {
     sampleDir = file("../cpp/precompiled-headers")
 
@@ -150,7 +161,6 @@ task cppWindowsResources(type: SourceCopyTask) {
     sampleDir = file("../cpp/windows-resources")
 
     appProject(".").buildRoot()
-    appProject(".").fromTemplate("cpp-app-with-windows-resources-build")
     appProject(".").fromTemplate("cpp-app")
     appProject(".").fromTemplate(cppMessageLib)
     appProject(".").fromTemplate("cpp-message-resources")
@@ -158,7 +168,7 @@ task cppWindowsResources(type: SourceCopyTask) {
     appProject(".").fromTemplate(cppListLib)
 }
 
-task cppLibrary(type: SourceCopyTask) {
+task cppSimpleLibrary(type: SourceCopyTask) {
     sampleDir = file("../cpp/simple-library")
 
     libProject(".").buildRoot()
@@ -376,6 +386,15 @@ task cApplication(type: SourceCopyTask) {
 
 task swiftApplication(type: SourceCopyTask) {
     sampleDir = file("../swift/application")
+
+    appProject(".").buildRoot()
+    appProject(".").fromTemplate("swift-app")
+    appProject(".").fromTemplate(swiftUtilsLib)
+    appProject(".").fromTemplate(swiftListLib)
+}
+
+task swiftMultipleTargetMachines(type: SourceCopyTask) {
+    sampleDir = file("../swift/multiple-target-machines")
 
     appProject(".").buildRoot()
     appProject(".").fromTemplate("swift-app")

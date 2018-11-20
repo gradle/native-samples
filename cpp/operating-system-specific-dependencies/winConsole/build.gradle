@@ -3,7 +3,7 @@ plugins {
 }
 
 library {
-    operatingSystems = [
-        objects.named(OperatingSystemFamily, OperatingSystemFamily.WINDOWS)
+    targetMachines = [
+        machines.windows()
     ]
 }

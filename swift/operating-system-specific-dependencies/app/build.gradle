@@ -3,9 +3,9 @@ plugins {
 }
 
 application {
-    operatingSystems = [
-        objects.named(OperatingSystemFamily, OperatingSystemFamily.LINUX),
-        objects.named(OperatingSystemFamily, OperatingSystemFamily.MACOS)
+    targetMachines = [
+        machines.linux(),
+        machines.macOS()
     ]
     binaries.configureEach { 
         dependencies { 
