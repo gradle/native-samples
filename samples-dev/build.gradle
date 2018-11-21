@@ -118,6 +118,8 @@ task cppPublishMacros(type: SourceCopyTask) {
 
     project(".").buildRoot()
     appProject("app").fromTemplate("cpp-app")
+    appProject("app").fromTemplate(cppMessageLib)
+    appProject("app").fromTemplate("cpp-message-static")
     appProject("app").fromTemplate("cpp-app-check-published-macros")
     libProject("utilities").fromTemplate(cppUtilsLib)
     libProject("list").fromTemplate(cppListLib)
