@@ -741,12 +741,3 @@ task generateCppCmakeSourceDependenciesUtilityAppRepo(type: GitRepoTask) {
         message("initial version")
     }
 }
-
-task generateCppLibraryWithTestsPluginRepo(type: GitRepoTask) {
-    dependsOn cppLibraryWithTests
-    sampleDir = file("../cpp/library-with-tests/build-wrapper-plugin")
-    change {
-        tag("1.0")
-        message("initial version")
-    }
-}

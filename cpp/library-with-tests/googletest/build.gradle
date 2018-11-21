@@ -1,13 +1,6 @@
-// Currently cannot use the plugins { } block to reference plugins in included builds
-// Use the buildscript { } block instead
-buildscript {
-    dependencies {
-        classpath "org.gradle.samples:build-wrapper:1.0"
-    }
+plugins {
+    id 'org.gradle.samples.cmake-library' version '1.0'
 }
-
-// Apply the cmake-library plugin explicitly as we can't use the plugins { } block
-apply plugin: 'org.gradle.samples.cmake-library'
 
 task downloadGoogletest(type: org.gradle.samples.tasks.DownloadZipAndUnpack) {
     url = "https://github.com/gradle/googletest/archive/release-1.8.0.zip"

@@ -1,9 +1,5 @@
 rootProject.name = "list"
-
 include("googletest")
 
-sourceControl {
-    gitRepository("build-wrapper-plugin") {
-        producesModule("org.gradle.samples:build-wrapper")
-    }
-}
+// This is included for convenience. Usually this plugin would be published to a plugin repository instead
+includeBuild "build-wrapper-plugin"
