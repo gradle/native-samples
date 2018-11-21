@@ -1,3 +1,4 @@
 include "app", "list", "utilities"
 
+// This is included for convenience. Usually this plugin would be published to a plugin repository instead
 includeBuild "cpp-public-macros-plugin"

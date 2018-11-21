@@ -1,9 +1,3 @@
-buildscript {
-    dependencies {
-        classpath "org.gradle.samples:cpp-public-macros-plugin:latest.integration"
-    }
-}
-
 allprojects {
     apply plugin: "xcode"
     apply plugin: "visual-studio"

@@ -1,14 +1,7 @@
-buildscript {
-    dependencies {
-        classpath "org.gradle.samples:ios-plugin:latest.integration"
-    }
-}
-
 plugins {
     id 'swift-application'
+    id 'org.gradle.samples.ios-application' version '1.0'
     id 'xcode'
 }
-
-apply plugin: 'org.gradle.samples.ios-application'
 
 group = "org.gradle.samples"

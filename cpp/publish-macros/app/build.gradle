@@ -1,8 +1,7 @@
 plugins {
     id "cpp-application"
+    id "org.gradle.samples.cpp-public-macros" version "1.0"
 }
-
-apply plugin: "org.gradle.samples.cpp-public-macros"
 
 application {
     binaries.configureEach {
