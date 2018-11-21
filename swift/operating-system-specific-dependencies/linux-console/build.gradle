@@ -4,7 +4,7 @@ plugins {
 
 library {
     module = "LinuxConsole"
-    operatingSystems = [
-        objects.named(OperatingSystemFamily, OperatingSystemFamily.LINUX)
+    targetMachines = [
+        machines.linux()
     ]
 }

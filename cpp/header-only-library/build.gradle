@@ -4,7 +4,6 @@ buildscript {
     }
 }
 
-
 plugins {
     id 'xcode'
     id 'visual-studio'
@@ -27,10 +26,8 @@ repositories {
 // None of this will be necessarily in later releases and Gradle will take care of these things instead
 unitTest {
     binaries.whenElementFinalized {
-        def metadataFormat = org.gradle.api.internal.artifacts.ivyservice.ivyresolve.parser.ModuleMetadataParser.FORMAT_VERSION
-
         dependencies {
-            implementation "org.gradle.cpp-samples:googletest_${metadataFormat}:latest.integration"
+            implementation "org.gradle.cpp-samples:googletest:1.9.0-gr1-SNAPSHOT"
         }
     }
 }

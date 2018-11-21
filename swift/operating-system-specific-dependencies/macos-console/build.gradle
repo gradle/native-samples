@@ -4,7 +4,7 @@ plugins {
 
 library {
     module = "MacOsConsole"
-    operatingSystems = [
-        objects.named(OperatingSystemFamily, OperatingSystemFamily.MACOS)
+    targetMachines = [
+        machines.macOS()
     ]
 }

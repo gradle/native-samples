@@ -4,7 +4,7 @@ plugins {
 }
 
 application {
-    operatingSystems = [objects.named(OperatingSystemFamily, OperatingSystemFamily.WINDOWS)]
+    targetMachines = [machines.windows()]
     binaries.whenElementFinalized { binary ->
         def compileResources = tasks.register("compileResources${binary.name.capitalize()}", WindowsResourceCompile) {
             targetPlatform = binary.targetPlatform

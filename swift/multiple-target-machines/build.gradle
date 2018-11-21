@@ -1,0 +1,11 @@
+plugins {
+    id "swift-application"
+    id "xcode"
+}
+
+application {
+    targetMachines = [
+            machines.macOS().x86_64(),
+            machines.linux().x86_64()
+    ]
+}
