@@ -15,27 +15,3 @@ application {
         implementation 'org.gradle.cpp-samples:list:1.5'
     }
 }
-
-tasks.withType(CppCompile) {
-    // Use C++03 with the old ABIs, as this is what the googletest binaries were built with
-    // Later, Gradle's dependency management will understand ABI
-    macros _GLIBCXX_USE_CXX11_ABI: '0'
-
-    compilerArgs.addAll toolChain.map { NativeToolChain toolChain ->
-        List<String> compilerSpecificArgs = []
-        if (toolChain instanceof Gcc) {
-            compilerSpecificArgs << '-std=c++03'
-        }
-        return compilerSpecificArgs
-    }
-}
-
-tasks.withType(LinkSharedLibrary) {
-    linkerArgs.addAll toolChain.map { NativeToolChain toolChain ->
-        List<String> compilerSpecificArgs = []
-        if (toolChain instanceof Gcc) {
-            compilerSpecificArgs << '-std=c++03'
-        }
-        return compilerSpecificArgs
-    }
-}
