@@ -118,6 +118,8 @@ task cppPublishMacros(type: SourceCopyTask) {
 
     project(".").buildRoot()
     appProject("app").fromTemplate("cpp-app")
+    appProject("app").fromTemplate(cppMessageLib)
+    appProject("app").fromTemplate("cpp-message-static")
     appProject("app").fromTemplate("cpp-app-check-published-macros")
     libProject("utilities").fromTemplate(cppUtilsLib)
     libProject("list").fromTemplate(cppListLib)
@@ -704,24 +706,6 @@ task generateBranchSwiftUtilitiesRepo(type: GitRepoTask) {
     }
 }
 
-task generateCppCmakeLibraryBuildWrapperPluginRepo(type: GitRepoTask) {
-    dependsOn cppCmakeLibrary
-    sampleDir = file("../cpp/cmake-library/build-wrapper-plugin")
-    change {
-        tag("1.0")
-        message("initial version")
-    }
-}
-
-task generateCppCmakeLibraryCustomPublicationPluginRepo(type: GitRepoTask) {
-    dependsOn cppCmakeLibrary
-    sampleDir = file("../cpp/cmake-library/custom-publication-plugin")
-    change {
-        tag("1.0")
-        message("initial version")
-    }
-}
-
 task generateCppCmakeSourceDependenciesPluginRepo(type: GitRepoTask) {
     dependsOn cppCmakeSourceDependencies
     sampleDir = file("../cpp/cmake-source-dependencies/build-wrapper-plugin")
@@ -752,15 +736,6 @@ task generateCppCmakeSourceDependenciesUtilityLibraryRepo(type: GitRepoTask) {
 task generateCppCmakeSourceDependenciesUtilityAppRepo(type: GitRepoTask) {
     dependsOn cppCmakeSourceDependencies
     sampleDir = file("../cpp/cmake-source-dependencies/app")
-    change {
-        tag("1.0")
-        message("initial version")
-    }
-}
-
-task generateCppAutotoolsLibraryPluginRepo(type: GitRepoTask) {
-    dependsOn cppAutotoolsLibrary
-    sampleDir = file("../cpp/autotools-library/build-wrapper-plugin")
     change {
         tag("1.0")
         message("initial version")

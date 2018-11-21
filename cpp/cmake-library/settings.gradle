@@ -2,11 +2,6 @@ rootProject.name = 'cmake'
 
 include ":app", ":utilities", ":list"
 
-sourceControl {
-    gitRepository("build-wrapper-plugin") {
-        producesModule("org.gradle.samples:build-wrapper")
-    }
-    gitRepository("custom-publication-plugin") {
-        producesModule("org.gradle.samples:custom-publication")
-    }
-}
+// These are included for convenience. Usually these plugins would be published to a plugin repository instead
+includeBuild "build-wrapper-plugin"
+includeBuild "custom-publication-plugin"

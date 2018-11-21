@@ -1,0 +1,39 @@
+import org.gradle.samples.tasks.DownloadZipAndUnpack
+
+plugins {
+    id "org.gradle.samples.autotools-library" version "1.0"
+    id "lifecycle-base"
+}
+
+def curlVersion = "7.58.0"
+
+task downloadAndExtractCurl(type: DownloadZipAndUnpack) {
+    url.set "https://curl.haxx.se/download/curl-${curlVersion}.zip".toString()
+    outputDirectory.set layout.buildDirectory.dir("curl-source")
+
+    ext.headerDir = project.objects.directoryProperty()
+    outputs.dir(headerDir)
+    headerDir.set outputDirectory.dir("curl-source/curl-${curlVersion}/include")
+
+    ext.sourceBase = project.objects.directoryProperty()
+    outputs.dir(sourceBase)
+    sourceBase.set outputDirectory.dir("curl-${curlVersion}")
+}
+
+autotools {
+    sourceDirectory = downloadAndExtractCurl.sourceBase
+    includeDirectory = downloadAndExtractCurl.headerDir
+    binary = 'lib/libcurl.a'
+
+    // Additional arguments to pass to the 'configure' command
+    configureArguments.add("--disable-ldap")
+    configureArguments.add("--without-zlib")
+    configureArguments.add("--without-libidn2")
+    configureArguments.add("--without-librtmp")
+    configureArguments.add("--without-ssl")
+    configureArguments.add("--disable-threaded-resolver")
+    configureArguments.add("--disable-pthreads")
+
+    // Additional arguments to pass to the 'make' command
+    makeArguments.add("-j4")
+}
