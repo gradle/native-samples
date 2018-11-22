@@ -21,6 +21,11 @@ unitTest {
     dependencies {
         implementation "org.gradle.cpp-samples:googletest:1.9.0-gr2-SNAPSHOT"
     }
+    binaries.configureEach {
+        if (toolChain instanceof Gcc && targetPlatform.operatingSystem.linux) {
+            linkTask.get().linkerArgs.add("-lpthread")
+        }
+    }
 }
 
 publishing {
