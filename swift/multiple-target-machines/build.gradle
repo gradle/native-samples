@@ -5,7 +5,7 @@ plugins {
 
 application {
     targetMachines = [
-            machines.macOS().x86_64(),
-            machines.linux().x86_64()
+            machines.macOS.x86_64,
+            machines.linux.x86_64
     ]
 }

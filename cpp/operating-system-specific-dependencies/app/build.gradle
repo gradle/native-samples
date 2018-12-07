@@ -4,9 +4,9 @@ plugins {
 
 application {
     targetMachines = [
-        machines.windows(),
-        machines.linux(),
-        machines.macOS()
+        machines.windows,
+        machines.linux,
+        machines.macOS
     ]
     binaries.configureEach {
         dependencies {

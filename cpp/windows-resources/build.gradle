@@ -1,10 +1,10 @@
 plugins {
     id 'cpp-application'
-    id 'xcode'
+    id 'visual-studio'
 }
 
 application {
-    targetMachines = [machines.windows()]
+    targetMachines = [machines.windows]
     binaries.whenElementFinalized { binary ->
         def compileResources = tasks.register("compileResources${binary.name.capitalize()}", WindowsResourceCompile) {
             targetPlatform = binary.targetPlatform

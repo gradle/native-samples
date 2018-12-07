@@ -4,7 +4,7 @@ plugins {
 
 library {
     targetMachines = [
-        machines.linux(),
-        machines.macOS()
+        machines.linux,
+        machines.macOS
     ]
 }

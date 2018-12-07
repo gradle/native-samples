@@ -4,8 +4,8 @@ plugins {
 
 application {
     targetMachines = [
-        machines.linux(),
-        machines.macOS()
+        machines.linux,
+        machines.macOS
     ]
     binaries.configureEach { 
         dependencies { 

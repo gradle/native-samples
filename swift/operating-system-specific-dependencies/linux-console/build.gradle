@@ -5,6 +5,6 @@ plugins {
 library {
     module = "LinuxConsole"
     targetMachines = [
-        machines.linux()
+        machines.linux
     ]
 }

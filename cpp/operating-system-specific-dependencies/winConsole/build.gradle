@@ -4,6 +4,6 @@ plugins {
 
 library {
     targetMachines = [
-        machines.windows()
+        machines.windows
     ]
 }
