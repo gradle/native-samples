@@ -181,7 +181,7 @@ class WrappedNativeLibraryPlugin implements Plugin<Project> {
 
         DefaultMainPublication(Provider<String> baseName, Usage apiUsage, Configuration api) {
             this.baseName = baseName
-            this.mainVariant = new MainLibraryVariant("api", apiUsage, api)
+            this.mainVariant = new MainLibraryVariant("api", apiUsage, api, org.gradle.api.internal.CollectionCallbackActionDecorator.NOOP)
         }
         @Override
         Provider<String> getBaseName() {
