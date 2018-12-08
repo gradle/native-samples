@@ -19,7 +19,7 @@ repositories {
 // This will not be necessarily in later releases and Gradle will take care of this instead
 unitTest {
     dependencies {
-        implementation "org.gradle.cpp-samples:googletest:1.9.0-gr2-SNAPSHOT"
+        implementation "org.gradle.cpp-samples:googletest:1.9.0-gr3-SNAPSHOT"
     }
     binaries.configureEach {
         if (toolChain instanceof Gcc && targetPlatform.operatingSystem.linux) {
