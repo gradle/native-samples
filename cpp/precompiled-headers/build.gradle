@@ -19,7 +19,7 @@ File findPchFile(Directory objectFileDir) {
 application {
     binaries.whenElementFinalized { binary ->
         def pchTask = project.tasks.register("precompileHeader" + binary.name.capitalize(), CppPreCompiledHeaderCompile) {
-            targetPlatform = binary.targetPlatform
+            targetPlatform = binary.compileTask.get().targetPlatform
             toolChain = binary.toolChain
             objectFileDir = layout.buildDirectory.dir("pch/${binary.name}").get().asFile
             optimized = binary.optimized
@@ -27,7 +27,7 @@ application {
             systemIncludes.from binary.compileTask.get().systemIncludes
 
             // TODO: /Zi and /ZI requires the intermediate PDB to be shared between compilation task (precompiled and compilation)
-            if (binary.targetPlatform.operatingSystemFamily.windows) {
+            if (binary.targetMachine.operatingSystemFamily.windows) {
                 debuggable = false
                 if (binary.debuggable) {
                     compilerArgs.add("/Z7")
@@ -44,7 +44,7 @@ application {
             dependsOn pchTask
 
             // TODO: /Zi and /ZI requires the intermediate PDB to be shared between compilation task (precompiled and compilation)
-            if (binary.targetPlatform.operatingSystemFamily.windows) {
+            if (binary.targetMachine.operatingSystemFamily.windows) {
                 debuggable = false
                 if (binary.debuggable) {
                     compilerArgs.add("/Z7")

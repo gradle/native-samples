@@ -8,7 +8,7 @@ application {
     targetMachines = [machines.windows]
     binaries.whenElementFinalized { binary ->
         def compileResources = tasks.register("compileResources${binary.name.capitalize()}", WindowsResourceCompile) {
-            targetPlatform = binary.targetPlatform
+            targetPlatform = binary.compileTask.get().targetPlatform
             toolChain = binary.toolChain
             includes.from file("src/main/headers")
             source.from fileTree(dir: "src/main/rc", includes: ["**/*.rc"])
