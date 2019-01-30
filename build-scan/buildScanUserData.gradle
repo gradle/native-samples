@@ -14,8 +14,8 @@ rootProject {
                     buildScan.buildFinished {
                         value key("debuggable"), String.valueOf(binary.debuggable)
                         value key("optimized"), String.valueOf(binary.optimized)
-                        value key("platform.OS"), String.valueOf(binary.targetPlatform.operatingSystem)
-                        value key("platform.arch"), String.valueOf(binary.targetPlatform.architecture)
+                        value key("platform.OS"), String.valueOf(binary.targetMachine.operatingSystemFamily)
+                        value key("platform.arch"), String.valueOf(binary.targetMachine.architecture)
                         value key("toolChain"), String.valueOf(binary.toolChain)
 
                         def compileTask = binary.compileTask.get()
