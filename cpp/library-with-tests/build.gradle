@@ -14,7 +14,7 @@ unitTest {
     }
 
     binaries.whenElementKnown(CppTestExecutable) { binary ->
-        if (binary.targetPlatform.operatingSystem.linux) {
+        if (binary.targetMachine.operatingSystemFamily.linux) {
             binary.linkTask.get().linkerArgs.add('-pthread')
         }
     }

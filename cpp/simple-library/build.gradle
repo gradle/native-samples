@@ -22,7 +22,7 @@ unitTest {
         implementation "org.gradle.cpp-samples:googletest:1.9.0-gr3-SNAPSHOT"
     }
     binaries.configureEach {
-        if (toolChain instanceof Gcc && targetPlatform.operatingSystem.linux) {
+        if (toolChain instanceof Gcc && targetMachine.operatingSystemFamily.linux) {
             linkTask.get().linkerArgs.add("-lpthread")
         }
     }

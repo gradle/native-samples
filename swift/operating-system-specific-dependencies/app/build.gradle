@@ -9,8 +9,7 @@ application {
     ]
     binaries.configureEach { 
         dependencies { 
-            // TODO: Replace with query for operating system family
-            if (targetPlatform.operatingSystem.macOsX) {
+            if (targetMachine.operatingSystemFamily.macOs) {
                 implementation project(':macos-console')
             } else {
                 implementation project(':linux-console')
