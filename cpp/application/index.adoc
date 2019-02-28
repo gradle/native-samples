@@ -1,0 +1,19 @@
+= C++ Application
+:description: A description of the sample
+
+.Assembling and running the C++ application
+====
+[.testable-sample,dir="cpp/application"]
+=====
+[.sample-command,allow-additional-output=true]
+----
+$ ./gradlew assemble
+----
+
+[.sample-command]
+----
+$ ./build/install/main/debug/app
+Hello, World!
+----
+=====
+====
