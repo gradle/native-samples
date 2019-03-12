@@ -25,37 +25,37 @@ class IOSApplicationPlugin implements Plugin<Project> {
     void apply(Project project) {
         project.with {
             plugins.withId('swift-application') {
-                def compileStoryboardTask = tasks.create("compileStoryboard", StoryboardCompile) {
+                def compileStoryboardTask = tasks.register("compileStoryboard", StoryboardCompile) {
                     module = application.module
                     outputDirectory = layout.buildDirectory.dir("ios/storyboards/compiled")
                     partialPropertyListOutputDirectory = layout.buildDirectory.dir("ios/partial-plist/storyboards")
                 }
 
-                def linkStoryboardTask = tasks.create("linkStoryboard", StoryboardLink) {
+                def linkStoryboardTask = tasks.register("linkStoryboard", StoryboardLink) {
                     module = application.module
-                    sources.from compileStoryboardTask.outputDirectory
+                    sources.from compileStoryboardTask.flatMap { it.outputDirectory }
                     outputDirectory = layout.buildDirectory.dir("ios/storyboards/linked")
                 }
 
-                def compileAssetCatalogTask = tasks.create("compileAssetCatalog", AssetCatalogCompile) {
+                def compileAssetCatalogTask = tasks.register("compileAssetCatalog", AssetCatalogCompile) {
                     identifier = provider { "${project.group}.${application.module.get()}".toString() }
                     partialPropertyListOutputDirectory = layout.buildDirectory.dir("ios/partial-plist/asset-catalogs")
                     outputDirectory = layout.buildDirectory.dir("ios/assert-catalogs")
                 }
 
-                def mergePropertyListTask = tasks.create("mergePropertyList", MergePropertyList) {
-                    sources.from compileStoryboardTask.partialPropertyListOutputDirectory.asFileTree
-                    sources.from compileAssetCatalogTask.partialPropertyListOutputDirectory.asFileTree
+                def mergePropertyListTask = tasks.register("mergePropertyList", MergePropertyList) {
+                    sources.from compileStoryboardTask.map { it.partialPropertyListOutputDirectory.asFileTree }
+                    sources.from compileAssetCatalogTask.map { it.partialPropertyListOutputDirectory.asFileTree }
                     outputFile = layout.buildDirectory.file("ios/Info.plist")
                     module = application.module
                     identifier = provider { "${project.group}.${application.module.get()}".toString() }
                 }
 
-                def createPackageInformationTask = tasks.create("createPackageInformation", CreatePackageInformation) {
+                def createPackageInformationTask = tasks.register("createPackageInformation", CreatePackageInformation) {
                     outputFile = layout.buildDirectory.file("ios/PkgInfo")
                 }
 
-                def createEntitlementTask = tasks.create("createEntitlement", CreateEntitlement) {
+                def createEntitlementTask = tasks.register("createEntitlement", CreateEntitlement) {
                     identifier = provider { "${project.group}.${application.module.get()}".toString() }
                     outputFile = layout.buildDirectory.file(provider { "ios/entitlements/${application.module.get()}.app.xcent" })
                 }
@@ -65,21 +65,21 @@ class IOSApplicationPlugin implements Plugin<Project> {
                         ["-target", "x86_64-apple-ios11.2", "-sdk", "xcrun --sdk iphonesimulator --show-sdk-path".execute().text.trim()/*, "-enforce-exclusivity=checked"*/]
                     }
 
-                    linkTask.get().inputs.file createEntitlementTask.outputFile
+                    linkTask.get().inputs.file createEntitlementTask.flatMap { it.outputFile }
                     linkTask.get().linkerArgs.addAll provider {
-                        ["-target", "x86_64-apple-ios11.2", "-sdk", "xcrun --sdk iphonesimulator --show-sdk-path".execute().text.trim(), "-Xlinker", "-rpath", "-Xlinker", "@executable_path/Frameworks", "-Xlinker", "-export_dynamic", "-Xlinker", "-no_deduplicate", "-Xlinker", "-objc_abi_version", "-Xlinker", "2", "-Xlinker", "-sectcreate", "-Xlinker", "__TEXT", "-Xlinker", "__entitlements", "-Xlinker", createEntitlementTask.outputFile.get().asFile.absolutePath]
+                        ["-target", "x86_64-apple-ios11.2", "-sdk", "xcrun --sdk iphonesimulator --show-sdk-path".execute().text.trim(), "-Xlinker", "-rpath", "-Xlinker", "@executable_path/Frameworks", "-Xlinker", "-export_dynamic", "-Xlinker", "-no_deduplicate", "-Xlinker", "-objc_abi_version", "-Xlinker", "2", "-Xlinker", "-sectcreate", "-Xlinker", "__TEXT", "-Xlinker", "__entitlements", "-Xlinker", createEntitlementTask.get().outputFile.get().asFile.absolutePath]
                     }
                 }
 
-                def installApplicationBundleDebugTask = tasks.create("installApplicationBundleDebug", InstallApplicationBundle) {
+                def installApplicationBundleDebugTask = tasks.register("installApplicationBundleDebug", InstallApplicationBundle) {
                     applicationBundle = layout.buildDirectory.file(provider { "ios/products/debug/${application.module.get()}.app" })
-                    sources.from(mergePropertyListTask.outputFile)
-                    sources.from(createPackageInformationTask.outputFile)
-                    sources.from(compileAssetCatalogTask.outputDirectory)
-                    sources.from(linkStoryboardTask.outputDirectory)
-                    tasks.matching({ it.name == 'linkDebug' }).all {
-                        executableFile = it.linkedFile
-                    }
+                    sources.from(mergePropertyListTask.flatMap { it.outputFile })
+                    sources.from(createPackageInformationTask.flatMap { it.outputFile })
+                    sources.from(compileAssetCatalogTask.flatMap { it.outputDirectory })
+                    sources.from(linkStoryboardTask.flatMap { it.outputDirectory })
+                }
+                tasks.matching({ it.name == 'linkDebug' }).all { linkTask ->
+                    installApplicationBundleDebugTask.configure { it.executableFile = linkTask.linkedFile }
                 }
 
                 tasks.matching({ it.name == "installDebug" }).all {
@@ -87,15 +87,15 @@ class IOSApplicationPlugin implements Plugin<Project> {
                     enabled = false
                 }
 
-                def installApplicationBundleReleaseTask = tasks.create("installApplicationBundleRelease", InstallApplicationBundle) {
+                def installApplicationBundleReleaseTask = tasks.register("installApplicationBundleRelease", InstallApplicationBundle) {
                     applicationBundle = layout.buildDirectory.file(provider { "ios/products/release/${application.module.get()}.app" })
-                    sources.from(mergePropertyListTask.outputFile)
-                    sources.from(createPackageInformationTask.outputFile)
-                    sources.from(compileAssetCatalogTask.outputDirectory)
-                    sources.from(linkStoryboardTask.outputDirectory)
-                    tasks.matching({ it.name == 'linkRelease' }).all {
-                        executableFile = it.linkedFile
-                    }
+                    sources.from(mergePropertyListTask.flatMap { it.outputFile })
+                    sources.from(createPackageInformationTask.flatMap { it.outputFile })
+                    sources.from(compileAssetCatalogTask.flatMap { it.outputDirectory })
+                    sources.from(linkStoryboardTask.flatMap { it.outputDirectory })
+                }
+                tasks.matching({ it.name == 'linkRelease' }).all { linkTask ->
+                    installApplicationBundleReleaseTask.configure { it.executableFile = linkTask.linkedFile }
                 }
 
                 tasks.matching({ it.name == "installRelease" }).all {
@@ -104,9 +104,9 @@ class IOSApplicationPlugin implements Plugin<Project> {
                 }
 
                 // Configure iOS specific task source location convention
-                mergePropertyListTask.sources.from layout.projectDirectory.file("src/main/resources/Info.plist")
-                compileStoryboardTask.sources.from fileTree(dir: 'src/main/resources', includes: ['*.lproj/*.storyboard'])
-                compileAssetCatalogTask.source = layout.projectDirectory.file("src/main/resources/Assets.xcassets")
+                mergePropertyListTask.configure { sources.from layout.projectDirectory.file("src/main/resources/Info.plist") }
+                compileStoryboardTask.configure { sources.from fileTree(dir: 'src/main/resources', includes: ['*.lproj/*.storyboard']) }
+                compileAssetCatalogTask.configure { source = layout.projectDirectory.file("src/main/resources/Assets.xcassets") }
             }
         }
     }

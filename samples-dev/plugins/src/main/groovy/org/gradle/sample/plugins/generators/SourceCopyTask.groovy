@@ -226,7 +226,7 @@ XCTMain([${testNames}])
                 return
             }
             srcDir.listFiles().each { f ->
-                if (f.directory) {
+                if (f.directory && f.name != ".gradle") {
                     doCopyDir(templateDirName, srcName ? "$srcName/$f.name" : f.name, targetDir, dirAction)
                 }
             }

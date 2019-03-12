@@ -47,7 +47,7 @@ project(':list') {
 allprojects { p ->
     // Work around for https://github.com/gradle/gradle-native/issues/376
     // TODO: Remove this once issue has been fixed.
-    tasks.withType(AbstractLinkTask) {
+    tasks.withType(AbstractLinkTask).configureEach {
         doFirst {
             p.projectDir.mkdirs()
         }

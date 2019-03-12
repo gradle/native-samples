@@ -2,7 +2,7 @@ plugins {
     id 'org.gradle.samples.cmake-library' version '1.0'
 }
 
-task downloadGoogletest(type: org.gradle.samples.tasks.DownloadZipAndUnpack) {
+def downloadGoogletest = tasks.register("downloadGoogletest", org.gradle.samples.tasks.DownloadZipAndUnpack) {
     url = "https://github.com/gradle/googletest/archive/release-1.8.0.zip"
 
     ext.headerDir = project.objects.directoryProperty()
@@ -16,6 +16,6 @@ task downloadGoogletest(type: org.gradle.samples.tasks.DownloadZipAndUnpack) {
 
 cmake {
     binary = "googlemock/gtest/libgtest.a"
-    projectDirectory = downloadGoogletest.sourceDir
-    includeDirectory = downloadGoogletest.headerDir
+    projectDirectory = downloadGoogletest.flatMap { it.sourceDir }
+    includeDirectory = downloadGoogletest.flatMap { it.headerDir }
 }

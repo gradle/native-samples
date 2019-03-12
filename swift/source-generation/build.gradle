@@ -3,12 +3,12 @@ plugins {
     id 'xcode'
 }
 
-task codeGeneration(type: CodeGenerator) {
+def codeGeneration = tasks.register("codeGeneration", CodeGenerator) {
     generatedDir = project.layout.buildDirectory.dir("generated/swift")
 }
 
 application {
-    source.from codeGeneration.generatedDir
+    source.from codeGeneration.flatMap { it.generatedDir }
 }
 
 // Code generation implementation could be in another plugin or buildSrc

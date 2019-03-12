@@ -13,7 +13,7 @@ class ListBuildPlugin implements Plugin<Settings> {
                 apply plugin: CommonPlugin
 
                 // Generate a missing source file
-                tasks.create("generateSources", GenerateSource) {
+                def generateSources = tasks.register("generateSources", GenerateSource) {
                     sourceFile = '''
 // A linked list node
 class Node {
@@ -28,9 +28,9 @@ class Node {
                 }
 
                 // Copy the existing sources and modify them
-                tasks.create("modifySources", Sync) {
+                def modifySources = tasks.register("modifySources", Sync) {
                     from "src/main/swift"
-                    from tasks.generateSources
+                    from generateSources
                     into layout.buildDirectory.dir("generated/main/swift")
 
                     def replaceableTokens = [ REPLACEME: "Hello, from Gradle build" ]
@@ -41,7 +41,7 @@ class Node {
                 }
 
                 library.source {
-                    from = [ tasks.modifySources ]
+                    from = [ modifySources ]
                 }
             }
         }

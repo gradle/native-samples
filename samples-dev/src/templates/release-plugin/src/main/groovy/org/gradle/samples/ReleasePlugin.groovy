@@ -18,9 +18,9 @@ import java.util.regex.Pattern
 class ReleasePlugin implements Plugin<Project> {
     void apply(Project project) {
         project.pluginManager.apply("swiftpm-export")
-        project.tasks.create("release") {
+        project.tasks.register("release") {
             // Generate the Swift PM manifest prior to commit
-            dependsOn project.tasks.generateSwiftPmManifest
+            dependsOn project.tasks.named("generateSwiftPmManifest")
             doLast {
                 // Commit and tag changes
                 project.exec {

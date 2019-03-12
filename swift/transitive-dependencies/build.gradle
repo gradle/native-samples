@@ -3,7 +3,7 @@ allprojects {
     
     group = 'org.gradle.swift-samples'
 
-    task assembleDebuggable {
+    tasks.register("assembleDebuggable") {
         group = "Build"
         description = "Assemble all debuggable Swift binaries."
         components.withType(SwiftExecutable) { binary ->

@@ -31,7 +31,7 @@ class CMakeApplicationPlugin implements Plugin<Project> {
          */
         def tasks = project.tasks
 
-        def cmakeDebug = tasks.create("cmakeDebug", CMake) {
+        def cmakeDebug = tasks.register("cmakeDebug", CMake) {
             buildType = "Debug"
             includeDirs.from(project.configurations.cppCompile)
             linkFiles.from(project.configurations.linkDebug)
@@ -39,7 +39,7 @@ class CMakeApplicationPlugin implements Plugin<Project> {
             projectDirectory = project.layout.projectDirectory
         }
 
-        def cmakeRelease = tasks.create("cmakeRelease", CMake) {
+        def cmakeRelease = tasks.register("cmakeRelease", CMake) {
             buildType = "RelWithDebInfo"
             includeDirs.from(project.configurations.cppCompile)
             linkFiles.from(project.configurations.linkRelease)
@@ -47,20 +47,22 @@ class CMakeApplicationPlugin implements Plugin<Project> {
             projectDirectory = project.layout.projectDirectory
         }
 
-        def assembleDebug = tasks.create("assembleDebug", Make) {
+        def assembleDebug = tasks.register("assembleDebug", Make) {
             group = "Build"
             description = "Builds the debug binaries"
             generatedBy cmakeDebug
             binary project.provider { project.name }
         }
 
-        def assembleRelease = tasks.create("assembleRelease", Make) {
+        def assembleRelease = tasks.register("assembleRelease", Make) {
             group = "Build"
             description = "Builds the release binaries"
             generatedBy cmakeRelease
             binary project.provider { project.name }
         }
 
-        tasks.assemble.dependsOn assembleDebug
+        tasks.named("assemble") {
+            dependsOn assembleDebug
+        }
     }
 }

@@ -36,7 +36,7 @@ class CMakeLibraryPlugin implements Plugin<Project> {
          */
         def tasks = project.tasks
 
-        def cmakeDebug = tasks.create("cmakeDebug", CMake) {
+        def cmakeDebug = tasks.register("cmakeDebug", CMake) {
             buildType = "Debug"
             includeDirs.from(project.configurations.cppCompile)
             linkFiles.from(project.configurations.cppLinkDebug)
@@ -44,7 +44,7 @@ class CMakeLibraryPlugin implements Plugin<Project> {
             projectDirectory = extension.projectDirectory
         }
 
-        def cmakeRelease = tasks.create("cmakeRelease", CMake) {
+        def cmakeRelease = tasks.register("cmakeRelease", CMake) {
             buildType = "RelWithDebInfo"
             includeDirs.from(project.configurations.cppCompile)
             linkFiles.from(project.configurations.cppLinkDebug)
@@ -52,21 +52,23 @@ class CMakeLibraryPlugin implements Plugin<Project> {
             projectDirectory = extension.projectDirectory
         }
 
-        def assembleDebug = tasks.create("assembleDebug", Make) {
+        def assembleDebug = tasks.register("assembleDebug", Make) {
             group = "Build"
             description = "Builds the debug binaries"
             generatedBy cmakeDebug
             binary extension.binary
         }
 
-        def assembleRelease = tasks.create("assembleRelease", Make) {
+        def assembleRelease = tasks.register("assembleRelease", Make) {
             group = "Build"
             description = "Builds the release binaries"
             generatedBy cmakeRelease
             binary extension.binary
         }
 
-        tasks.assemble.dependsOn assembleDebug
+        tasks.named("assemble") {
+            dependsOn assembleDebug
+        }
 
         /*
          * Configure the artifacts which should be exposed by this build
@@ -75,7 +77,7 @@ class CMakeLibraryPlugin implements Plugin<Project> {
          */
         def configurations = project.configurations
         configurations.headers.outgoing.artifact extension.includeDirectory
-        configurations.linkDebug.outgoing.artifact assembleDebug.binary
-        configurations.linkRelease.outgoing.artifact assembleRelease.binary
+        configurations.linkDebug.outgoing.artifact assembleDebug.flatMap { it.binary }
+        configurations.linkRelease.outgoing.artifact assembleRelease.flatMap { it.binary }
     }
 }
