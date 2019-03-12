@@ -10,7 +10,7 @@ def linuxMainWorkaround(Project project, File testDir) {
 
     if (System.properties['os.name'].equals("Linux")) {
         // On linux, rename LinuxMain.swift -> main.swift
-        def renameLinuxMain = project.tasks.create("renameLinuxMain", Sync) {
+        def renameLinuxMain = project.tasks.register("renameLinuxMain", Sync) {
             from testDir
             into temporaryDir
             include 'LinuxMain.swift'

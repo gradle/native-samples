@@ -13,7 +13,7 @@ class AutotoolsLibraryPlugin implements Plugin<Project> {
 
         def extension = project.extensions.create("autotools", AutotoolsExtension.class, project.objects)
 
-        def configureDebug = project.tasks.create('configureDebug', ConfigureTask) {
+        def configureDebug = project.tasks.register('configureDebug', ConfigureTask) {
             sourceDirectory.set extension.sourceDirectory
             prefixDirectory.set project.layout.buildDirectory.dir("debug")
             makeDirectory.set project.layout.buildDirectory.dir("make-debug")
@@ -23,7 +23,7 @@ class AutotoolsLibraryPlugin implements Plugin<Project> {
             arguments.add("--enable-debug")
         }
 
-        def assembleDebug = project.tasks.create('assembleDebug', Make) {
+        def assembleDebug = project.tasks.register('assembleDebug', Make) {
             generatedBy configureDebug
             binary extension.binary
 
@@ -31,7 +31,7 @@ class AutotoolsLibraryPlugin implements Plugin<Project> {
             arguments.add("install")
         }
 
-        def configureRelease = project.tasks.create('configureRelease', ConfigureTask) {
+        def configureRelease = project.tasks.register('configureRelease', ConfigureTask) {
             sourceDirectory.set extension.sourceDirectory
             prefixDirectory.set project.layout.buildDirectory.dir("release")
             makeDirectory.set project.layout.buildDirectory.dir("make-release")
@@ -42,7 +42,7 @@ class AutotoolsLibraryPlugin implements Plugin<Project> {
             arguments.add("--enable-optimizations")
         }
 
-        def assembleRelease = project.tasks.create('assembleRelease', Make) {
+        def assembleRelease = project.tasks.register('assembleRelease', Make) {
             generatedBy configureRelease
             binary extension.binary
 
@@ -51,7 +51,7 @@ class AutotoolsLibraryPlugin implements Plugin<Project> {
         }
 
         project.configurations.headers.outgoing.artifact extension.includeDirectory
-        project.configurations.linkDebug.outgoing.artifact assembleDebug.binary
-        project.configurations.linkRelease.outgoing.artifact assembleRelease.binary
+        project.configurations.linkDebug.outgoing.artifact assembleDebug.flatMap { it.binary }
+        project.configurations.linkRelease.outgoing.artifact assembleRelease.flatMap { it.binary }
     }
 }

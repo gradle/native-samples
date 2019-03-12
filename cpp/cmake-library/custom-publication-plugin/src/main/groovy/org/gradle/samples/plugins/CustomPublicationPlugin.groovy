@@ -8,6 +8,7 @@ import org.gradle.api.internal.component.UsageContext
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.bundling.Zip
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.language.cpp.internal.MainLibraryVariant
 import org.gradle.language.nativeplatform.internal.PublicationAwareComponent
 
@@ -23,7 +24,7 @@ class CustomPublicationPlugin implements Plugin<Project> {
         project.components.withType(PublicationAwareComponent) {
             MainLibraryVariant mainVariant = (MainLibraryVariant) it.mainPublication
 
-            Zip publicationPackage = project.tasks.create("createPublicationPackage", Zip) {
+            TaskProvider<Zip> publicationPackage = project.tasks.register("createPublicationPackage", Zip) {
                 assert mainVariant.usages.size() == 1
                 UsageContext mainUsageContext = mainVariant.usages.iterator().next()
 
@@ -60,7 +61,7 @@ class CustomPublicationPlugin implements Plugin<Project> {
                     groupId = project.getGroup().toString()
                     artifactId = project.getName()
                     version = project.getVersion().toString()
-                    artifact publicationPackage
+                    artifact publicationPackage.get() // TODO: This should be lazy
                     publishWithOriginalFileName()
                 }
             }

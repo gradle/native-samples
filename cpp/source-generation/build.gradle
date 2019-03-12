@@ -4,14 +4,14 @@ plugins {
     id 'visual-studio'
 }
 
-task codeGeneration(type: CodeGenerator) {
+def codeGeneration = tasks.register("codeGeneration", CodeGenerator) {
     cppDir = project.layout.buildDirectory.dir("generated/cpp")
     headersDir = project.layout.buildDirectory.dir("generated/headers")
 }
 
 application {
-    source.from codeGeneration.cppDir
-    privateHeaders.from codeGeneration.headersDir
+    source.from codeGeneration.flatMap { it.cppDir }
+    privateHeaders.from codeGeneration.flatMap { it.headersDir }
 }
 
 

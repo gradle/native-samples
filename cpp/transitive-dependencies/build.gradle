@@ -14,7 +14,7 @@ allprojects {
         }
     }
 
-    task assembleDebuggable {
+    tasks.register("assembleDebuggable") {
         group = "Build"
         description = "Assemble all debuggable C++ binaries."
         components.withType(CppExecutable) { binary ->

@@ -96,7 +96,7 @@ public class CppPublicMacrosPlugin implements Plugin<Project> {
 
         @Override
         public Set<? extends UsageContext> getUsages() {
-            return Collections.singleton(new DefaultUsageContext(new DefaultUsageContext("cpp-public-macros", objectFactory.named(Usage.class, "cpp-public-macros"), cppPublicMacrosElements.getAttributes()), cppPublicMacrosElements.getAllArtifacts(), cppPublicMacrosElements));
+            return Collections.singleton(new DefaultUsageContext(new DefaultUsageContext("cpp-public-macros", cppPublicMacrosElements.getAttributes()), cppPublicMacrosElements.getAllArtifacts(), cppPublicMacrosElements));
         }
 
         @Override

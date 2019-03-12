@@ -19,24 +19,26 @@ package org.gradle.samples.tasks
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.file.FileCollection
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.TaskProvider
+import org.gradle.api.Task
 import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ListProperty
 
 import javax.inject.Inject
 
 class Make extends DefaultTask {
-    @Internal DirectoryProperty variantDirectory
-    @InputFiles FileCollection makeFiles
-    @OutputDirectory DirectoryProperty outputDirectory
-    @OutputFile RegularFileProperty binary
-    ListProperty<String> arguments
+    @Internal final DirectoryProperty variantDirectory
+    @InputFiles final ConfigurableFileCollection makeFiles = project.files()
+    @OutputDirectory final DirectoryProperty outputDirectory
+    @OutputFile final RegularFileProperty binary
+    final ListProperty<String> arguments
 
     @Inject
     Make(ObjectFactory objectFactory) {
@@ -58,18 +60,20 @@ class Make extends DefaultTask {
         }
     }
 
-    void generatedBy(CMake cmake) {
-        variantDirectory.set(cmake.variantDirectory)
-        outputDirectory.set(cmake.variantDirectory)
-        dependsOn(cmake)
-        makeFiles = cmake.cmakeFiles
-    }
-
-    void generatedBy(ConfigureTask configureTask) {
-        variantDirectory.set(configureTask.makeDirectory)
-        outputDirectory.set(configureTask.prefixDirectory)
-        dependsOn(configureTask)
-        makeFiles = configureTask.outputs.files
+    void generatedBy(TaskProvider<? extends Task> task) {
+        if (task.type == CMake) {
+            variantDirectory.set(task.flatMap { it.variantDirectory })
+            outputDirectory.set(task.flatMap { it.variantDirectory })
+            dependsOn(task)
+            makeFiles.setFrom(task.map { it.cmakeFiles })
+        } else if (task.type == ConfigureTask) {
+            variantDirectory.set(task.flatMap { it.makeDirectory })
+            outputDirectory.set(task.flatMap { it.prefixDirectory })
+            dependsOn(task)
+            makeFiles.setFrom(task.map { it.outputs.files })
+        } else {
+            throw new IllegalArgumentException("Make task cannot extract build information from '${task.type.name}' task")
+        }
     }
 
     void binary(Provider<String> path) {

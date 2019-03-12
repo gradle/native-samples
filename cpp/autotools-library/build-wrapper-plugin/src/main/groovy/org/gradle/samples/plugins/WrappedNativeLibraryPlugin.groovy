@@ -19,20 +19,35 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ModuleVersionIdentifier
+import org.gradle.api.artifacts.type.ArtifactTypeDefinition
+import org.gradle.api.attributes.AttributeContainer
 import org.gradle.api.attributes.Usage
 import org.gradle.api.component.ComponentWithVariants
 import org.gradle.api.component.PublishableComponent
+import org.gradle.api.internal.CollectionCallbackActionDecorator
+import org.gradle.api.internal.artifacts.ArtifactAttributes
 import org.gradle.api.internal.artifacts.DefaultModuleVersionIdentifier
 import org.gradle.api.internal.artifacts.publish.ArchivePublishArtifact
+import org.gradle.api.internal.artifacts.transform.UnzipTransform
+import org.gradle.api.internal.attributes.ImmutableAttributesFactory
 import org.gradle.api.internal.component.SoftwareComponentInternal
 import org.gradle.api.internal.component.UsageContext
 import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Zip
 import org.gradle.language.cpp.CppBinary
 import org.gradle.language.cpp.internal.DefaultUsageContext
 import org.gradle.language.cpp.internal.MainLibraryVariant
 import org.gradle.language.nativeplatform.internal.PublicationAwareComponent
 import org.gradle.language.plugins.NativeBasePlugin
+import org.gradle.nativeplatform.Linkage
+
+import javax.inject.Inject
+
+import static org.gradle.api.artifacts.type.ArtifactTypeDefinition.DIRECTORY_TYPE
+import static org.gradle.api.artifacts.type.ArtifactTypeDefinition.ZIP_TYPE
+import static org.gradle.language.cpp.CppBinary.LINKAGE_ATTRIBUTE
+import static org.gradle.language.cpp.CppBinary.LINKAGE_ATTRIBUTE
 
 class WrappedNativeLibraryPlugin implements Plugin<Project> {
     @Override
@@ -106,6 +121,7 @@ class WrappedNativeLibraryPlugin implements Plugin<Project> {
                 canBeResolved = false
                 extendsFrom implementation
                 attributes.attribute(Usage.USAGE_ATTRIBUTE, cppApiUsage)
+                attributes.attribute(ArtifactAttributes.ARTIFACT_FORMAT, ArtifactTypeDefinition.DIRECTORY_TYPE)
             }
 
             // outgoing linktime libraries (i.e. static libraries) - this represents the libraries we expose (including transitive headers)
@@ -156,21 +172,29 @@ class WrappedNativeLibraryPlugin implements Plugin<Project> {
         TODO: We need to detangle this from the built-in plugins so that external plugins can opt into this same behavior
          */
         // Create components expected by the native Gradle publication code
-        PublicationAwareComponent mainComponent = new DefaultMainPublication(project.providers.provider({ project.name }), cppApiUsage, project.configurations.headers)
+        PublicationAwareComponent mainComponent = project.objects.newInstance(DefaultMainPublication, project.providers.provider({ project.name }), cppApiUsage, project.configurations.headers)
 
-        mainComponent.mainPublication.addVariant(new DefaultWrappedPublishableComponent("debug", project.group, project.name, project.version,
+        mainComponent.mainPublication.addVariant(project.objects.newInstance(DefaultWrappedPublishableComponent, "debug", project.group, project.name, project.version,
                 linkUsage, project.configurations.linkDebug, runtimeUsage, project.configurations.runtimeDebug))
-        mainComponent.mainPublication.addVariant(new DefaultWrappedPublishableComponent("release", project.group, project.name, project.version,
+        mainComponent.mainPublication.addVariant(project.objects.newInstance(DefaultWrappedPublishableComponent, "release", project.group, project.name, project.version,
                 linkUsage, project.configurations.linkRelease, runtimeUsage, project.configurations.runtimeRelease))
 
-        Zip headersZip = project.tasks.create("cppHeaders", Zip) {
+        TaskProvider<Zip> headersZip = project.tasks.register("cppHeaders", Zip) {
             from project.configurations.headers.artifacts.files.asFileTree
             // TODO - should track changes to build directory
             destinationDir = new File(project.getBuildDir(), "headers")
             classifier = "cpp-api-headers"
             archiveName = "cpp-api-headers.zip"
         }
-        mainComponent.mainPublication.addArtifact(new ArchivePublishArtifact(headersZip))
+        // TODO: ArchivePublishArtifact should take a `TaskProvider`
+        mainComponent.mainPublication.addArtifact(new ArchivePublishArtifact(headersZip.get()))
+
+        project.dependencies.registerTransform(UnzipTransform) { variantTransform ->
+                variantTransform.from.attribute(ArtifactAttributes.ARTIFACT_FORMAT, ZIP_TYPE);
+                variantTransform.from.attribute(Usage.USAGE_ATTRIBUTE, project.objects.named(Usage.class, Usage.C_PLUS_PLUS_API));
+                variantTransform.to.attribute(ArtifactAttributes.ARTIFACT_FORMAT, DIRECTORY_TYPE);
+                variantTransform.to.attribute(Usage.USAGE_ATTRIBUTE, project.objects.named(Usage.class, Usage.C_PLUS_PLUS_API));
+        }
 
         project.components.add(mainComponent)
     }
@@ -179,9 +203,14 @@ class WrappedNativeLibraryPlugin implements Plugin<Project> {
         private final Provider<String> baseName
         private final MainLibraryVariant mainVariant
 
-        DefaultMainPublication(Provider<String> baseName, Usage apiUsage, Configuration api) {
+        @Inject
+        DefaultMainPublication(Provider<String> baseName, Usage apiUsage, Configuration api, ImmutableAttributesFactory immutableAttributesFactory) {
             this.baseName = baseName
-            this.mainVariant = new MainLibraryVariant("api", apiUsage, api, org.gradle.api.internal.CollectionCallbackActionDecorator.NOOP)
+
+            AttributeContainer publicationAttributes = immutableAttributesFactory.mutable();
+            publicationAttributes.attribute(Usage.USAGE_ATTRIBUTE, apiUsage);
+            publicationAttributes.attribute(ArtifactAttributes.ARTIFACT_FORMAT, ArtifactTypeDefinition.ZIP_TYPE);
+            this.mainVariant = new MainLibraryVariant("api", apiUsage, api, publicationAttributes, CollectionCallbackActionDecorator.NOOP)
         }
         @Override
         Provider<String> getBaseName() {
@@ -210,8 +239,11 @@ class WrappedNativeLibraryPlugin implements Plugin<Project> {
         private final Configuration link
         private final Usage runtimeUsage
         private final Configuration runtime
+        private final ImmutableAttributesFactory attributesFactory
 
-        DefaultWrappedPublishableComponent(String variantName, Object group, String projectName, Object version, Usage linkUsage, Configuration link, Usage runtimeUsage, Configuration runtime) {
+        @Inject
+        DefaultWrappedPublishableComponent(String variantName, Object group, String projectName, Object version, Usage linkUsage, Configuration link, Usage runtimeUsage, Configuration runtime, ImmutableAttributesFactory attributesFactory) {
+            this.attributesFactory = attributesFactory
             this.variantName = variantName
             this.group = group
             this.projectName = projectName
@@ -224,14 +256,23 @@ class WrappedNativeLibraryPlugin implements Plugin<Project> {
 
         @Override
         ModuleVersionIdentifier getCoordinates() {
-            return new DefaultModuleVersionIdentifier(group.toString(), projectName + "_" + variantName, version.toString())
+            return DefaultModuleVersionIdentifier.newId(group.toString(), projectName + "_" + variantName, version.toString())
         }
 
         @Override
         Set<? extends UsageContext> getUsages() {
             Set<UsageContext> result = new HashSet<UsageContext>()
-            result.add(new DefaultUsageContext("${variantName}Link".toString(), linkUsage, link.artifacts, link))
-            result.add(new DefaultUsageContext("${variantName}Runtime".toString(), runtimeUsage, runtime.artifacts, runtime))
+
+            AttributeContainer linkAttributes = attributesFactory.mutable()
+            linkAttributes.attribute(Usage.USAGE_ATTRIBUTE, linkUsage)
+            linkAttributes.attribute(LINKAGE_ATTRIBUTE, Linkage.SHARED)
+            result.add(new DefaultUsageContext("${variantName}Link".toString(), linkAttributes, link.artifacts, link))
+
+            AttributeContainer runtimeAttributes = attributesFactory.mutable()
+            runtimeAttributes.attribute(Usage.USAGE_ATTRIBUTE, runtimeUsage)
+            runtimeAttributes.attribute(LINKAGE_ATTRIBUTE, Linkage.SHARED)
+            result.add(new DefaultUsageContext("${variantName}Runtime".toString(), runtimeAttributes, runtime.artifacts, runtime))
+
             return result
         }
 
