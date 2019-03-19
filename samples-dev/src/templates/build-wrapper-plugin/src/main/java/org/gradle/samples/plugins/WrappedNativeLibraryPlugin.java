@@ -35,6 +35,13 @@ import static org.gradle.api.artifacts.type.ArtifactTypeDefinition.ZIP_TYPE;
 import static org.gradle.language.cpp.CppBinary.LINKAGE_ATTRIBUTE;
 
 public class WrappedNativeLibraryPlugin implements Plugin<Project> {
+    private final ImmutableAttributesFactory attributesFactory;
+
+    @Inject
+    public WrappedNativeLibraryPlugin(ImmutableAttributesFactory attributesFactory) {
+        this.attributesFactory = attributesFactory;
+    }
+
     @Override
     public void apply(final Project project) {
         project.getPluginManager().apply("org.gradle.samples.wrapped-native-base");
@@ -139,10 +146,10 @@ public class WrappedNativeLibraryPlugin implements Plugin<Project> {
         TODO: We need to detangle this from the built-in plugins so that external plugins can opt into this same behavior
          */
         // Create components expected by the native Gradle publication code
-        DefaultMainPublication mainComponent = project.getObjects().newInstance(DefaultMainPublication.class, project.getProviders().provider(() -> project.getName()), cppApiUsage, headers);
+        DefaultMainPublication mainComponent = new DefaultMainPublication(project.getProviders().provider(() -> project.getName()), cppApiUsage, headers, attributesFactory);
 
-        mainComponent.getMainPublication().addVariant(project.getObjects().newInstance(DefaultWrappedPublishableComponent.class, "debug", project.getGroup(), project.getName(), project.getVersion(), linkUsage, linkDebug, runtimeUsage, runtimeDebug));
-        mainComponent.getMainPublication().addVariant(project.getObjects().newInstance(DefaultWrappedPublishableComponent.class, "release", project.getGroup(), project.getName(), project.getVersion(), linkUsage, linkRelease, runtimeUsage, runtimeRelease));
+        mainComponent.getMainPublication().addVariant(new DefaultWrappedPublishableComponent("debug", project.getGroup(), project.getName(), project.getVersion(), linkUsage, linkDebug, runtimeUsage, runtimeDebug, attributesFactory));
+        mainComponent.getMainPublication().addVariant(new DefaultWrappedPublishableComponent("release", project.getGroup(), project.getName(), project.getVersion(), linkUsage, linkRelease, runtimeUsage, runtimeRelease, attributesFactory));
 
         TaskProvider<Zip> headersZip = project.getTasks().register("cppHeaders", Zip.class, task -> {
             task.from(headers.getArtifacts().getFiles().getAsFileTree());
@@ -168,7 +175,6 @@ public class WrappedNativeLibraryPlugin implements Plugin<Project> {
         private final Provider<String> baseName;
         private final MainLibraryVariant mainVariant;
 
-        @Inject
         public DefaultMainPublication(Provider<String> baseName, Usage apiUsage, Configuration api, ImmutableAttributesFactory immutableAttributesFactory) {
             this.baseName = baseName;
 
@@ -205,7 +211,6 @@ public class WrappedNativeLibraryPlugin implements Plugin<Project> {
         private final Configuration runtime;
         private final ImmutableAttributesFactory attributesFactory;
 
-        @Inject
         public DefaultWrappedPublishableComponent(String variantName, Object group, String projectName, Object version, Usage linkUsage, Configuration link, Usage runtimeUsage, Configuration runtime, ImmutableAttributesFactory attributesFactory) {
             this.attributesFactory = attributesFactory;
             this.variantName = variantName;

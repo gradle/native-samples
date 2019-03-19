@@ -8,11 +8,10 @@ import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
 import java.net.URL;
-import java.util.Scanner;
+import java.nio.file.Files;
 
 public class DownloadZipAndUnpack extends DefaultTask {
     private final Property<String> url = getProject().getObjects().property(String.class);
@@ -27,10 +26,8 @@ public class DownloadZipAndUnpack extends DefaultTask {
         URL downloadUrl = new URL(url.get());
         getLogger().warn("Downloading " + downloadUrl);
         final File zipDestination = new File(getTemporaryDir(), "zip.zip");
-        try (Scanner in = new Scanner(downloadUrl.openStream()).useDelimiter("\\Z")) {
-            try (OutputStream out = new FileOutputStream(zipDestination)) {
-                out.write(in.next().getBytes());
-            }
+        try (InputStream inStream = downloadUrl.openStream()) {
+            Files.copy(inStream, zipDestination.toPath());
         }
         getLogger().warn("Downloaded to " + zipDestination.getAbsolutePath());
 

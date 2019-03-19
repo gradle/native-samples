@@ -41,6 +41,11 @@ public class Changes {
         this.branch = branch;
     }
 
+    public Changes branch(String branch) {
+        this.branch = branch;
+        return this;
+    }
+
     public String getMessage() {
         return this.message;
     }
