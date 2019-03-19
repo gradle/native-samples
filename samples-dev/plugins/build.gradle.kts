@@ -1,8 +1,5 @@
 plugins {
-    id("java-library")
-    id("groovy")
     id("java-gradle-plugin")
-    id("org.jetbrains.kotlin.jvm").version("1.2.51")
 }
 
 group = "org.gradle.samples.plugins"
@@ -16,10 +13,10 @@ repositories {
 
 dependencies {
     implementation(gradleApi())
-    implementation(localGroovy())
     implementation("org.eclipse.jgit:org.eclipse.jgit:5.0.2.201807311906-r")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("commons-io:commons-io:2.6")
+    implementation("org.apache.commons:commons-lang3:3.8.1")
+    implementation("com.google.guava:guava:27.1-jre")
 }
 
 gradlePlugin {
