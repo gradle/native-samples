@@ -305,7 +305,7 @@ public class SourceCopyTask extends DefaultTask implements SampleGeneratorTask {
         }
 
         private void cleanDir(File destDir) {
-            if (cleaned.add(destDir)) {
+            if (cleaned.add(destDir) && destDir.exists()) {
                 Arrays.stream(destDir.listFiles()).forEach(f -> {
                     if (f.isDirectory()) {
                         cleanDir(f);
