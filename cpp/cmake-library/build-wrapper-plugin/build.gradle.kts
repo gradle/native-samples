@@ -15,7 +15,6 @@
  */
 
 plugins {
-    groovy
     `java-gradle-plugin`
 }
 

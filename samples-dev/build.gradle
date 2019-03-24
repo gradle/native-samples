@@ -1,6 +1,6 @@
-import org.gradle.sample.plugins.generators.CppLibraryTemplate
-import org.gradle.sample.plugins.generators.SourceCopyTask
-import org.gradle.sample.plugins.generators.SwiftLibraryTemplate
+import org.gradle.samples.plugins.generators.CppLibraryTemplate
+import org.gradle.samples.plugins.generators.SourceCopyTask
+import org.gradle.samples.plugins.generators.SwiftLibraryTemplate
 import org.gradle.samples.plugins.generators.GitRepoTask
 
 plugins {
