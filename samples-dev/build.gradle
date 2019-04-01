@@ -434,6 +434,12 @@ task swiftVersions(type: SourceCopyTask) {
     appProject("swift4-app").fromTemplate(SwiftLibraryTemplate.of("swift-logger-reports-swift-version", "Logger"))
     appProject("swift4-app").fromTemplate(SwiftLibraryTemplate.of("swift4-lib-with-api-dep", "Utilities"))
     appProject("swift4-app").fromTemplate(swiftListLib)
+
+    appProject("swift5-app").fromTemplate("swift-app")
+    appProject("swift5-app").fromTemplate("swift-app-uses-logger")
+    appProject("swift5-app").fromTemplate(SwiftLibraryTemplate.of("swift-logger-reports-swift-version", "Logger"))
+    appProject("swift5-app").fromTemplate(SwiftLibraryTemplate.of("swift5-lib-with-api-dep", "Utilities"))
+    appProject("swift5-app").fromTemplate(swiftListLib)
 }
 
 task swiftSimpleLibrary(type: SourceCopyTask) {

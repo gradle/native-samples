@@ -1,0 +1,4 @@
+
+application {
+    sourceCompatibility = SwiftVersion.SWIFT4
+}

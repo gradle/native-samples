@@ -4,7 +4,9 @@
 class Logger {
     // Logs the Swift version
     init() {
-#if swift(>=4.0)
+#if swift(>=5.0)
+        print("Built for Swift 5")
+#elseif swift(>=4.0)
         print("Built for Swift 4")
 #elseif swift(>=3.0)
         print("Built for Swift 3")
