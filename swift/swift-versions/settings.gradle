@@ -1,1 +1,1 @@
-include ':swift3-app', ':swift4-app'
+include ':swift3-app', ':swift4-app', ':swift5-app'
