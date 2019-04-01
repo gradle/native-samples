@@ -24,7 +24,7 @@ class ExecuteSwiftSamplesIntegrationTest extends ExecuteSamplesIntegrationTest {
         Assume.assumeFalse(sample.sampleName == 'ios-application' && !OperatingSystem.current().macOsX)
 
         // TODO - Support tool chain selection to support Swift 3, 4 and 5
-        Assume.assumeTrue(sample.sampleName == 'swift-versions')
+        Assume.assumeTrue(sample.sampleName != 'swift-versions')
 
         // TODO - extract this from the documentation
         boolean testsBroken = sample.sampleName == 'source-dependencies' || sample.sampleName == 'dependency-on-upstream-branch'
