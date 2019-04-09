@@ -102,480 +102,539 @@ samples {
     }
 }
 
-task cppTransitiveDependencies(type: SourceCopyTask) {
-    sampleDir = file("../cpp/transitive-dependencies")
+/**
+ * C++ Samples
+ */
+samples {
+    samples.register("cpp-transitive-dependencies") {
+        sampleDir = file("../cpp/transitive-dependencies")
+        copySource {
+            project(".").buildRoot()
+            appProject("app").fromTemplate("cpp-app")
+            appProject("app").fromTemplate(cppMessageLib)
+            appProject("app").fromTemplate("cpp-message-static")
+            libProject("utilities").fromTemplate(cppUtilsLib)
+            libProject("list").fromTemplate(cppListLib)
+        }
+    }
 
-    project(".").buildRoot()
-    appProject("app").fromTemplate("cpp-app")
-    appProject("app").fromTemplate(cppMessageLib)
-    appProject("app").fromTemplate("cpp-message-static")
-    libProject("utilities").fromTemplate(cppUtilsLib)
-    libProject("list").fromTemplate(cppListLib)
+    samples.register("cpp-publish-macros") {
+        sampleDir = file("../cpp/publish-macros")
+        copySource {
+            project(".").buildRoot()
+            appProject("app").fromTemplate("cpp-app")
+            appProject("app").fromTemplate(cppMessageLib)
+            appProject("app").fromTemplate("cpp-message-static")
+            appProject("app").fromTemplate("cpp-app-check-published-macros")
+            libProject("utilities").fromTemplate(cppUtilsLib)
+            libProject("list").fromTemplate(cppListLib)
+        }
+    }
+
+    samples.register("cpp-application") {
+        sampleDir = file("../cpp/application")
+        copySource {
+            appProject(".").buildRoot()
+            appProject(".").fromTemplate("cpp-app")
+            appProject(".").fromTemplate(cppMessageLib)
+            appProject(".").fromTemplate("cpp-message-static")
+            appProject(".").fromTemplate(cppUtilsLib)
+            appProject(".").fromTemplate(cppListLib)
+        }
+    }
+
+    samples.register("cpp-multiple-target-machines") {
+        sampleDir = file("../cpp/multiple-target-machines")
+        copySource {
+            appProject(".").buildRoot()
+            appProject(".").fromTemplate("cpp-app")
+            appProject(".").fromTemplate(cppMessageLib)
+            appProject(".").fromTemplate("cpp-message-static")
+            appProject(".").fromTemplate(cppUtilsLib)
+            appProject(".").fromTemplate(cppListLib)
+        }
+    }
+
+    samples.register("cpp-precompiled-headers") {
+        sampleDir = file("../cpp/precompiled-headers")
+        copySource {
+            appProject(".").buildRoot()
+            appProject(".").fromTemplate("cpp-app")
+            appProject(".").fromTemplate("cpp-app-precompiled-header")
+            appProject(".").fromTemplate(cppMessageLib)
+            appProject(".").fromTemplate("cpp-message-static")
+            appProject(".").fromTemplate(cppUtilsLib)
+            appProject(".").fromTemplate(cppListLib)
+        }
+    }
+
+    samples.register("cpp-windows-resources") {
+        sampleDir = file("../cpp/windows-resources")
+        copySource {
+            appProject(".").buildRoot()
+            appProject(".").fromTemplate("cpp-app")
+            appProject(".").fromTemplate(cppMessageLib)
+            appProject(".").fromTemplate("cpp-message-resources")
+            appProject(".").fromTemplate(cppUtilsLib)
+            appProject(".").fromTemplate(cppListLib)
+        }
+    }
+
+    samples.register("cpp-simple-library") {
+        sampleDir = file("../cpp/simple-library")
+        copySource {
+            libProject(".").buildRoot()
+            libProject(".").fromTemplate(cppListLib)
+        }
+    }
+
+    samples.register("cpp-library-with-tests") {
+        sampleDir = file("../cpp/library-with-tests")
+        copySource {
+            libProject(".").buildRoot()
+            libProject(".").fromTemplate(cppListLib)
+            project("build-wrapper-plugin").buildRoot()
+            project("build-wrapper-plugin").fromTemplate("build-wrapper-plugin")
+        }
+    }
+
+    samples.register("cpp-header-only-library") {
+        sampleDir = file("../cpp/header-only-library")
+        copySource {
+            libProject(".").buildRoot()
+            libProject(".").fromTemplate(CppLibraryTemplate.of("cpp-lib-header-only", "list"))
+        }
+    }
+
+    samples.register("cpp-binary-dependencies") {
+        sampleDir = file("../cpp/binary-dependencies")
+        copySource {
+            appProject(".").buildRoot()
+            appProject(".").fromTemplate("cpp-app")
+            appProject(".").fromTemplate(cppMessageLib)
+            appProject(".").fromTemplate("cpp-message-static")
+            appProject(".").fromTemplate(cppUtilsLib)
+        }
+    }
+
+    samples.register("cpp-prebuilt-binaries") {
+        sampleDir = file("../cpp/prebuilt-binaries")
+
+        copySource {
+            appProject(".").buildRoot()
+            appProject(".").fromTemplate("cpp-app")
+            appProject(".").fromTemplate(cppMessageLib)
+            appProject(".").fromTemplate("cpp-message-static")
+            appProject(".").fromTemplate(cppUtilsLib)
+        }
+    }
+
+    samples.register("cpp-cmake-library") {
+        sampleDir = file("../cpp/cmake-library")
+        copySource {
+            project(".").buildRoot()
+            appProject("app").fromTemplate("cpp-app")
+            appProject("app").fromTemplate(cppMessageLib)
+            appProject("app").fromTemplate("cpp-message-static")
+            libProject("utilities").fromTemplate(cppUtilsLib)
+            cmakeProject("list", "list").fromTemplate(cppListLib)
+            project("build-wrapper-plugin").buildRoot()
+            project("build-wrapper-plugin").fromTemplate("build-wrapper-plugin")
+            project("custom-publication-plugin").buildRoot()
+            project("custom-publication-plugin").fromTemplate("custom-publication-plugin")
+        }
+    }
+
+    samples.register("cpp-autotools-library") {
+        sampleDir = file("../cpp/autotools-library")
+        copySource {
+            appProject(".").buildRoot()
+            appProject("app").fromTemplate("cpp-app-with-curl")
+            appProject("app").fromTemplate(cppUtilsLib)
+            appProject("app").fromTemplate(cppListLib)
+            appProject("app").fromTemplate(cppMessageLib)
+            appProject("app").fromTemplate("cpp-message-static")
+            project("build-wrapper-plugin").buildRoot()
+            project("build-wrapper-plugin").fromTemplate("build-wrapper-plugin")
+        }
+    }
+
+    samples.register("cpp-cmake-source-dependencies") {
+        sampleDir = file("../cpp/cmake-source-dependencies")
+        copySource {
+            cmakeAppProject("app").buildRoot()
+            cmakeAppProject("app").fromTemplate("cpp-app-cmake-build")
+            cmakeAppProject("app").fromTemplate("cpp-app")
+            cmakeAppProject("app").fromTemplate(cppMessageLib)
+            cmakeAppProject("app").fromTemplate("cpp-message-static")
+            cmakeProject("utilities").buildRoot()
+            cmakeProject("utilities").fromTemplate("cpp-utilities-lib-cmake-build")
+            cmakeProject("utilities").fromTemplate(cppUtilsLib)
+            cmakeProject("list").buildRoot()
+            cmakeProject("list").fromTemplate("cpp-list-lib-cmake-build")
+            cmakeProject("list").fromTemplate(cppListLib)
+            project("build-wrapper-plugin").buildRoot()
+            project("build-wrapper-plugin").fromTemplate("build-wrapper-plugin")
+        }
+    }
+
+    samples.register("cpp-composite-build") {
+        sampleDir = file("../cpp/composite-build")
+        copySource {
+            appProject(".").buildRoot()
+            appProject(".").fromTemplate("cpp-app")
+            appProject(".").fromTemplate(cppMessageLib)
+            appProject(".").fromTemplate("cpp-message-static")
+            libProject("utilities-library").fromTemplate(cppUtilsLib)
+            libProject("list-library").fromTemplate(cppListLib)
+        }
+    }
+
+    samples.register("cpp-source-dependencies") {
+        sampleDir = file("../cpp/source-dependencies")
+        copySource {
+            appProject(".").buildRoot()
+            appProject(".").fromTemplate("cpp-app")
+            appProject(".").fromTemplate(cppMessageLib)
+            appProject(".").fromTemplate("cpp-message-static")
+        }
+    }
+
+    samples.register("cpp-injected-plugins") {
+        sampleDir = file("../cpp/injected-plugins")
+        copySource {
+            appProject(".").buildRoot()
+            appProject(".").fromTemplate("cpp-app")
+            appProject(".").fromTemplate(cppMessageLib)
+            appProject(".").fromTemplate("cpp-message-static")
+            libProject("repos/utilities-library").fromTemplate(cppUtilsLib)
+            libProject("repos/list-library").fromTemplate(cppListLib)
+        }
+    }
+
+    samples.register("cpp-branch-dependencies") {
+        sampleDir = file("../cpp/dependency-on-upstream-branch")
+        copySource {
+            appProject("app").buildRoot()
+            appProject("app").fromTemplate("cpp-app")
+            appProject("app").fromTemplate(cppMessageLib)
+            appProject("app").fromTemplate("cpp-message-static")
+            libProject("utilities-library").buildRoot()
+            libProject("utilities-library").fromTemplate(cppUtilsLib)
+            libProject("utilities-library").fromTemplate("cpp-utilities-lib-build")
+            libProject("list-library").buildRoot()
+            libProject("list-library").fromTemplate(cppListLib)
+            libProject("list-library").fromTemplate("cpp-list-lib-build")
+        }
+    }
+
+    samples.register("cpp-operating-system-specific-dependencies") {
+        sampleDir = file("../cpp/operating-system-specific-dependencies")
+        copySource {
+            project(".").buildRoot()
+            appProject("app").fromTemplate("cpp-app-uses-logger")
+            appProject("app").fromTemplate("cpp-logger-uses-console")
+            appProject("app").fromTemplate(cppUtilsLib)
+            appProject("app").fromTemplate(cppListLib)
+            libProject("ansiConsole").fromTemplate(CppLibraryTemplate.of("cpp-ansi-console-lib", "ansi_console"))
+            libProject("winConsole").fromTemplate(CppLibraryTemplate.of("cpp-windows-console-lib", "win_console"))
+        }
+    }
+
+    samples.register("cpp-source-generation") {
+        sampleDir = file("../cpp/source-generation")
+        copySource {
+            project(".").buildRoot()
+        }
+    }
+
+    samples.register("cpp-static-library") {
+        sampleDir = file("../cpp/static-library")
+        copySource {
+            project(".").buildRoot()
+            appProject("app").fromTemplate("cpp-app")
+            appProject("app").fromTemplate(cppMessageLib)
+            appProject("app").fromTemplate("cpp-message-static")
+            staticLibProject("utilities").fromTemplate(cppUtilsLib)
+            libProject("list").fromTemplate(cppListLib)
+        }
+    }
+
+    samples.register("cpp-swift-package-manager") {
+        sampleDir = file("../cpp/swift-package-manager")
+        copySource {
+            project(".").buildRoot()
+            swiftPMProject(".", "App").fromTemplate("cpp-app")
+            swiftPMProject(".", "App").fromTemplate(cppMessageLib)
+            swiftPMProject(".", "App").fromTemplate("cpp-message-static")
+            swiftPMProject(".", "Utilities").fromTemplate(cppUtilsLib)
+            swiftPMProject(".", "List").fromTemplate(cppListLib)
+        }
+    }
+
+    samples.register("cpp-swift-package-manager-publish") {
+        sampleDir = file("../cpp/swift-package-manager-publish")
+        copySource {
+            swiftPMProject("app", "App").fromTemplate("cpp-app")
+            swiftPMProject("app", "App").fromTemplate(cppMessageLib)
+            swiftPMProject("app", "App").fromTemplate("cpp-message-static")
+
+            project("release-plugin").buildRoot()
+            project("release-plugin").fromTemplate("release-plugin")
+
+            libProject("list-library").buildRoot()
+            libProject("list-library").noPrivateHeaderDir()
+            libProject("list-library").fromTemplate("cpp-list-lib-build-with-release")
+            libProject("list-library").fromTemplate(cppListLib)
+
+            libProject("utilities-library").buildRoot()
+            libProject("utilities-library").noPrivateHeaderDir()
+            libProject("utilities-library").fromTemplate("cpp-utilities-lib-build-with-release")
+            libProject("utilities-library").fromTemplate(cppUtilsLib)
+        }
+    }
+
+    samples.register("cpp-provisionable-tool-chains") {
+        sampleDir = file("../cpp/provisionable-tool-chains")
+        copySource {
+            appProject(".").buildRoot()
+            appProject(".").fromTemplate("cpp-app")
+            appProject(".").fromTemplate(cppUtilsLib)
+            appProject(".").fromTemplate(cppListLib)
+            appProject(".").fromTemplate(cppMessageLib)
+            appProject(".").fromTemplate("cpp-message-static")
+            appProject(".").fromTemplate("cpp-provisionable-tool-chains-build")
+        }
+    }
 }
 
-task cppPublishMacros(type: SourceCopyTask) {
-    sampleDir = file("../cpp/publish-macros")
-
-    project(".").buildRoot()
-    appProject("app").fromTemplate("cpp-app")
-    appProject("app").fromTemplate(cppMessageLib)
-    appProject("app").fromTemplate("cpp-message-static")
-    appProject("app").fromTemplate("cpp-app-check-published-macros")
-    libProject("utilities").fromTemplate(cppUtilsLib)
-    libProject("list").fromTemplate(cppListLib)
+/**
+ * C Samples
+ */
+samples {
+    samples.register("c-application") {
+        sampleDir = file("../c/application")
+        copySource {
+            appProject(".").buildRoot()
+            appProject(".").fromTemplate("c-app")
+        }
+    }
 }
 
-task cppApplication(type: SourceCopyTask) {
-    sampleDir = file("../cpp/application")
-
-    appProject(".").buildRoot()
-    appProject(".").fromTemplate("cpp-app")
-    appProject(".").fromTemplate(cppMessageLib)
-    appProject(".").fromTemplate("cpp-message-static")
-    appProject(".").fromTemplate(cppUtilsLib)
-    appProject(".").fromTemplate(cppListLib)
-}
-
-task cppMultipleTargetMachines(type: SourceCopyTask) {
-    sampleDir = file("../cpp/multiple-target-machines")
-
-    appProject(".").buildRoot()
-    appProject(".").fromTemplate("cpp-app")
-    appProject(".").fromTemplate(cppMessageLib)
-    appProject(".").fromTemplate("cpp-message-static")
-    appProject(".").fromTemplate(cppUtilsLib)
-    appProject(".").fromTemplate(cppListLib)
-}
-
-task cppPrecompiledHeaders(type: SourceCopyTask) {
-    sampleDir = file("../cpp/precompiled-headers")
-
-    appProject(".").buildRoot()
-    appProject(".").fromTemplate("cpp-app")
-    appProject(".").fromTemplate("cpp-app-precompiled-header")
-    appProject(".").fromTemplate(cppMessageLib)
-    appProject(".").fromTemplate("cpp-message-static")
-    appProject(".").fromTemplate(cppUtilsLib)
-    appProject(".").fromTemplate(cppListLib)
-}
-
-task cppWindowsResources(type: SourceCopyTask) {
-    sampleDir = file("../cpp/windows-resources")
-
-    appProject(".").buildRoot()
-    appProject(".").fromTemplate("cpp-app")
-    appProject(".").fromTemplate(cppMessageLib)
-    appProject(".").fromTemplate("cpp-message-resources")
-    appProject(".").fromTemplate(cppUtilsLib)
-    appProject(".").fromTemplate(cppListLib)
-}
-
-task cppSimpleLibrary(type: SourceCopyTask) {
-    sampleDir = file("../cpp/simple-library")
-
-    libProject(".").buildRoot()
-    libProject(".").fromTemplate(cppListLib)
-}
-
-
-task cppLibraryWithTests(type: SourceCopyTask) {
-    sampleDir = file("../cpp/library-with-tests")
-
-    libProject(".").buildRoot()
-    libProject(".").fromTemplate(cppListLib)
-    project("build-wrapper-plugin").buildRoot()
-    project("build-wrapper-plugin").fromTemplate("build-wrapper-plugin")
-}
-
-task cppHeaderOnlyLibrary(type: SourceCopyTask) {
-    sampleDir = file("../cpp/header-only-library")
-
-    libProject(".").buildRoot()
-    libProject(".").fromTemplate(CppLibraryTemplate.of("cpp-lib-header-only", "list"))
-}
-
-task cppBinaryDependencies(type: SourceCopyTask) {
-    sampleDir = file("../cpp/binary-dependencies")
-
-    appProject(".").buildRoot()
-    appProject(".").fromTemplate("cpp-app")
-    appProject(".").fromTemplate(cppMessageLib)
-    appProject(".").fromTemplate("cpp-message-static")
-    appProject(".").fromTemplate(cppUtilsLib)
-}
-
-task cppPrebuiltBinaries(type: SourceCopyTask) {
-    sampleDir = file("../cpp/prebuilt-binaries")
-
-    appProject(".").buildRoot()
-    appProject(".").fromTemplate("cpp-app")
-    appProject(".").fromTemplate(cppMessageLib)
-    appProject(".").fromTemplate("cpp-message-static")
-    appProject(".").fromTemplate(cppUtilsLib)
-}
-
-task cppCmakeLibrary(type: SourceCopyTask) {
-    sampleDir = file("../cpp/cmake-library") 
-
-    project(".").buildRoot()
-    appProject("app").fromTemplate("cpp-app")
-    appProject("app").fromTemplate(cppMessageLib)
-    appProject("app").fromTemplate("cpp-message-static")
-    libProject("utilities").fromTemplate(cppUtilsLib)
-    cmakeProject("list", "list").fromTemplate(cppListLib)
-    project("build-wrapper-plugin").buildRoot()
-    project("build-wrapper-plugin").fromTemplate("build-wrapper-plugin")
-    project("custom-publication-plugin").buildRoot()
-    project("custom-publication-plugin").fromTemplate("custom-publication-plugin")
-}
-
-task cppAutotoolsLibrary(type: SourceCopyTask) {
-    sampleDir = file("../cpp/autotools-library")
-
-    appProject(".").buildRoot()
-    appProject("app").fromTemplate("cpp-app-with-curl")
-    appProject("app").fromTemplate(cppUtilsLib)
-    appProject("app").fromTemplate(cppListLib)
-    appProject("app").fromTemplate(cppMessageLib)
-    appProject("app").fromTemplate("cpp-message-static")
-    project("build-wrapper-plugin").buildRoot()
-    project("build-wrapper-plugin").fromTemplate("build-wrapper-plugin")
-}
-
-task cppCmakeSourceDependencies(type: SourceCopyTask) {
-    sampleDir = file("../cpp/cmake-source-dependencies")
-
-    cmakeAppProject("app").buildRoot()
-    cmakeAppProject("app").fromTemplate("cpp-app-cmake-build")
-    cmakeAppProject("app").fromTemplate("cpp-app")
-    cmakeAppProject("app").fromTemplate(cppMessageLib)
-    cmakeAppProject("app").fromTemplate("cpp-message-static")
-    cmakeProject("utilities").buildRoot()
-    cmakeProject("utilities").fromTemplate("cpp-utilities-lib-cmake-build")
-    cmakeProject("utilities").fromTemplate(cppUtilsLib)
-    cmakeProject("list").buildRoot()
-    cmakeProject("list").fromTemplate("cpp-list-lib-cmake-build")
-    cmakeProject("list").fromTemplate(cppListLib)
-    project("build-wrapper-plugin").buildRoot()
-    project("build-wrapper-plugin").fromTemplate("build-wrapper-plugin")
-}
-
-task cppCompositeBuild(type: SourceCopyTask) {
-    sampleDir = file("../cpp/composite-build")
-
-    appProject(".").buildRoot()
-    appProject(".").fromTemplate("cpp-app")
-    appProject(".").fromTemplate(cppMessageLib)
-    appProject(".").fromTemplate("cpp-message-static")
-    libProject("utilities-library").fromTemplate(cppUtilsLib)
-    libProject("list-library").fromTemplate(cppListLib)
-}
-
-task cppSourceDependencies(type: SourceCopyTask) {
-    sampleDir = file("../cpp/source-dependencies")
-
-    appProject(".").buildRoot()
-    appProject(".").fromTemplate("cpp-app")
-    appProject(".").fromTemplate(cppMessageLib)
-    appProject(".").fromTemplate("cpp-message-static")
-}
-
-task cppInjectedPlugins(type: SourceCopyTask) {
-    sampleDir = file("../cpp/injected-plugins")
-
-    appProject(".").buildRoot()
-    appProject(".").fromTemplate("cpp-app")
-    appProject(".").fromTemplate(cppMessageLib)
-    appProject(".").fromTemplate("cpp-message-static")
-    libProject("repos/utilities-library").fromTemplate(cppUtilsLib)
-    libProject("repos/list-library").fromTemplate(cppListLib)
-}
-
-task cppBranchDependencies(type: SourceCopyTask) {
-    sampleDir = file("../cpp/dependency-on-upstream-branch")
-
-    appProject("app").buildRoot()
-    appProject("app").fromTemplate("cpp-app")
-    appProject("app").fromTemplate(cppMessageLib)
-    appProject("app").fromTemplate("cpp-message-static")
-    libProject("utilities-library").buildRoot()
-    libProject("utilities-library").fromTemplate(cppUtilsLib)
-    libProject("utilities-library").fromTemplate("cpp-utilities-lib-build")
-    libProject("list-library").buildRoot()
-    libProject("list-library").fromTemplate(cppListLib)
-    libProject("list-library").fromTemplate("cpp-list-lib-build")
-}
-
-task cppOSDependencies(type: SourceCopyTask) {
-    sampleDir = file("../cpp/operating-system-specific-dependencies")
-
-    project(".").buildRoot()
-    appProject("app").fromTemplate("cpp-app-uses-logger")
-    appProject("app").fromTemplate("cpp-logger-uses-console")
-    appProject("app").fromTemplate(cppUtilsLib)
-    appProject("app").fromTemplate(cppListLib)
-    libProject("ansiConsole").fromTemplate(CppLibraryTemplate.of("cpp-ansi-console-lib", "ansi_console"))
-    libProject("winConsole").fromTemplate(CppLibraryTemplate.of("cpp-windows-console-lib", "win_console"))
-}
-
-task cppSourceGeneration(type: SourceCopyTask) {
-    sampleDir = file("../cpp/source-generation")
-
-    project(".").buildRoot()
-}
-
-task cppStaticLibrary(type: SourceCopyTask) {
-    sampleDir = file("../cpp/static-library")
-
-    project(".").buildRoot()
-    appProject("app").fromTemplate("cpp-app")
-    appProject("app").fromTemplate(cppMessageLib)
-    appProject("app").fromTemplate("cpp-message-static")
-    staticLibProject("utilities").fromTemplate(cppUtilsLib)
-    libProject("list").fromTemplate(cppListLib)
-}
-
-task cppSwiftPackageManager(type: SourceCopyTask) {
-    sampleDir = file("../cpp/swift-package-manager")
-
-    project(".").buildRoot()
-    swiftPMProject(".", "App").fromTemplate("cpp-app")
-    swiftPMProject(".", "App").fromTemplate(cppMessageLib)
-    swiftPMProject(".", "App").fromTemplate("cpp-message-static")
-    swiftPMProject(".", "Utilities").fromTemplate(cppUtilsLib)
-    swiftPMProject(".", "List").fromTemplate(cppListLib)
-}
-
-task cppSwiftPackageManagerPublish(type: SourceCopyTask) {
-    sampleDir = file("../cpp/swift-package-manager-publish")
-
-    swiftPMProject("app", "App").fromTemplate("cpp-app")
-    swiftPMProject("app", "App").fromTemplate(cppMessageLib)
-    swiftPMProject("app", "App").fromTemplate("cpp-message-static")
-
-    project("release-plugin").buildRoot()
-    project("release-plugin").fromTemplate("release-plugin")
-
-    libProject("list-library").buildRoot()
-    libProject("list-library").noPrivateHeaderDir()
-    libProject("list-library").fromTemplate("cpp-list-lib-build-with-release")
-    libProject("list-library").fromTemplate(cppListLib)
-
-    libProject("utilities-library").buildRoot()
-    libProject("utilities-library").noPrivateHeaderDir()
-    libProject("utilities-library").fromTemplate("cpp-utilities-lib-build-with-release")
-    libProject("utilities-library").fromTemplate(cppUtilsLib)
-}
-
-task cppProvisionableToolChains(type: SourceCopyTask) {
-    sampleDir = file("../cpp/provisionable-tool-chains")
-
-    appProject(".").buildRoot()
-    appProject(".").fromTemplate("cpp-app")
-    appProject(".").fromTemplate(cppUtilsLib)
-    appProject(".").fromTemplate(cppListLib)
-    appProject(".").fromTemplate(cppMessageLib)
-    appProject(".").fromTemplate("cpp-message-static")
-    appProject(".").fromTemplate("cpp-provisionable-tool-chains-build")
-}
-
-task cApplication(type: SourceCopyTask) {
-    sampleDir = file("../c/application")
-
-    appProject(".").buildRoot()
-    appProject(".").fromTemplate("c-app")
-}
-
-task swiftApplication(type: SourceCopyTask) {
-    sampleDir = file("../swift/application")
-
-    appProject(".").buildRoot()
-    appProject(".").fromTemplate("swift-app")
-    appProject(".").fromTemplate(swiftUtilsLib)
-    appProject(".").fromTemplate(swiftListLib)
-}
-
-task swiftMultipleTargetMachines(type: SourceCopyTask) {
-    sampleDir = file("../swift/multiple-target-machines")
-
-    appProject(".").buildRoot()
-    appProject(".").fromTemplate("swift-app")
-    appProject(".").fromTemplate(swiftUtilsLib)
-    appProject(".").fromTemplate(swiftListLib)
-}
-
-task swiftApplicationOSDependencies(type: SourceCopyTask) {
-    sampleDir = file("../swift/operating-system-specific-dependencies")
-
-    project(".").buildRoot()
-    appProject("app").fromTemplate("swift-app")
-    appProject("app").fromTemplate("swift-app-uses-logger")
-    appProject("app").fromTemplate("swift-logger-uses-console")
-    appProject("app").fromTemplate(swiftUtilsLib)
-    appProject("app").fromTemplate(swiftListLib)
-
-    libProject("linux-console").fromTemplate(SwiftLibraryTemplate.of("swift-linux-console-lib", "LinuxLogger"))
-    libProject("macos-console").fromTemplate(SwiftLibraryTemplate.of("swift-macos-console-lib", "MacOsLogger"))
-}
-
-task swiftVersions(type: SourceCopyTask) {
-    sampleDir = file("../swift/swift-versions")
-
-    project(".").buildRoot()
-
-    appProject("swift3-app").fromTemplate("swift-app")
-    appProject("swift3-app").fromTemplate("swift-app-uses-logger")
-    appProject("swift3-app").fromTemplate(SwiftLibraryTemplate.of("swift-logger-reports-swift-version", "Logger"))
-    appProject("swift3-app").fromTemplate(SwiftLibraryTemplate.of("swift3-lib-with-api-dep", "Utilities"))
-    appProject("swift3-app").fromTemplate(swiftListLib)
-
-    appProject("swift4-app").fromTemplate("swift-app")
-    appProject("swift4-app").fromTemplate("swift-app-uses-logger")
-    appProject("swift4-app").fromTemplate(SwiftLibraryTemplate.of("swift-logger-reports-swift-version", "Logger"))
-    appProject("swift4-app").fromTemplate(SwiftLibraryTemplate.of("swift4-lib-with-api-dep", "Utilities"))
-    appProject("swift4-app").fromTemplate(swiftListLib)
-
-    appProject("swift5-app").fromTemplate("swift-app")
-    appProject("swift5-app").fromTemplate("swift-app-uses-logger")
-    appProject("swift5-app").fromTemplate(SwiftLibraryTemplate.of("swift-logger-reports-swift-version", "Logger"))
-    appProject("swift5-app").fromTemplate(SwiftLibraryTemplate.of("swift5-lib-with-api-dep", "Utilities"))
-    appProject("swift5-app").fromTemplate(swiftListLib)
-}
-
-task swiftSimpleLibrary(type: SourceCopyTask) {
-    sampleDir = file("../swift/simple-library")
-
-    libProject(".").buildRoot()
-    libProject(".").fromTemplate(swiftListLib)
-}
-
-task swiftPrebuiltBinaries(type: SourceCopyTask) {
-    sampleDir = file("../swift/prebuilt-binaries")
-
-    appProject(".").buildRoot()
-    appProject(".").fromTemplate("swift-app")
-    appProject(".").fromTemplate(swiftUtilsLib)
-}
-
-task swiftTransitiveDependencies(type: SourceCopyTask) {
-    sampleDir = file("../swift/transitive-dependencies")
-
-    project(".").buildRoot()
-    appProject("app").fromTemplate("swift-app")
-    libProject("utilities").fromTemplate(swiftUtilsLib)
-    libProject("list").fromTemplate(swiftListLib)
-}
-
-task swiftCompositeBuild(type: SourceCopyTask) {
-    sampleDir = file("../swift/composite-build")
-
-    appProject(".").buildRoot()
-    appProject(".").fromTemplate("swift-app")
-    libProject("utilities-library").fromTemplate(swiftUtilsLib)
-    libProject("list-library").fromTemplate(swiftListLib)
-}
-
-task swiftInjectedPlugins(type: SourceCopyTask) {
-    sampleDir = file("../swift/injected-plugins")
-
-    appProject(".").buildRoot()
-    appProject(".").fromTemplate("swift-app")
-    libProject("repos/utilities-library").fromTemplate(swiftUtilsLib)
-    libProject("repos/list-library").fromTemplate(SwiftLibraryTemplate.of("swift-lib-unusable", "List"))
-}
-
-task swiftSourceDependencies(type: SourceCopyTask) {
-    sampleDir = file("../swift/source-dependencies")
-
-    appProject(".").buildRoot()
-    appProject(".").fromTemplate("swift-app")
-}
-
-task swiftBranchDependencies(type: SourceCopyTask) {
-    sampleDir = file("../swift/dependency-on-upstream-branch")
-
-    appProject("app").buildRoot()
-    appProject("app").fromTemplate("swift-app")
-    libProject("utilities-library").buildRoot()
-    libProject("utilities-library").fromTemplate(swiftUtilsLib)
-    libProject("utilities-library").fromTemplate("swift-utilities-lib-build")
-    libProject("list-library").buildRoot()
-    libProject("list-library").fromTemplate(swiftListLib)
-    libProject("list-library").fromTemplate("swift-list-lib-build")
-}
-
-task swiftSourceGeneration(type: SourceCopyTask) {
-    sampleDir = file("../swift/source-generation")
-
-    project(".").buildRoot()
-}
-
-task swiftStaticLibrary(type: SourceCopyTask) {
-    sampleDir = file("../swift/static-library")
-
-    project(".").buildRoot()
-    appProject("app").fromTemplate("swift-app")
-    libProject("utilities").fromTemplate(swiftUtilsLib)
-    libProject("list").fromTemplate(swiftListLib)
-}
-
-task swiftCppDependencies(type: SourceCopyTask) {
-    sampleDir = file("../swift/cpp-dependencies")
-
-    project(".").buildRoot()
-    staticLibProject("list").fromTemplate("cpp-lib-with-c-api")
-    appProject("app").fromTemplate(SwiftLibraryTemplate.of("swift-lib-uses-c-api", "List"))
-    appProject("app").fromTemplate(swiftUtilsLib)
-    appProject("app").fromTemplate("swift-app")
-}
-
-task swiftSwiftPackageManager(type: SourceCopyTask) {
-    sampleDir = file("../swift/swift-package-manager")
-
-    project(".").buildRoot()
-    swiftPMProject(".", "App").fromTemplate("swift-app")
-    swiftPMProject(".", "Utilities").fromTemplate(swiftUtilsLib)
-    swiftPMProject(".", "List").fromTemplate(swiftListLib)
-}
-
-task swiftSwiftPackageManagerPublish(type: SourceCopyTask) {
-    sampleDir = file("../swift/swift-package-manager-publish")
-
-    swiftPMProject("app", "App").fromTemplate("swift-app")
-
-    project("release-plugin").buildRoot()
-    project("release-plugin").fromTemplate("release-plugin")
-
-    libProject("list-library").buildRoot()
-    libProject("list-library").fromTemplate("swift-list-lib-build-with-release")
-    libProject("list-library").fromTemplate(swiftListLib)
-
-    libProject("utilities-library").buildRoot()
-    libProject("utilities-library").fromTemplate("swift-utilities-lib-build-with-release")
-    libProject("utilities-library").fromTemplate(swiftUtilsLib)
-}
-
-task swiftProvisionableToolChains(type: SourceCopyTask) {
-    sampleDir = file("../swift/provisionable-tool-chains")
-
-    appProject(".").buildRoot()
-    appProject(".").fromTemplate("swift-app")
-    appProject(".").fromTemplate(swiftUtilsLib)
-    appProject(".").fromTemplate(swiftListLib)
-    appProject(".").fromTemplate("swift-provisionable-tool-chains-build")
-}
-
-task swiftSystemLibrary(type: SourceCopyTask) {
-    sampleDir = file("../swift/system-library-as-module")
-
-    project(".").buildRoot()
-}
-
-task swiftIosApplication(type: SourceCopyTask) {
-    sampleDir = file("../swift/ios-application")
-
-    project(".").buildRoot()
-    project("ios-plugin").buildRoot()
+/**
+ * Swift Samples
+ */
+samples {
+    samples.register("swift-application") {
+        sampleDir = file("../swift/application")
+        copySource {
+            appProject(".").buildRoot()
+            appProject(".").fromTemplate("swift-app")
+            appProject(".").fromTemplate(swiftUtilsLib)
+            appProject(".").fromTemplate(swiftListLib)
+        }
+    }
+
+    samples.register("swift-multiple-target-machines") {
+        sampleDir = file("../swift/multiple-target-machines")
+        copySource {
+            appProject(".").buildRoot()
+            appProject(".").fromTemplate("swift-app")
+            appProject(".").fromTemplate(swiftUtilsLib)
+            appProject(".").fromTemplate(swiftListLib)
+        }
+    }
+
+    samples.register("swift-operating-system-specific-dependencies") {
+        sampleDir = file("../swift/operating-system-specific-dependencies")
+        copySource {
+            project(".").buildRoot()
+            appProject("app").fromTemplate("swift-app")
+            appProject("app").fromTemplate("swift-app-uses-logger")
+            appProject("app").fromTemplate("swift-logger-uses-console")
+            appProject("app").fromTemplate(swiftUtilsLib)
+            appProject("app").fromTemplate(swiftListLib)
+
+            libProject("linux-console").fromTemplate(SwiftLibraryTemplate.of("swift-linux-console-lib", "LinuxLogger"))
+            libProject("macos-console").fromTemplate(SwiftLibraryTemplate.of("swift-macos-console-lib", "MacOsLogger"))
+        }
+    }
+
+    samples.register("swift-swift-versions") {
+        sampleDir = file("../swift/swift-versions")
+        copySource {
+            project(".").buildRoot()
+
+            appProject("swift3-app").fromTemplate("swift-app")
+            appProject("swift3-app").fromTemplate("swift-app-uses-logger")
+            appProject("swift3-app").fromTemplate(SwiftLibraryTemplate.of("swift-logger-reports-swift-version", "Logger"))
+            appProject("swift3-app").fromTemplate(SwiftLibraryTemplate.of("swift3-lib-with-api-dep", "Utilities"))
+            appProject("swift3-app").fromTemplate(swiftListLib)
+
+            appProject("swift4-app").fromTemplate("swift-app")
+            appProject("swift4-app").fromTemplate("swift-app-uses-logger")
+            appProject("swift4-app").fromTemplate(SwiftLibraryTemplate.of("swift-logger-reports-swift-version", "Logger"))
+            appProject("swift4-app").fromTemplate(SwiftLibraryTemplate.of("swift4-lib-with-api-dep", "Utilities"))
+            appProject("swift4-app").fromTemplate(swiftListLib)
+
+            appProject("swift5-app").fromTemplate("swift-app")
+            appProject("swift5-app").fromTemplate("swift-app-uses-logger")
+            appProject("swift5-app").fromTemplate(SwiftLibraryTemplate.of("swift-logger-reports-swift-version", "Logger"))
+            appProject("swift5-app").fromTemplate(SwiftLibraryTemplate.of("swift5-lib-with-api-dep", "Utilities"))
+            appProject("swift5-app").fromTemplate(swiftListLib)
+        }
+    }
+
+    samples.register("swift-simple-library") {
+        sampleDir = file("../swift/simple-library")
+        copySource {
+            libProject(".").buildRoot()
+            libProject(".").fromTemplate(swiftListLib)
+        }
+    }
+
+    samples.register("swift-prebuilt-binaries") {
+        sampleDir = file("../swift/prebuilt-binaries")
+        copySource {
+            appProject(".").buildRoot()
+            appProject(".").fromTemplate("swift-app")
+            appProject(".").fromTemplate(swiftUtilsLib)
+        }
+    }
+
+    samples.register("swift-transitive-dependencies") {
+        sampleDir = file("../swift/transitive-dependencies")
+        copySource {
+            project(".").buildRoot()
+            appProject("app").fromTemplate("swift-app")
+            libProject("utilities").fromTemplate(swiftUtilsLib)
+            libProject("list").fromTemplate(swiftListLib)
+        }
+    }
+
+    samples.register("swift-composite-build") {
+        sampleDir = file("../swift/composite-build")
+        copySource {
+            appProject(".").buildRoot()
+            appProject(".").fromTemplate("swift-app")
+            libProject("utilities-library").fromTemplate(swiftUtilsLib)
+            libProject("list-library").fromTemplate(swiftListLib)
+        }
+    }
+
+    samples.register("swift-injected-plugins") {
+        sampleDir = file("../swift/injected-plugins")
+        copySource {
+            appProject(".").buildRoot()
+            appProject(".").fromTemplate("swift-app")
+            libProject("repos/utilities-library").fromTemplate(swiftUtilsLib)
+            libProject("repos/list-library").fromTemplate(SwiftLibraryTemplate.of("swift-lib-unusable", "List"))
+        }
+    }
+
+    samples.register("swift-source-dependencies") {
+        sampleDir = file("../swift/source-dependencies")
+        copySource {
+            appProject(".").buildRoot()
+            appProject(".").fromTemplate("swift-app")
+        }
+    }
+
+    samples.register("swift-branch-dependencies") {
+        sampleDir = file("../swift/dependency-on-upstream-branch")
+        copySource {
+            appProject("app").buildRoot()
+            appProject("app").fromTemplate("swift-app")
+            libProject("utilities-library").buildRoot()
+            libProject("utilities-library").fromTemplate(swiftUtilsLib)
+            libProject("utilities-library").fromTemplate("swift-utilities-lib-build")
+            libProject("list-library").buildRoot()
+            libProject("list-library").fromTemplate(swiftListLib)
+            libProject("list-library").fromTemplate("swift-list-lib-build")
+        }
+    }
+
+    samples.register("swift-source-generation") {
+        sampleDir = file("../swift/source-generation")
+        copySource {
+            project(".").buildRoot()
+        }
+    }
+
+    samples.register("swift-static-library") {
+        sampleDir = file("../swift/static-library")
+        copySource {
+            project(".").buildRoot()
+            appProject("app").fromTemplate("swift-app")
+            libProject("utilities").fromTemplate(swiftUtilsLib)
+            libProject("list").fromTemplate(swiftListLib)
+        }
+    }
+
+    samples.register("swift-cpp-dependencies") {
+        sampleDir = file("../swift/cpp-dependencies")
+        copySource {
+            project(".").buildRoot()
+            staticLibProject("list").fromTemplate("cpp-lib-with-c-api")
+            appProject("app").fromTemplate(SwiftLibraryTemplate.of("swift-lib-uses-c-api", "List"))
+            appProject("app").fromTemplate(swiftUtilsLib)
+            appProject("app").fromTemplate("swift-app")
+        }
+    }
+
+    samples.register("swift-swift-package-manager") {
+        sampleDir = file("../swift/swift-package-manager")
+        copySource {
+            project(".").buildRoot()
+            swiftPMProject(".", "App").fromTemplate("swift-app")
+            swiftPMProject(".", "Utilities").fromTemplate(swiftUtilsLib)
+            swiftPMProject(".", "List").fromTemplate(swiftListLib)
+        }
+    }
+
+    samples.register("swift-swift-package-manager-publish") {
+        sampleDir = file("../swift/swift-package-manager-publish")
+        copySource {
+            swiftPMProject("app", "App").fromTemplate("swift-app")
+
+            project("release-plugin").buildRoot()
+            project("release-plugin").fromTemplate("release-plugin")
+
+            libProject("list-library").buildRoot()
+            libProject("list-library").fromTemplate("swift-list-lib-build-with-release")
+            libProject("list-library").fromTemplate(swiftListLib)
+
+            libProject("utilities-library").buildRoot()
+            libProject("utilities-library").fromTemplate("swift-utilities-lib-build-with-release")
+            libProject("utilities-library").fromTemplate(swiftUtilsLib)
+        }
+    }
+
+    samples.register("swift-provisionable-tool-chains") {
+        sampleDir = file("../swift/provisionable-tool-chains")
+        copySource {
+            appProject(".").buildRoot()
+            appProject(".").fromTemplate("swift-app")
+            appProject(".").fromTemplate(swiftUtilsLib)
+            appProject(".").fromTemplate(swiftListLib)
+            appProject(".").fromTemplate("swift-provisionable-tool-chains-build")
+        }
+    }
+
+    samples.register("swift-system-library") {
+        sampleDir = file("../swift/system-library-as-module")
+        copySource {
+            project(".").buildRoot()
+        }
+    }
+
+    samples.register("swift-ios-application") {
+        sampleDir = file("../swift/ios-application")
+        copySource {
+            project(".").buildRoot()
+            project("ios-plugin").buildRoot()
+        }
+    }
 }
 
 task generateMinimalCppListRepo(type: GitRepoTask) {
