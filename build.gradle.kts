@@ -2,3 +2,5 @@
 plugins {
     id("org.gradle.samples.wrapper")
 }
+
+println("hi CI!")
