@@ -13,3 +13,8 @@ gradlePlugin {
         }
     }
 }
+
+tasks.withType<JavaCompile> {
+    // strictly compile the sample plugins
+    options.compilerArgs.addAll(listOf("-Werror", "-Xlint:deprecation"))
+}

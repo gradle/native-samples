@@ -15,6 +15,7 @@ import org.gradle.api.internal.artifacts.transform.UnzipTransform;
 import org.gradle.api.internal.attributes.ImmutableAttributesFactory;
 import org.gradle.api.internal.component.SoftwareComponentInternal;
 import org.gradle.api.internal.component.UsageContext;
+import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.bundling.Zip;
@@ -146,17 +147,16 @@ public class WrappedNativeLibraryPlugin implements Plugin<Project> {
         TODO: We need to detangle this from the built-in plugins so that external plugins can opt into this same behavior
          */
         // Create components expected by the native Gradle publication code
-        DefaultMainPublication mainComponent = new DefaultMainPublication(project.getProviders().provider(() -> project.getName()), cppApiUsage, headers, attributesFactory);
+        DefaultMainPublication mainComponent = new DefaultMainPublication(project.getProviders().provider(() -> project.getName()), cppApiUsage, headers, attributesFactory, project.getObjects());
 
         mainComponent.getMainPublication().addVariant(new DefaultWrappedPublishableComponent("debug", project.getGroup(), project.getName(), project.getVersion(), linkUsage, linkDebug, runtimeUsage, runtimeDebug, attributesFactory));
         mainComponent.getMainPublication().addVariant(new DefaultWrappedPublishableComponent("release", project.getGroup(), project.getName(), project.getVersion(), linkUsage, linkRelease, runtimeUsage, runtimeRelease, attributesFactory));
 
         TaskProvider<Zip> headersZip = project.getTasks().register("cppHeaders", Zip.class, task -> {
             task.from(headers.getArtifacts().getFiles().getAsFileTree());
-            // TODO - should track changes to build directory
-            task.setDestinationDir(new File(project.getBuildDir(), "headers"));
-            task.setClassifier("cpp-api-headers");
-            task.setArchiveName("cpp-api-headers.zip");
+            task.getDestinationDirectory().set(project.getLayout().getBuildDirectory().dir("headers"));
+            task.getArchiveClassifier().set("cpp-api-headers");
+            task.getArchiveFileName().set("cpp-api-headers.zip");
         });
         // TODO: ArchivePublishArtifact should take a `TaskProvider`
         mainComponent.getMainPublication().addArtifact(new ArchivePublishArtifact(headersZip.get()));
@@ -175,13 +175,13 @@ public class WrappedNativeLibraryPlugin implements Plugin<Project> {
         private final Provider<String> baseName;
         private final MainLibraryVariant mainVariant;
 
-        public DefaultMainPublication(Provider<String> baseName, Usage apiUsage, Configuration api, ImmutableAttributesFactory immutableAttributesFactory) {
+        public DefaultMainPublication(Provider<String> baseName, Usage apiUsage, Configuration api, ImmutableAttributesFactory immutableAttributesFactory, ObjectFactory objectFactory) {
             this.baseName = baseName;
 
             AttributeContainer publicationAttributes = immutableAttributesFactory.mutable();
             publicationAttributes.attribute(Usage.USAGE_ATTRIBUTE, apiUsage);
             publicationAttributes.attribute(ArtifactAttributes.ARTIFACT_FORMAT, ZIP_TYPE);
-            this.mainVariant = new MainLibraryVariant("api", apiUsage, api, publicationAttributes, CollectionCallbackActionDecorator.NOOP);
+            this.mainVariant = new MainLibraryVariant("api", apiUsage, api, publicationAttributes, objectFactory);
         }
 
         @Override

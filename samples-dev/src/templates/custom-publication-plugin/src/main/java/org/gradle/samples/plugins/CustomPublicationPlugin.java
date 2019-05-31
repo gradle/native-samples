@@ -16,7 +16,6 @@ import org.gradle.api.tasks.bundling.Zip;
 import org.gradle.language.cpp.internal.MainLibraryVariant;
 import org.gradle.language.nativeplatform.internal.PublicationAwareComponent;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -62,10 +61,9 @@ public class CustomPublicationPlugin implements Plugin<Project> {
                     return result;
                 });
 
-                // TODO - should track changes to build directory
-                task.setDestinationDir(new File(project.getBuildDir(), "custom-publications"));
-                task.setClassifier(System.getProperty("os.name").toLowerCase().replace(" ", "-"));
-                task.setArchiveName("custom-package.zip");
+                task.getDestinationDirectory().set(project.getLayout().getBuildDirectory().dir("custom-publications"));
+                task.getArchiveClassifier().set(System.getProperty("os.name").toLowerCase().replace(" ", "-"));
+                task.getArchiveFileName().set("custom-package.zip");
             });
 
             project.getExtensions().configure(PublishingExtension.class, publishing -> {

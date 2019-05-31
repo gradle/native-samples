@@ -26,6 +26,7 @@ public class DownloadZipAndUnpack extends DefaultTask {
         URL downloadUrl = new URL(url.get());
         getLogger().warn("Downloading " + downloadUrl);
         final File zipDestination = new File(getTemporaryDir(), "zip.zip");
+        zipDestination.delete();
         try (InputStream inStream = downloadUrl.openStream()) {
             Files.copy(inStream, zipDestination.toPath());
         }
