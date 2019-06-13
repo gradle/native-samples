@@ -23,11 +23,6 @@ public class CMake extends DefaultTask {
     private final ConfigurableFileCollection includeDirs = getProject().files();
     private final ConfigurableFileCollection linkFiles = getProject().files();
 
-    public CMake() {
-        dependsOn(variantDirectory);
-        dependsOn(projectDirectory);
-    }
-
     @TaskAction
     public void generateCmakeFiles() {
         String cmakeExecutable = System.getenv().getOrDefault("CMAKE_EXECUTABLE", "cmake");
@@ -50,12 +45,12 @@ public class CMake extends DefaultTask {
 
     @InputFiles
     public FileCollection getCMakeLists() {
-        return getProject().fileTree(projectDirectory.get().getAsFile(), it -> it.include("**/CMakeLists.txt"));
+        return getProject().fileTree(projectDirectory, it -> it.include("**/CMakeLists.txt"));
     }
 
     @OutputFiles
     public FileCollection getCmakeFiles() {
-        return getProject().fileTree(variantDirectory.get().getAsFile(), it -> it.include("**/CMakeFiles/**/*").include("**/Makefile").include("**/*.cmake"));
+        return getProject().fileTree(variantDirectory, it -> it.include("**/CMakeFiles/**/*").include("**/Makefile").include("**/*.cmake"));
     }
 
     @Input
