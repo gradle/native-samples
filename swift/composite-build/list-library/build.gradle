@@ -1,6 +1,7 @@
 plugins {
     id 'swift-library'
     id 'xctest'
+    id 'xcode'
 }
 
 group = 'org.gradle.swift-samples'
