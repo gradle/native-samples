@@ -4,8 +4,6 @@ import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
 import org.apache.commons.compress.compressors.xz.XZCompressorInputStream
 import org.apache.commons.compress.utils.IOUtils
 import org.apache.commons.io.FileUtils
-import org.gradle.api.provider.Property
-import org.gradle.api.provider.Provider
 
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -40,18 +38,11 @@ class ExtractToolChainTask extends DefaultTask {
     @InputFile
     final RegularFileProperty toolChainArchive = project.objects.fileProperty()
 
-    // Currently cannot use the OutputDirectory annotation on directory containing symbolic links to non-existing files
-    // See https://github.com/gradle/gradle/issues/4428
-    // Use a done file instead
-    //@OutputDirectory
+    @OutputDirectory
     final DirectoryProperty toolChainLocation = project.objects.directoryProperty()
-
-    @OutputFile  // See comment on toolChainLocation property
-    final Provider<File> doneFile = project.provider {new File(toolChainLocation.get().asFile.absolutePath + ".done")}
 
     @TaskAction
     private void extract() {
-        doneFile.get().delete()
         FileUtils.deleteDirectory(toolChainLocation.get().asFile)
 
         InputStream fileStream = Files.newInputStream(toolChainArchive.get().asFile.toPath());
@@ -85,8 +76,6 @@ class ExtractToolChainTask extends DefaultTask {
         }
 
         IOUtils.closeQuietly(tarStream)
-
-        doneFile.get().createNewFile()
     }
 
     private InputStream createDecompressStream(InputStream inputStream) {
