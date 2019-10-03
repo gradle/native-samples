@@ -1,5 +1,6 @@
 include("samples-dev")
 
+includeBuild("/Users/daniel/gradle/guides/guides/subprojects/gradle-guides-plugin")
 includeBuild("samples-dev/plugins")
 includeBuild("samples-dev/src/templates/custom-publication-plugin")
 includeBuild("samples-dev/src/templates/build-wrapper-plugin")
@@ -14,3 +15,4 @@ pluginManagement {
         }
     }
 }
+

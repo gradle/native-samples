@@ -1,0 +1,21 @@
+= Simple application (application)
+
+ifndef::env-github[]
+- link:{zip-base-file-name}-groovy-dsl.zip[Download Groovy DSL ZIP]
+endif::[]
+
+This sample shows how a simple C++ application can be built with Gradle. The application has no dependencies and the build has minimal configuration.
+
+Although there is currently no out-of-the-box support for building applications and libraries from C, there is also a sample build that shows how the C++ support can be configured to build a C application.
+
+To build and run the application:
+
+```
+> cd cpp-application
+> ./gradlew assemble
+
+BUILD SUCCESSFUL in 1s
+
+> ./build/install/main/debug/app
+Hello, World!
+```
