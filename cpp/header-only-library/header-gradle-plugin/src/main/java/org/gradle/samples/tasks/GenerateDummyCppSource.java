@@ -14,7 +14,7 @@ import java.nio.file.Files;
 @CacheableTask
 public class GenerateDummyCppSource extends DefaultTask {
     private final Property<String> symbolName = getProject().getObjects().property(String.class);
-    private final RegularFileProperty outputFile = newOutputFile();
+    private final RegularFileProperty outputFile = getProject().getObjects().fileProperty();
 
     @TaskAction
     private void doGenerate() throws IOException {

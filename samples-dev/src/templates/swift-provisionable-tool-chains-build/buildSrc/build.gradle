@@ -28,7 +28,7 @@ class DownloadToolChainTask extends DefaultTask {
     final Property<URL> fromUrl = project.objects.property(URL)
 
     @OutputFile
-    final RegularFileProperty outputFile = newOutputFile()
+    final RegularFileProperty outputFile = project.objects.fileProperty()
 
     @TaskAction
     private void download() {
@@ -38,13 +38,13 @@ class DownloadToolChainTask extends DefaultTask {
 
 class ExtractToolChainTask extends DefaultTask {
     @InputFile
-    final RegularFileProperty toolChainArchive = newInputFile()
+    final RegularFileProperty toolChainArchive = project.objects.fileProperty()
 
     // Currently cannot use the OutputDirectory annotation on directory containing symbolic links to non-existing files
     // See https://github.com/gradle/gradle/issues/4428
     // Use a done file instead
     //@OutputDirectory
-    final DirectoryProperty toolChainLocation = newOutputDirectory()
+    final DirectoryProperty toolChainLocation = project.objects.directoryProperty()
 
     @OutputFile  // See comment on toolChainLocation property
     final Provider<File> doneFile = project.provider {new File(toolChainLocation.get().asFile.absolutePath + ".done")}
