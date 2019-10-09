@@ -1,4 +1,5 @@
 import org.asciidoctor.gradle.AsciidoctorTask
+import org.gradle.samples.ExemplarExtension
 import org.gradle.samples.Sample
 import org.gradle.samples.plugins.generators.CppLibraryTemplate
 import org.gradle.samples.plugins.generators.SourceCopyTask
@@ -51,6 +52,31 @@ fun Sample.copySource(configuration: SourceCopyTask.() -> kotlin.Unit) {
         exclude("gradlew*")
     }
     sample.archiveContent.from(sourceContent)
+}
+
+samples.configureEach {
+    val sample = this
+    val generatorTask = tasks.register("generate${GUtil.toCamelCase(sample.name)}") {
+        val outputDir = project.layout.buildDirectory.dir("sample-exemplar-generators/${sample.name}")
+        outputs.dir(outputDir)
+        doLast {
+            outputDir.get().file("helpTask.sample.conf").asFile.writeText("""
+commands: [{
+    execution-subdirectory: .
+    executable: gradle
+    args: help
+}]
+""")
+            outputDir.get().file("taskList.sample.conf").asFile.writeText("""
+commands: [{
+    execution-subdirectory: .
+    executable: gradle
+    args: tasks
+}]
+""")
+        }
+    }
+    sample.extensions.getByType(ExemplarExtension::class.java).source.from(generatorTask)
 }
 
 samples.create("cpp-application") {
