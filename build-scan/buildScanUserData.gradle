@@ -1,5 +1,5 @@
 rootProject {
-    pluginManager.withPlugin("com.gradle.build-scan") {
+    afterEvaluate {
         def buildScanExtension = extensions.getByName("buildScan")
         allprojects { project ->
             components.withType(ComponentWithNativeRuntime) { binary ->
