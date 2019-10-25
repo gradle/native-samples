@@ -60,7 +60,11 @@ public class CleanSamplesTask extends DefaultTask {
     private void delete(File file) {
         getLogger().lifecycle("Cleaning " + file.getAbsolutePath());
         try {
-            Files.delete(file.toPath());
+            if (file.isDirectory()) {
+                FileUtils.deleteDirectory(file);
+            } else {
+                Files.delete(file.toPath());
+            }
         } catch (IOException e) {
             throw new UncheckedIOException("Couldn't clean file '" + file.getAbsolutePath() + "'", e);
         }
