@@ -9,7 +9,7 @@ import org.gradle.util.GUtil
 // This root project is simply a container of sample builds
 plugins {
     id("org.gradle.samples.wrapper")
-    id("org.gradle.samples")
+    id("org.gradle.samples") version "0.15.18"
 }
 
 tasks.withType<AsciidoctorTask>().matching { it.name.contains("Sample") }.configureEach {
@@ -79,7 +79,7 @@ commands: [{
     sample.extensions.getByType(ExemplarExtension::class.java).source.from(generatorTask)
 }
 
-samples.create("cpp-application") {
+samples.create("cppApplication") {
     sampleDirectory.set(file("cpp/application"))
     withGroovyDsl {
         archiveContent.from(fileTree(sampleDirectory).include("**/*.gradle"))
