@@ -2,8 +2,8 @@ plugins {
     id 'cpp-library'
 }
 
-library {
-    dependencies {
-        api project(':list')
+dependencies {
+    api(project(':list')) {
+        attributes { attribute(Attribute.of("org.gradle.native.linkage", Linkage), Linkage.STATIC) }
     }
 }
