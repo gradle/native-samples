@@ -12,6 +12,7 @@ import org.gradle.api.internal.artifacts.ArtifactAttributes;
 import org.gradle.api.internal.artifacts.DefaultModuleVersionIdentifier;
 import org.gradle.api.internal.artifacts.publish.ArchivePublishArtifact;
 import org.gradle.api.internal.artifacts.transform.UnzipTransform;
+import org.gradle.api.internal.attributes.AttributeContainerInternal;
 import org.gradle.api.internal.attributes.ImmutableAttributesFactory;
 import org.gradle.api.internal.component.SoftwareComponentInternal;
 import org.gradle.api.internal.component.UsageContext;
@@ -232,12 +233,12 @@ public class WrappedNativeLibraryPlugin implements Plugin<Project> {
         public Set<? extends UsageContext> getUsages() {
             Set<UsageContext> result = new HashSet<>();
 
-            AttributeContainer linkAttributes = attributesFactory.mutable();
+            AttributeContainer linkAttributes = attributesFactory.mutable((AttributeContainerInternal) link.getAttributes().getAttributes());
             linkAttributes.attribute(Usage.USAGE_ATTRIBUTE, linkUsage);
             linkAttributes.attribute(LINKAGE_ATTRIBUTE, Linkage.SHARED);
             result.add(new DefaultUsageContext(variantName + "Link", linkAttributes, link.getArtifacts(), link));
 
-            AttributeContainer runtimeAttributes = attributesFactory.mutable();
+            AttributeContainer runtimeAttributes = attributesFactory.mutable((AttributeContainerInternal) runtime.getAttributes().getAttributes());
             runtimeAttributes.attribute(Usage.USAGE_ATTRIBUTE, runtimeUsage);
             runtimeAttributes.attribute(LINKAGE_ATTRIBUTE, Linkage.SHARED);
             result.add(new DefaultUsageContext(variantName + "Runtime", runtimeAttributes, runtime.getArtifacts(), runtime));
