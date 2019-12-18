@@ -1,0 +1,12 @@
+plugins {
+    id("java-gradle-plugin")
+}
+
+gradlePlugin {
+    plugins {
+        gcov {
+            id = "org.gradle.samples.gcov"
+            implementationClass = "org.gradle.samples.plugins.gcov.GCovPlugin"
+        }
+    }
+}
