@@ -1,0 +1,239 @@
+{
+  "formatVersion": "1.0",
+  "component": {
+    "group": "org.gradle.cpp-samples",
+    "module": "googletest",
+    "version": "1.9.0-gr4-SNAPSHOT",
+    "attributes": {
+      "org.gradle.status": "integration"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "5.4.1",
+      "buildId": "bayu2b3a4vh6rlr4dhtzxirb6q"
+    }
+  },
+  "variants": [
+    {
+      "name": "api",
+      "attributes": {
+        "artifactType": "zip",
+        "org.gradle.usage": "cplusplus-api"
+      },
+      "files": [
+        {
+          "name": "cpp-api-headers.zip",
+          "url": "googletest-1.9.0-gr4-SNAPSHOT-cpp-api-headers.zip",
+          "size": 155609,
+          "sha1": "d0a32aab2df534f6a4fa0eb056cc0ab0bf03d1b1",
+          "md5": "a49f45c7b155e98ae4c45ad6d9b71ef7"
+        }
+      ]
+    },
+    {
+      "name": "debugLinuxLink",
+      "attributes": {
+        "org.gradle.native.architecture": "x86-64",
+        "org.gradle.native.debuggable": true,
+        "org.gradle.native.linkage": "SHARED",
+        "org.gradle.native.operatingSystem": "linux",
+        "org.gradle.native.optimized": false,
+        "org.gradle.usage": "native-link"
+      },
+      "available-at": {
+        "url": "../../googletest_debug_linux/1.9.0-gr4-SNAPSHOT/googletest_debug_linux-1.9.0-gr4-SNAPSHOT.module",
+        "group": "org.gradle.cpp-samples",
+        "module": "googletest_debug_linux",
+        "version": "1.9.0-gr4-SNAPSHOT"
+      }
+    },
+    {
+      "name": "debugLinuxRuntime",
+      "attributes": {
+        "org.gradle.native.architecture": "x86-64",
+        "org.gradle.native.debuggable": true,
+        "org.gradle.native.linkage": "SHARED",
+        "org.gradle.native.operatingSystem": "linux",
+        "org.gradle.native.optimized": false,
+        "org.gradle.usage": "native-runtime"
+      },
+      "available-at": {
+        "url": "../../googletest_debug_linux/1.9.0-gr4-SNAPSHOT/googletest_debug_linux-1.9.0-gr4-SNAPSHOT.module",
+        "group": "org.gradle.cpp-samples",
+        "module": "googletest_debug_linux",
+        "version": "1.9.0-gr4-SNAPSHOT"
+      }
+    },
+    {
+      "name": "debugMacosLink",
+      "attributes": {
+        "org.gradle.native.architecture": "x86-64",
+        "org.gradle.native.debuggable": true,
+        "org.gradle.native.linkage": "SHARED",
+        "org.gradle.native.operatingSystem": "macos",
+        "org.gradle.native.optimized": false,
+        "org.gradle.usage": "native-link"
+      },
+      "available-at": {
+        "url": "../../googletest_debug_macos/1.9.0-gr4-SNAPSHOT/googletest_debug_macos-1.9.0-gr4-SNAPSHOT.module",
+        "group": "org.gradle.cpp-samples",
+        "module": "googletest_debug_macos",
+        "version": "1.9.0-gr4-SNAPSHOT"
+      }
+    },
+    {
+      "name": "debugMacosRuntime",
+      "attributes": {
+        "org.gradle.native.architecture": "x86-64",
+        "org.gradle.native.debuggable": true,
+        "org.gradle.native.linkage": "SHARED",
+        "org.gradle.native.operatingSystem": "macos",
+        "org.gradle.native.optimized": false,
+        "org.gradle.usage": "native-runtime"
+      },
+      "available-at": {
+        "url": "../../googletest_debug_macos/1.9.0-gr4-SNAPSHOT/googletest_debug_macos-1.9.0-gr4-SNAPSHOT.module",
+        "group": "org.gradle.cpp-samples",
+        "module": "googletest_debug_macos",
+        "version": "1.9.0-gr4-SNAPSHOT"
+      }
+    },
+    {
+      "name": "releaseLinuxLink",
+      "attributes": {
+        "org.gradle.native.architecture": "x86-64",
+        "org.gradle.native.debuggable": true,
+        "org.gradle.native.linkage": "SHARED",
+        "org.gradle.native.operatingSystem": "linux",
+        "org.gradle.native.optimized": true,
+        "org.gradle.usage": "native-link"
+      },
+      "available-at": {
+        "url": "../../googletest_release_linux/1.9.0-gr4-SNAPSHOT/googletest_release_linux-1.9.0-gr4-SNAPSHOT.module",
+        "group": "org.gradle.cpp-samples",
+        "module": "googletest_release_linux",
+        "version": "1.9.0-gr4-SNAPSHOT"
+      }
+    },
+    {
+      "name": "releaseLinuxRuntime",
+      "attributes": {
+        "org.gradle.native.architecture": "x86-64",
+        "org.gradle.native.debuggable": true,
+        "org.gradle.native.linkage": "SHARED",
+        "org.gradle.native.operatingSystem": "linux",
+        "org.gradle.native.optimized": true,
+        "org.gradle.usage": "native-runtime"
+      },
+      "available-at": {
+        "url": "../../googletest_release_linux/1.9.0-gr4-SNAPSHOT/googletest_release_linux-1.9.0-gr4-SNAPSHOT.module",
+        "group": "org.gradle.cpp-samples",
+        "module": "googletest_release_linux",
+        "version": "1.9.0-gr4-SNAPSHOT"
+      }
+    },
+    {
+      "name": "releaseMacosLink",
+      "attributes": {
+        "org.gradle.native.architecture": "x86-64",
+        "org.gradle.native.debuggable": true,
+        "org.gradle.native.linkage": "SHARED",
+        "org.gradle.native.operatingSystem": "macos",
+        "org.gradle.native.optimized": true,
+        "org.gradle.usage": "native-link"
+      },
+      "available-at": {
+        "url": "../../googletest_release_macos/1.9.0-gr4-SNAPSHOT/googletest_release_macos-1.9.0-gr4-SNAPSHOT.module",
+        "group": "org.gradle.cpp-samples",
+        "module": "googletest_release_macos",
+        "version": "1.9.0-gr4-SNAPSHOT"
+      }
+    },
+    {
+      "name": "releaseMacosRuntime",
+      "attributes": {
+        "org.gradle.native.architecture": "x86-64",
+        "org.gradle.native.debuggable": true,
+        "org.gradle.native.linkage": "SHARED",
+        "org.gradle.native.operatingSystem": "macos",
+        "org.gradle.native.optimized": true,
+        "org.gradle.usage": "native-runtime"
+      },
+      "available-at": {
+        "url": "../../googletest_release_macos/1.9.0-gr4-SNAPSHOT/googletest_release_macos-1.9.0-gr4-SNAPSHOT.module",
+        "group": "org.gradle.cpp-samples",
+        "module": "googletest_release_macos",
+        "version": "1.9.0-gr4-SNAPSHOT"
+      }
+    },
+    {
+      "name": "debugWindowsLink",
+      "attributes": {
+        "org.gradle.native.architecture": "x86-64",
+        "org.gradle.native.debuggable": true,
+        "org.gradle.native.linkage": "SHARED",
+        "org.gradle.native.operatingSystem": "windows",
+        "org.gradle.native.optimized": false,
+        "org.gradle.usage": "native-link"
+      },
+      "available-at": {
+        "url": "../../googletest_debug_windows/1.9.0-gr4-SNAPSHOT/googletest_debug_windows-1.9.0-gr4-SNAPSHOT.module",
+        "group": "org.gradle.cpp-samples",
+        "module": "googletest_debug_windows",
+        "version": "1.9.0-gr4-SNAPSHOT"
+      }
+    },
+    {
+      "name": "debugWindowsRuntime",
+      "attributes": {
+        "org.gradle.native.architecture": "x86-64",
+        "org.gradle.native.debuggable": true,
+        "org.gradle.native.linkage": "SHARED",
+        "org.gradle.native.operatingSystem": "windows",
+        "org.gradle.native.optimized": false,
+        "org.gradle.usage": "native-runtime"
+      },
+      "available-at": {
+        "url": "../../googletest_debug_windows/1.9.0-gr4-SNAPSHOT/googletest_debug_windows-1.9.0-gr4-SNAPSHOT.module",
+        "group": "org.gradle.cpp-samples",
+        "module": "googletest_debug_windows",
+        "version": "1.9.0-gr4-SNAPSHOT"
+      }
+    },
+    {
+      "name": "releaseWindowsLink",
+      "attributes": {
+        "org.gradle.native.architecture": "x86-64",
+        "org.gradle.native.debuggable": true,
+        "org.gradle.native.linkage": "SHARED",
+        "org.gradle.native.operatingSystem": "windows",
+        "org.gradle.native.optimized": true,
+        "org.gradle.usage": "native-link"
+      },
+      "available-at": {
+        "url": "../../googletest_release_windows/1.9.0-gr4-SNAPSHOT/googletest_release_windows-1.9.0-gr4-SNAPSHOT.module",
+        "group": "org.gradle.cpp-samples",
+        "module": "googletest_release_windows",
+        "version": "1.9.0-gr4-SNAPSHOT"
+      }
+    },
+    {
+      "name": "releaseWindowsRuntime",
+      "attributes": {
+        "org.gradle.native.architecture": "x86-64",
+        "org.gradle.native.debuggable": true,
+        "org.gradle.native.linkage": "SHARED",
+        "org.gradle.native.operatingSystem": "windows",
+        "org.gradle.native.optimized": true,
+        "org.gradle.usage": "native-runtime"
+      },
+      "available-at": {
+        "url": "../../googletest_release_windows/1.9.0-gr4-SNAPSHOT/googletest_release_windows-1.9.0-gr4-SNAPSHOT.module",
+        "group": "org.gradle.cpp-samples",
+        "module": "googletest_release_windows",
+        "version": "1.9.0-gr4-SNAPSHOT"
+      }
+    }
+  ]
+}

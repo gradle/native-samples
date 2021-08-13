@@ -1,0 +1,60 @@
+{
+  "formatVersion": "1.0",
+  "component": {
+    "url": "../../googletest/1.9.0-gr4-SNAPSHOT/googletest-1.9.0-gr4-SNAPSHOT.module",
+    "group": "org.gradle.cpp-samples",
+    "module": "googletest",
+    "version": "1.9.0-gr4-SNAPSHOT",
+    "attributes": {
+      "org.gradle.status": "integration"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "5.4.1",
+      "buildId": "2anzmdiu7vfatcx3seeyg5bqbq"
+    }
+  },
+  "variants": [
+    {
+      "name": "debugMacosLink",
+      "attributes": {
+        "org.gradle.native.architecture": "x86-64",
+        "org.gradle.native.debuggable": true,
+        "org.gradle.native.linkage": "SHARED",
+        "org.gradle.native.operatingSystem": "macos",
+        "org.gradle.native.optimized": false,
+        "org.gradle.usage": "native-link"
+      },
+      "files": [
+        {
+          "name": "libgoogletest.dylib",
+          "url": "googletest_debug_macos-1.9.0-gr4-SNAPSHOT.dylib",
+          "size": 1291276,
+          "sha1": "ea3b200bb15fb8e031d170ac418dea196ed98a29",
+          "md5": "7a000d896ade2809f5c06d4224f72f90"
+        }
+      ]
+    },
+    {
+      "name": "debugMacosRuntime",
+      "attributes": {
+        "org.gradle.native.architecture": "x86-64",
+        "org.gradle.native.debuggable": true,
+        "org.gradle.native.linkage": "SHARED",
+        "org.gradle.native.operatingSystem": "macos",
+        "org.gradle.native.optimized": false,
+        "org.gradle.usage": "native-runtime"
+      },
+      "files": [
+        {
+          "name": "libgoogletest.dylib",
+          "url": "googletest_debug_macos-1.9.0-gr4-SNAPSHOT.dylib",
+          "size": 1291276,
+          "sha1": "ea3b200bb15fb8e031d170ac418dea196ed98a29",
+          "md5": "7a000d896ade2809f5c06d4224f72f90"
+        }
+      ]
+    }
+  ]
+}

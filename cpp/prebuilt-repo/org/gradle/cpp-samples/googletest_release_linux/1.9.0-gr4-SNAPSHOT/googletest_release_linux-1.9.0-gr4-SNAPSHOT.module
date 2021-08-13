@@ -1,0 +1,60 @@
+{
+  "formatVersion": "1.0",
+  "component": {
+    "url": "../../googletest/1.9.0-gr4-SNAPSHOT/googletest-1.9.0-gr4-SNAPSHOT.module",
+    "group": "org.gradle.cpp-samples",
+    "module": "googletest",
+    "version": "1.9.0-gr4-SNAPSHOT",
+    "attributes": {
+      "org.gradle.status": "integration"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "5.4.1",
+      "buildId": "eellpq43argtznxrpbpoptxrma"
+    }
+  },
+  "variants": [
+    {
+      "name": "releaseLinuxLink",
+      "attributes": {
+        "org.gradle.native.architecture": "x86-64",
+        "org.gradle.native.debuggable": true,
+        "org.gradle.native.linkage": "SHARED",
+        "org.gradle.native.operatingSystem": "linux",
+        "org.gradle.native.optimized": true,
+        "org.gradle.usage": "native-link"
+      },
+      "files": [
+        {
+          "name": "libgoogletest.so",
+          "url": "googletest_release_linux-1.9.0-gr4-SNAPSHOT.so",
+          "size": 410952,
+          "sha1": "b9ef7cf39a8c7dc215536e3403f1c78dbbd99607",
+          "md5": "90920d357a7a1ddfa369974b8f58df0c"
+        }
+      ]
+    },
+    {
+      "name": "releaseLinuxRuntime",
+      "attributes": {
+        "org.gradle.native.architecture": "x86-64",
+        "org.gradle.native.debuggable": true,
+        "org.gradle.native.linkage": "SHARED",
+        "org.gradle.native.operatingSystem": "linux",
+        "org.gradle.native.optimized": true,
+        "org.gradle.usage": "native-runtime"
+      },
+      "files": [
+        {
+          "name": "libgoogletest.so",
+          "url": "googletest_release_linux-1.9.0-gr4-SNAPSHOT.so",
+          "size": 410952,
+          "sha1": "b9ef7cf39a8c7dc215536e3403f1c78dbbd99607",
+          "md5": "90920d357a7a1ddfa369974b8f58df0c"
+        }
+      ]
+    }
+  ]
+}
